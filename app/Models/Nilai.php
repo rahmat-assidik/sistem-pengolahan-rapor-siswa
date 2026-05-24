@@ -37,7 +37,7 @@ class Nilai extends Model
      */
     public function kelasSiswa(): BelongsTo
     {
-        return $this->belongsTo(KelasSiswa::class, 'kelas_siswa_id');
+        return $this->belongsTo(RiwayatKelasSiswa::class, 'kelas_siswa_id');
     }
 
     public function komponenNilai(): BelongsTo

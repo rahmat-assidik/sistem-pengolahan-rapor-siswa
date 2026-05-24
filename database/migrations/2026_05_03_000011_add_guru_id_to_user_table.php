@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user', function (Blueprint $table) {
-            $table->foreignId('guru_id')->nullable()->after('role')->constrained('guru')->onDelete('set null');
+            $table->string('guru_id', 20)->nullable()->after('role');
+            $table->foreign('guru_id')->references('nip')->on('guru')->onDelete('set null');
         });
     }
 

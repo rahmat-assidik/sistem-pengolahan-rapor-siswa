@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mapel', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_mapel')->unique();
+            $table->string('kode_mapel', 20);
+            $table->primary('kode_mapel');
             $table->string('nama_mapel');
             $table->enum('kelompok', ['Wajib', 'Peminatan', 'Muatan Lokal'])->default('Wajib');
             $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');

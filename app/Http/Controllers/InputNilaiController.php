@@ -6,7 +6,7 @@ use App\Models\Pengampu;
 use App\Models\Nilai;
 use App\Models\Kelas;
 use App\Models\Mapel;
-use App\Models\KelasSiswa;
+use App\Models\RiwayatKelasSiswa;
 use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\KomponenNilai;
@@ -55,20 +55,20 @@ class InputNilaiController extends Controller
 
             // Ambil KelasSiswa (Bridge antara Siswa, Kelas, dan Semester)
             $siswaList = Siswa::whereHas('kelasSiswa', function($q) use ($selectedPengampu, $semesterAktif) {
-                    $q->where('kelas_id', $selectedPengampu->kelas_id)
+                    $q->where('kode_kelas', $selectedPengampu->kelas->kode_kelas)
                       ->where('semester_id', $semesterAktif->id);
                 })
                 ->orderBy('nama_siswa')
                 ->paginate(20)
                 ->withQueryString();
 
-            $siswaIds = collect($siswaList->items())->pluck('id');
+            $siswaIds = collect($siswaList->items())->pluck('nis');
             
-            $kelasSiswaMap = KelasSiswa::whereIn('siswa_id', $siswaIds)
-                ->where('kelas_id', $selectedPengampu->kelas_id)
+            $kelasSiswaMap = RiwayatKelasSiswa::whereIn('nis', $siswaIds)
+                ->where('kode_kelas', $selectedPengampu->kelas->kode_kelas)
                 ->where('semester_id', $semesterAktif->id)
                 ->get()
-                ->keyBy('siswa_id');
+                ->keyBy('nis');
 
             $kelasSiswaIds = $kelasSiswaMap->pluck('id');
 
@@ -79,7 +79,7 @@ class InputNilaiController extends Controller
                 ->groupBy('kelas_siswa_id');
 
             $siswaJsonData = collect($siswaList->items())->map(function ($s) use ($kelasSiswaMap, $nilaiGrouped, $komponenList) {
-                $ks = $kelasSiswaMap->get($s->id);
+                $ks = $kelasSiswaMap->get($s->nis);
                 $nSiswa = $nilaiGrouped->get($ks->id) ?? collect([]);
                 
                 // Helper to get score by component ID
@@ -174,8 +174,8 @@ class InputNilaiController extends Controller
         DB::transaction(function() use ($pengampu, $semesterId, $dataNilai) {
             foreach ($dataNilai as $siswaId => $fields) {
                 // Cari context riwayat kelas siswa
-                $ks = KelasSiswa::where('siswa_id', $siswaId)
-                    ->where('kelas_id', $pengampu->kelas_id)
+                $ks = RiwayatKelasSiswa::where('nis', $siswaId)
+                    ->where('kode_kelas', $pengampu->kelas->kode_kelas)
                     ->where('semester_id', $semesterId)
                     ->first();
 

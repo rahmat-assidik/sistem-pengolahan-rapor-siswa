@@ -11,14 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kelas_siswa', function (Blueprint $table) {
+        Schema::create('riwayat_kelas_siswa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
-            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+            $table->string('nis', 20);
+            $table->foreign('nis')->references('nis')->on('siswa')->onDelete('cascade');
+            $table->string('kode_kelas');
+            $table->foreign('kode_kelas')->references('kode_kelas')->on('kelas')->onDelete('cascade');
             $table->foreignId('semester_id')->constrained('semester')->onDelete('cascade');
+            $table->date('tanggal_masuk')->nullable();
+            $table->date('tanggal_keluar')->nullable();
+            $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
+            $table->text('catatan_wali')->nullable();
             $table->timestamps();
 
-            $table->unique(['siswa_id', 'semester_id']);
+            $table->unique(['nis', 'semester_id']);
         });
     }
 
@@ -27,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kelas_siswa');
+        Schema::dropIfExists('riwayat_kelas_siswa');
     }
 };

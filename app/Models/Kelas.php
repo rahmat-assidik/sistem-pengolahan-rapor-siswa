@@ -25,11 +25,11 @@ class Kelas extends Model
     }
 
     /**
-     * Relasi ke penempatan siswa (pivot kelas_siswa).
+     * Relasi ke penempatan siswa (pivot riwayat_kelas_siswa).
      */
     public function kelasSiswa(): HasMany
     {
-        return $this->hasMany(KelasSiswa::class);
+        return $this->hasMany(RiwayatKelasSiswa::class, 'kode_kelas', 'kode_kelas');
     }
 
     /**
@@ -37,7 +37,7 @@ class Kelas extends Model
      */
     public function siswa(): BelongsToMany
     {
-        return $this->belongsToMany(Siswa::class, 'kelas_siswa')
+        return $this->belongsToMany(Siswa::class, 'riwayat_kelas_siswa', 'kode_kelas', 'nis', 'kode_kelas', 'nis')
                     ->withPivot('semester_id')
                     ->withTimestamps();
     }

@@ -24,7 +24,7 @@ class Pengampu extends Model
      */
     public function guru(): BelongsTo
     {
-        return $this->belongsTo(Guru::class);
+        return $this->belongsTo(Guru::class, 'guru_id', 'nip');
     }
 
     /**
@@ -32,7 +32,7 @@ class Pengampu extends Model
      */
     public function mapel(): BelongsTo
     {
-        return $this->belongsTo(Mapel::class);
+        return $this->belongsTo(Mapel::class, 'mapel_id', 'kode_mapel');
     }
 
     /**
