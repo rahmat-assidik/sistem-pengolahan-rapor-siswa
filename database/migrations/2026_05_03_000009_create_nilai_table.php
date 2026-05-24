@@ -21,7 +21,8 @@ return new class extends Migration
             
             $table->timestamps();
 
-            $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
+            // Di-comment agar tidak bentrok di SQLite saat migration berikutnya yang menambah komponen_nilai_id
+            // $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::table('nilai', function (Blueprint $table) {
             // Nonaktifkan foreign key check sementara
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Schema::disableForeignKeyConstraints();
             
             // Hapus index unik lama jika ada
             try {
@@ -24,7 +24,7 @@ return new class extends Migration
             }
             
             // Aktifkan kembali foreign key check
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            Schema::enableForeignKeyConstraints();
             
             // Tambahkan index unik baru yang mencakup komponen_nilai_id
             $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai', 'komponen_nilai_id'], 'uq_nilai_siswa_new');
@@ -37,7 +37,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('nilai', function (Blueprint $table) {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            Schema::disableForeignKeyConstraints();
             
             try {
                 DB::statement('ALTER TABLE nilai DROP INDEX uq_nilai_siswa_new');
@@ -51,7 +51,7 @@ return new class extends Migration
                 // Index sudah ada
             }
             
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            Schema::enableForeignKeyConstraints();
         });
     }
 };

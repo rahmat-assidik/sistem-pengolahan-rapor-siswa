@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 0. MEMBERSIHKAN DATABASE (CLEAN STATE)
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         
         $tables = [
             'user', 'guru', 'siswa', 'kelas', 'mapel', 
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             DB::table($table)->truncate();
         }
         
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         DB::beginTransaction();
         try {
@@ -96,9 +96,9 @@ class DatabaseSeeder extends Seeder
             // 4. WALI KELAS
             foreach ($smtList as $yearSmt) {
                 foreach ($yearSmt as $smt) {
-                    WaliKelas::create(['kelas_id' => $k10->id, 'semester_id' => $smt->id, 'guru_id' => $guruBambang->id]);
-                    WaliKelas::create(['kelas_id' => $k11->id, 'semester_id' => $smt->id, 'guru_id' => $guruSri->id]);
-                    WaliKelas::create(['kelas_id' => $k12->id, 'semester_id' => $smt->id, 'guru_id' => $guruAhmad->id]);
+                    WaliKelas::create(['kelas_id' => $k10->id, 'semester_id' => $smt->id, 'guru_id' => $guruBambang->nip]);
+                    WaliKelas::create(['kelas_id' => $k11->id, 'semester_id' => $smt->id, 'guru_id' => $guruSri->nip]);
+                    WaliKelas::create(['kelas_id' => $k12->id, 'semester_id' => $smt->id, 'guru_id' => $guruAhmad->nip]);
                 }
             }
 
@@ -158,11 +158,11 @@ class DatabaseSeeder extends Seeder
 
             // 8. PENGAMPU
             $pengampus = [];
-            $pengampus[] = Pengampu::create(['guru_id' => $guruAhmad->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruSri->id, 'mapel_id' => $bin->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruBambang->id, 'mapel_id' => $bin->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruAhmad->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruSri->nip, 'mapel_id' => $bin->kode_mapel, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruBambang->nip, 'mapel_id' => $bin->kode_mapel, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
 
             // 9. ISI KOMPONEN & NILAI SAMPEL
             foreach ($pengampus as $p) {
