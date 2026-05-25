@@ -33,123 +33,133 @@
         </div>
 
 
-        {{-- Data Master (Dropdown) --}}
+        {{-- Master Data Section --}}
         @if(auth()->check() && auth()->user()->isAdmin())
-        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') || request()->is('akademik') ? 'true' : 'false' }} }">
-            <button @click="open = !open"
-                    class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                           {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') || request()->is('akademik')
-                              ? 'bg-gray-900 text-white font-semibold'
-                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium' }}">
+        <div class="px-2 mb-4">
+            <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Master Data</div>
+            
+            <a href="{{ route('data_siswa') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('data_siswa')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z"/>
-                    <path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z"/>
-                    <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z"/>
+                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
                 </svg>
-                <span class="flex-1 text-left">Data Master</span>
-                <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200"
-                     :class="{ 'rotate-180': open }"
-                     viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                <span>Siswa</span>
+            </a>
+            
+            <a href="{{ route('data_guru') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('data_guru')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
                 </svg>
-            </button>
-
-            <div x-show="open"
-                 x-transition:enter="transition ease-out duration-150"
-                 x-transition:enter-start="opacity-0 -translate-y-1"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
-                <a href="{{ route('data_siswa') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('data_siswa') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Siswa
-                </a>
-                <a href="{{ route('data_guru') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('data_guru') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Guru
-                </a>
-                <a href="{{ route('data_kelas') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('data_kelas') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Kelas
-                </a>
-                <a href="{{ route('data_mapel') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('data_mapel') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Mata Pelajaran
-                </a>
-                <a href="{{ route('akademik') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('akademik') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Tahun Ajaran
-                </a>
-            </div>
+                <span>Guru</span>
+            </a>
+            
+            <a href="{{ route('data_kelas') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('data_kelas')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm4 2v4h4V8H6zm6 0v4h4V8h-4z"/>
+                </svg>
+                <span>Kelas</span>
+            </a>
+            
+            <a href="{{ route('data_mapel') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('data_mapel')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10.99A7.965 7.965 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.965 7.965 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10.99A7.968 7.968 0 0014.5 4c-1.669 0-3.218-.51-4.5-1.385A7.968 7.968 0 009 4.804z"/>
+                </svg>
+                <span>Mata Pelajaran</span>
+            </a>
+            
+            <a href="{{ route('akademik') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('akademik')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+                <span>Tahun Ajaran</span>
+            </a>
         </div>
         @endif
 
 
-        {{-- Akademik (Dropdown) --}}
-        <div class="px-2 mb-2" x-data="{ open: {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai') ? 'true' : 'false' }} }">
-            <button @click="open = !open"
-                    class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                           {{ request()->is('pengampu') || request()->is('rekap_nilai') || request()->is('input_nilai')
-                              ? 'bg-gray-900 text-white font-semibold'
-                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium' }}">
+        {{-- Akademik Section --}}
+        <div class="px-2 mb-4">
+            <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Akademik</div>
+            
+            @if(auth()->check() && auth()->user()->isAdmin())
+            <a href="{{ route('pengampu') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('pengampu')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                    <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V6.5m-12 0h12m-12 0V3.75a.75.75 0 01.75-.75h4.5"/>
                 </svg>
-                <span class="flex-1 text-left">Akademik</span>
-                <svg class="w-3 h-3 flex-shrink-0 transition-transform duration-200"
-                     :class="{ 'rotate-180': open }"
-                     viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                <span>Pengampu</span>
+            </a>
+            
+            <a href="{{ route('rekap_nilai') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('rekap_nilai')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
                 </svg>
-            </button>
-
-            <div x-show="open"
-                 x-transition:enter="transition ease-out duration-150"
-                 x-transition:enter-start="opacity-0 -translate-y-1"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
-                @if(auth()->check() && auth()->user()->isAdmin())
-                <a href="{{ route('pengampu') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Pengampu
-                </a>
-                <a href="{{ route('rekap_nilai') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Rekap Nilai
-                </a>
-                @endif
-                @if(auth()->check() && auth()->user()->isGuru())
-                 <a href="{{ route('input_nilai') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
-                                   {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
-                    Input Nilai
-                </a>
-
-                @endif
-            </div>
-        </div>
-
-        {{-- Rapor (Hanya Admin & Wali Kelas) --}}
-        @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isWaliKelas()))
-        <div class="px-2 mb-2">
+                <span>Rekap Nilai</span>
+            </a>
+            @endif
+            
+            @if(auth()->check() && auth()->user()->isGuru())
+            <a href="{{ route('input_nilai') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('input_nilai')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Input Nilai</span>
+            </a>
+            @endif
+            
+            @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isWaliKelas()))
             <a href="{{ route('data_rapor') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('data_rapor')
                          ? 'bg-gray-900 text-white font-semibold'
-                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium' }}">
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
                 </svg>
                 <span>Rapor Siswa</span>
             </a>
+            @endif
         </div>
-        @endif
 
-        {{-- Pengaturan Akun --}}
-        <div class="px-2">
+        {{-- Pengaturan Section --}}
+        <div class="px-2 mb-4">
+            <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pengaturan</div>
+            
             <a href="{{ route('ubah_kata_sandi') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('ubah_kata_sandi')
                          ? 'bg-gray-900 text-white font-semibold'
-                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium' }}">
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>

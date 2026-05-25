@@ -244,33 +244,35 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($siswaData as $i => $s)
+                        @if($s)
                         <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">
                                 <span class="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-[10px] font-bold text-gray-700">
                                     {{ $s->angkatan ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa?->first()?->kelas?->nama_kelas ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">
-                                @if($ks = $s->kelasSiswa->first())
+                                @if($ks = $s->kelasSiswa?->first())
                                     {{ $ks->semester?->tahunAjaran?->nama }} ({{ $ks->semester?->semester }})
                                 @else
                                     -
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin }}</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status ?? '-' }}</x-badge></td>
                             <td class="px-6 py-4 text-center">
                                 <x-action-buttons 
                                     :lihatClick="'lihatSiswa(' . json_encode($s) . ')'"
                                     :editClick="'editSiswa(' . json_encode($s) . ')'"
-                                    :hapusClick="'konfirmasiHapus(' . $s->id . ', \'' . addslashes($s->nama_siswa) . '\')'"
+                                    :hapusClick="'konfirmasiHapus(' . $s->id . ', \'' . addslashes($s->nama_siswa ?? 'Siswa') . '\')'"
                                 />
                             </td>
                         </tr>
+                        @endif
                         @empty
                         <tr>
                             <td colspan="9" class="px-6 py-8 text-center text-gray-500">

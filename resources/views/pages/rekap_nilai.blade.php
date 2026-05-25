@@ -32,11 +32,12 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($nilaiData as $i => $n)
+                        @if($n)
                         <tr>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $nilaiData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->siswa->nama_siswa }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->siswa?->nama_siswa ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_mapel ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->tugas ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uh ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uts ?? '-' }}</td>
@@ -48,6 +49,7 @@
                             @php $kkm = $n->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
                             <td class="px-6 py-4 text-center"><x-badge :type="$tuntas ? 'success' : 'warning'">{{ $tuntas ? 'Tuntas' : 'Belum Tuntas' }}</x-badge></td>
                         </tr>
+                        @endif
                         @empty
                         <tr><td colspan="11" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data nilai</p></td></tr>
                         @endforelse

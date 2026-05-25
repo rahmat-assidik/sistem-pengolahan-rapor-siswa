@@ -72,14 +72,15 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($siswaData as $i => $r)
+                        @if($r)
                         <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $r->nis }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $r->nama_siswa }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $r->kelasSiswa->first()?->kelas?->nama_kelas ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $r->nis ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $r->nama_siswa ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $r->kelasSiswa?->first()?->kelas?->nama_kelas ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">
-                                {{ $r->kelasSiswa->first()?->semester?->tahunAjaran?->nama ?? '-' }} 
-                                <span class="text-[10px] text-gray-400 font-normal">({{ $r->kelasSiswa->first()?->semester?->semester ?? '-' }})</span>
+                                {{ $r->kelasSiswa?->first()?->semester?->tahunAjaran?->nama ?? '-' }} 
+                                <span class="text-[10px] text-gray-400 font-normal">({{ $r->kelasSiswa?->first()?->semester?->semester ?? '-' }})</span>
                             </td>
                             <td class="px-6 py-4 text-sm text-center font-bold {{ $r->rata_rata !== null ? ($r->rata_rata >= 80 ? 'text-green-600' : ($r->rata_rata >= 70 ? 'text-blue-600' : 'text-red-600')) : 'text-gray-400' }}">{{ $r->rata_rata ?? '-' }}</td>
                             <td class="px-6 py-4 text-center">
@@ -96,9 +97,9 @@
 
                             <td class="px-6 py-4">
                                 <div class="flex flex-col gap-1">
-                                    <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">{{ $r->kelasSiswa->first()?->catatan_wali ?? 'Belum ada catatan' }}</p>
-                                    @if(auth()->user()->isGuru() && auth()->user()->guru_id === $r->kelasSiswa->first()?->kelas?->wali_id)
-                                    <button @click="openModal('{{ $r->id }}', '{{ $r->nama_siswa }}', '{{ $r->kelasSiswa->first()?->catatan_wali }}')" class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 text-left">
+                                    <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">{{ $r->kelasSiswa?->first()?->catatan_wali ?? 'Belum ada catatan' }}</p>
+                                    @if(auth()->user()->isGuru() && auth()->user()->guru_id === $r->kelasSiswa?->first()?->kelas?->wali_id)
+                                    <button @click="openModal('{{ $r->id }}', '{{ $r->nama_siswa ?? 'Siswa' }}', '{{ $r->kelasSiswa?->first()?->catatan_wali ?? '' }}')" class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 text-left">
                                         <i class="fa-solid fa-pen-to-square"></i> Edit Catatan
                                     </button>
                                     @endif
@@ -112,8 +113,9 @@
                                 </div>
                             </td>
                         </tr>
+                        @endif
                         @empty
-                        <tr><td colspan="8" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data rapor</p></td></tr>
+                        <tr><td colspan="9" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data rapor</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>
