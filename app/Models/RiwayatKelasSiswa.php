@@ -5,23 +5,36 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class KelasSiswa extends Model
+class RiwayatKelasSiswa extends Model
 {
-    protected $table = 'kelas_siswa';
+    protected $table = 'riwayat_kelas_siswa';
 
     protected $fillable = [
-        'siswa_id',
-        'kelas_id',
+        'nis',
+        'kode_kelas',
         'semester_id',
         'catatan_wali',
+        'tanggal_masuk',
+        'tanggal_keluar',
+        'status',
     ];
+
+    protected $appends = ['kelas_id'];
+
+    /**
+     * Accessor for kelas_id, for Alpine.js compatibility.
+     */
+    public function getKelasIdAttribute()
+    {
+        return $this->kelas?->id;
+    }
 
     /**
      * Relasi ke siswa.
      */
     public function siswa(): BelongsTo
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(Siswa::class, 'nis', 'nis');
     }
 
     /**
@@ -29,7 +42,7 @@ class KelasSiswa extends Model
      */
     public function kelas(): BelongsTo
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode_kelas');
     }
 
     /**

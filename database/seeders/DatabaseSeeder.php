@@ -9,7 +9,7 @@ use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\TahunAjaran;
 use App\Models\Semester;
-use App\Models\KelasSiswa;
+use App\Models\RiwayatKelasSiswa;
 use App\Models\Pengampu;
 use App\Models\WaliKelas;
 use App\Models\Nilai;
@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 0. MEMBERSIHKAN DATABASE (CLEAN STATE)
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         
         $tables = [
             'user', 'guru', 'siswa', 'kelas', 'mapel', 
-            'tahun_ajaran', 'semester', 'kelas_siswa', 
+            'tahun_ajaran', 'semester', 'riwayat_kelas_siswa', 
             'pengampu', 'wali_kelas', 'nilai', 'komponen_nilai'
         ];
         
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             DB::table($table)->truncate();
         }
         
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         DB::beginTransaction();
         try {
@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
                     'email' => strtolower(explode(' ', $g->nama_guru)[0]) . '@sekolah.sch.id',
                     'password' => Hash::make($g->nip),
                     'role' => 'guru',
-                    'guru_id' => $g->id
+                    'guru_id' => $g->nip
                 ]);
             }
             User::create([
@@ -96,9 +96,9 @@ class DatabaseSeeder extends Seeder
             // 4. WALI KELAS
             foreach ($smtList as $yearSmt) {
                 foreach ($yearSmt as $smt) {
-                    WaliKelas::create(['kelas_id' => $k10->id, 'semester_id' => $smt->id, 'guru_id' => $guruBambang->id]);
-                    WaliKelas::create(['kelas_id' => $k11->id, 'semester_id' => $smt->id, 'guru_id' => $guruSri->id]);
-                    WaliKelas::create(['kelas_id' => $k12->id, 'semester_id' => $smt->id, 'guru_id' => $guruAhmad->id]);
+                    WaliKelas::create(['kelas_id' => $k10->id, 'semester_id' => $smt->id, 'guru_id' => $guruBambang->nip]);
+                    WaliKelas::create(['kelas_id' => $k11->id, 'semester_id' => $smt->id, 'guru_id' => $guruSri->nip]);
+                    WaliKelas::create(['kelas_id' => $k12->id, 'semester_id' => $smt->id, 'guru_id' => $guruAhmad->nip]);
                 }
             }
 
@@ -131,38 +131,38 @@ class DatabaseSeeder extends Seeder
             $allKelasSiswa = [];
             // 2022/2023
             foreach ($students[2022] as $s) {
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2022/2023']['Ganjil']->id, 'kelas_id' => $k10->id]);
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2022/2023']['Genap']->id, 'kelas_id' => $k10->id]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2022/2023']['Ganjil']->id, 'kode_kelas' => $k10->kode_kelas]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2022/2023']['Genap']->id, 'kode_kelas' => $k10->kode_kelas]);
             }
             // 2023/2024
             foreach ($students[2022] as $s) {
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2023/2024']['Ganjil']->id, 'kelas_id' => $k11->id]);
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2023/2024']['Genap']->id, 'kelas_id' => $k11->id]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2023/2024']['Ganjil']->id, 'kode_kelas' => $k11->kode_kelas]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2023/2024']['Genap']->id, 'kode_kelas' => $k11->kode_kelas]);
             }
             foreach ($students[2023] as $s) {
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2023/2024']['Ganjil']->id, 'kelas_id' => $k10->id]);
-                $allKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2023/2024']['Genap']->id, 'kelas_id' => $k10->id]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2023/2024']['Ganjil']->id, 'kode_kelas' => $k10->kode_kelas]);
+                $allKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtList['2023/2024']['Genap']->id, 'kode_kelas' => $k10->kode_kelas]);
             }
             // 2024/2025 (Semester Aktif)
             $smtAktif = $smtList['2024/2025']['Ganjil'];
             $activeKelasSiswa = [];
             foreach ($students[2022] as $s) {
-                $activeKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtAktif->id, 'kelas_id' => $k12->id]);
+                $activeKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtAktif->id, 'kode_kelas' => $k12->kode_kelas]);
             }
             foreach ($students[2023] as $s) {
-                $activeKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtAktif->id, 'kelas_id' => $k11->id]);
+                $activeKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtAktif->id, 'kode_kelas' => $k11->kode_kelas]);
             }
             foreach ($students[2024] as $s) {
-                $activeKelasSiswa[] = KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtAktif->id, 'kelas_id' => $k10->id]);
+                $activeKelasSiswa[] = RiwayatKelasSiswa::create(['nis' => $s->nis, 'semester_id' => $smtAktif->id, 'kode_kelas' => $k10->kode_kelas]);
             }
 
             // 8. PENGAMPU
             $pengampus = [];
-            $pengampus[] = Pengampu::create(['guru_id' => $guruAhmad->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruSri->id, 'mapel_id' => $bin->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruBambang->id, 'mapel_id' => $bin->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
-            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruAhmad->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruSri->nip, 'mapel_id' => $bin->kode_mapel, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruBambang->nip, 'mapel_id' => $bin->kode_mapel, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
 
             // 9. ISI KOMPONEN & NILAI SAMPEL
             foreach ($pengampus as $p) {
@@ -172,7 +172,7 @@ class DatabaseSeeder extends Seeder
 
                 // Cari semua siswa yang ada di kelas pengampu ini
                 $siswaDiKelas = array_filter($activeKelasSiswa, function($ks) use ($p) {
-                    return $ks->kelas_id == $p->kelas_id;
+                    return $ks->kode_kelas == $p->kelas->kode_kelas;
                 });
 
                 foreach ($siswaDiKelas as $ks) {

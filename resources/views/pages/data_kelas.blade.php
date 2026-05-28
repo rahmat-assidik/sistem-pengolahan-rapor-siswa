@@ -3,68 +3,216 @@
 @section('title', 'Data Kelas')
 
 @section('content')
-    <div class="max-w-full" x-data="{ openTambah: false }">
+    <div class="max-w-full" x-data="{ 
+        openTambah: false, 
+        openEdit: false, 
+        openLihat: false, 
+        selectedKelas: {
+            tahun_ajaran_id: '',
+            semester_id: ''
+        },
+        editKelas(kelas) {
+            this.selectedKelas = { ...kelas };
+            this.openEdit = true;
+        },
+        lihatKelas(kelas) {
+            this.selectedKelas = { ...kelas };
+            this.openLihat = true;
+        },
+        konfirmasiHapus(id, nama) {
+            Swal.fire({
+                title: 'Hapus Data Kelas?',
+                text: 'Apakah Anda yakin ingin menghapus ' + nama + '?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#111827',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/data_kelas/' + id;
+                    
+                    const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+                    
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken;
+                    
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    }">
+        {{-- Modal Tambah Kelas --}}
         <x-modal name="openTambah" title="Tambah Kelas Baru">
             <form action="{{ route('data_kelas.store') }}" method="POST">
                 @csrf
-                <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="kode_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
-                        <input type="text" id="kode_kelas" name="kode_kelas" required placeholder="Contoh: X-MIPA-1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
+                        <input type="text" name="kode_kelas" required placeholder="Contoh: 10-A" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
-                        <label for="nama_kelas" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
-                        <input type="text" id="nama_kelas" name="nama_kelas" required placeholder="Contoh: X MIPA 1" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
+                        <input type="text" name="nama_kelas" required placeholder="Contoh: Kelas 10-A" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
+                        <input type="text" name="tingkat" required placeholder="Contoh: 1 atau 10" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                     <div>
-                        <label for="tingkat" class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                        <select id="tingkat" name="tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-gray-50">
-                            <option value="X">X</option>
-                            <option value="XI">XI</option>
-                            <option value="XII">XII</option>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
+                        <input type="text" name="jurusan" placeholder="Contoh: IPA, IPS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun Ajaran</label>
+                        <select name="tahun_ajaran_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="">Pilih Tahun Ajaran</option>
+                            @foreach($tahunAjaranList as $ta)
+                                <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
-                        <label for="wali_id" class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
-                        <select id="wali_id" name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors cursor-pointer bg-gray-50">
-                            <option value="">Pilih Wali Kelas (Opsional)</option>
-                            @foreach($guruList as $guru)
-                                <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
-                            @endforeach
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
+                        <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
-                        <i class="fa-solid fa-check"></i><span>Simpan Kelas</span>
+                        <i class="fa-solid fa-save"></i><span>Simpan Data</span>
                     </button>
                     <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
 
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        {{-- Modal Edit Kelas --}}
+        <x-modal name="openEdit" title="Edit Data Kelas">
+            <form :action="`/data_kelas/${selectedKelas.id}`" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
+                        <input type="text" name="kode_kelas" x-model="selectedKelas.kode_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Kelas</label>
+                        <input type="text" name="nama_kelas" x-model="selectedKelas.nama_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
+                        <input type="text" name="tingkat" x-model="selectedKelas.tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
+                        <input type="text" name="jurusan" x-model="selectedKelas.jurusan" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun Ajaran</label>
+                        <select name="tahun_ajaran_id" x-model="selectedKelas.tahun_ajaran_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="">Pilih Tahun Ajaran</option>
+                            @foreach($tahunAjaranList as $ta)
+                                <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
+                        <select name="status" x-model="selectedKelas.status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 mt-8">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+                        <i class="fa-solid fa-save"></i><span>Simpan Perubahan</span>
+                    </button>
+                    <button type="button" @click="openEdit = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- Modal Lihat Kelas --}}
+        <x-modal name="openLihat" title="Detail Informasi Kelas">
+            <div class="space-y-4">
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Kode Kelas</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.kode_kelas"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Nama Kelas</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.nama_kelas"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Tingkat</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.tingkat"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Jurusan</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.jurusan || '-'"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Status Saat Ini</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2">
+                        <span class="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider" 
+                              :class="selectedKelas.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                              x-text="selectedKelas.status"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="mt-8">
+                <button type="button" @click="openLihat = false" class="w-full px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded hover:bg-gray-800 transition-colors">Tutup</button>
+            </div>
+        </x-modal>
+
+        <div class="bg-white rounded border border-gray-200 overflow-hidden">
+            {{-- Toolbar Section --}}
             <x-search-toolbar 
-                placeholder="Cari kelas..." 
+                placeholder="Cari kelas berdasarkan Kode atau Nama..." 
                 :filters="[
-                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
-                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
-                    ['name' => 'tingkat', 'label' => 'Filter Tingkat', 'options' => ['X' => 'X', 'XI' => 'XI', 'XII' => 'XII']]
+                    ['name' => 'status', 'label' => 'Status Kelas', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
                 ]"
                 :resetUrl="route('data_kelas')"
-                tambahClick="openTambah = true" 
+                tambahClick="openTambah = true"
             />
+
+            {{-- Table Section --}}
             <div class="overflow-x-auto">
-                <table class="w-full border-collapse">
+                <table class="w-full">
                     <thead class="bg-gray-900 border-b border-gray-800">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tingkat</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Periode</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Wali Kelas</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Total Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jurusan</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -72,23 +220,33 @@
                         @forelse($kelasData as $i => $k)
                         <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $kelasData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-400 font-bold tracking-widest">{{ $k->kode_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-bold tracking-tight">{{ $k->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $k->tingkat }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">
-                                {{ $displaySemester?->tahunAjaran?->nama }} ({{ $displaySemester?->semester ?? '-' }})
+                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $k->kode_kelas }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $k->nama_kelas }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $k->tingkat }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $k->jurusan ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm"><x-badge :type="$k->status === 'Aktif' ? 'success' : 'danger'">{{ $k->status }}</x-badge></td>
+                            <td class="px-6 py-4 text-center">
+                                <x-action-buttons 
+                                    :lihatClick="'lihatKelas(' . json_encode($k) . ')'"
+                                    :editClick="'editKelas(' . json_encode($k) . ')'"
+                                    :hapusClick="'konfirmasiHapus(' . $k->id . ', \'' . addslashes($k->nama_kelas) . '\')'"
+                                />
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $k->wali->nama_guru ?? '-' }}</td>
-                            <td class="px-6 py-4 text-center text-sm font-bold text-gray-700">{{ $k->kelas_siswa_count }} Siswa</td>
-                            <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @empty
-                        <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500"><p class="text-sm font-medium">Tidak ada data kelas</p></td></tr>
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <p class="text-sm font-medium">Tidak ada data kelas</p>
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 bg-gray-50/30 border-t border-gray-100"><x-pagination :paginator="$kelasData" /></div>
+
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100">
+                <x-pagination :paginator="$kelasData" />
+            </div>
         </div>
     </div>
 @endsection

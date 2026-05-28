@@ -6,7 +6,7 @@ use App\Models\Nilai;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Semester;
-use App\Models\KelasSiswa;
+use App\Models\RiwayatKelasSiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,24 +16,24 @@ class RekapNilaiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        // Menggunakan Query Builder dari KelasSiswa agar semua siswa muncul meskipun belum ada nilai
-        $query = KelasSiswa::query()
+        // Menggunakan Query Builder dari RiwayatKelasSiswa agar semua siswa muncul meskipun belum ada nilai
+        $query = RiwayatKelasSiswa::query()
             ->select(
-                'kelas_siswa.id as kelas_siswa_id',
+                'riwayat_kelas_siswa.id as kelas_siswa_id',
                 'pengampu.id as pengampu_id',
-                'kelas_siswa.siswa_id',
+                'riwayat_kelas_siswa.nis as siswa_id',
                 'pengampu.kkm',
                 'mapel.nama_mapel',
                 'kelas.nama_kelas'
             )
+            ->join('kelas', 'riwayat_kelas_siswa.kode_kelas', '=', 'kelas.kode_kelas')
             ->join('pengampu', function($join) {
-                $join->on('kelas_siswa.kelas_id', '=', 'pengampu.kelas_id')
-                     ->on('kelas_siswa.semester_id', '=', 'pengampu.semester_id');
+                $join->on('kelas.id', '=', 'pengampu.kelas_id')
+                     ->on('riwayat_kelas_siswa.semester_id', '=', 'pengampu.semester_id');
             })
-            ->join('mapel', 'pengampu.mapel_id', '=', 'mapel.id')
-            ->join('kelas', 'pengampu.kelas_id', '=', 'kelas.id')
+            ->join('mapel', 'pengampu.mapel_id', '=', 'mapel.kode_mapel')
             ->leftJoin('nilai', function($join) {
-                $join->on('kelas_siswa.id', '=', 'nilai.kelas_siswa_id')
+                $join->on('riwayat_kelas_siswa.id', '=', 'nilai.kelas_siswa_id')
                      ->on('pengampu.id', '=', 'nilai.pengampu_id');
             })
             ->leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
@@ -74,11 +74,11 @@ class RekapNilaiController extends Controller
                     MAX(CASE WHEN nilai.jenis_nilai = 's_sosial' THEN nilai.skor END) IS NOT NULL
                 THEN 1 ELSE 0 END as is_lengkap
             ")
-            ->groupBy('kelas_siswa.id', 'pengampu.id', 'kelas_siswa.siswa_id', 'pengampu.kkm', 'mapel.nama_mapel', 'kelas.nama_kelas');
+            ->groupBy('riwayat_kelas_siswa.id', 'pengampu.id', 'riwayat_kelas_siswa.nis', 'pengampu.kkm', 'mapel.nama_mapel', 'kelas.nama_kelas');
 
         // Filter berdasarkan Semester Aktif
         if ($semesterAktif) {
-            $query->where('kelas_siswa.semester_id', $semesterAktif->id);
+            $query->where('riwayat_kelas_siswa.semester_id', $semesterAktif->id);
         }
 
         // Filter Pencarian & Dropdown

@@ -148,7 +148,7 @@ sistem-pengolahan-rapor-siswa/
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=sistem_rapor
+   DB_DATABASE=db_raporsiswa
    DB_USERNAME=root
    DB_PASSWORD=
    ```

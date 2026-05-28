@@ -10,6 +10,10 @@ class Guru extends Model
 {
     protected $table = 'guru';
 
+    protected $primaryKey = 'nip';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'nip',
         'nama_guru',
@@ -23,7 +27,7 @@ class Guru extends Model
      */
     public function user(): HasOne
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'guru_id', 'nip');
     }
 
     /**
@@ -31,6 +35,6 @@ class Guru extends Model
      */
     public function pengampu(): HasMany
     {
-        return $this->hasMany(Pengampu::class);
+        return $this->hasMany(Pengampu::class, 'guru_id', 'nip');
     }
 }

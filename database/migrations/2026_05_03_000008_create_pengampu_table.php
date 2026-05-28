@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('pengampu', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
-            $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
+            $table->string('guru_id', 20);
+            $table->foreign('guru_id')->references('nip')->on('guru')->onDelete('cascade');
+            $table->string('mapel_id', 20);
+            $table->foreign('mapel_id')->references('kode_mapel')->on('mapel')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('semester_id')->constrained('semester')->onDelete('cascade');
             $table->integer('kkm')->default(75);
