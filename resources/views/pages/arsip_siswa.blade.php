@@ -1,4 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Data Mapel')
+@section('title', 'Arsip Siswa')
+
 @section('content')
