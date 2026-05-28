@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])->name('data_siswa.update');
         Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])->name('data_siswa.destroy');
 
-        Route::get('/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
+        Route::get('/data_guru', [GuruController::class, 'index'])->name('data_guru');
         Route::post('/data_guru', [GuruController::class, 'store'])->name('data_guru.store');
         Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
         Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
