@@ -6,25 +6,25 @@
 <p align="center"><strong>Student Report Card Management System</strong></p>
 
 <p align="center">
-  <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP"></a>
-  <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel"></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"></a>
-  <a href="https://alpinejs.dev/"><img src="https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=flat-square&logo=alpinedotjs&logoColor=white" alt="Alpine.js"></a>
-  <a href="https://flowbite.com/"><img src="https://img.shields.io/badge/Flowbite-4.0-1A56DB?style=flat-square&logo=flowbite&logoColor=white" alt="Flowbite"></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
-  <a href="https://www.chartjs.org/"><img src="https://img.shields.io/badge/Chart.js-4-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" alt="Chart.js"></a>
-  <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL"></a>
+  <img src="https://img.shields.io/badge/language-PHP-777BB4" alt="PHP" />
+  <img src="https://img.shields.io/badge/framework-Laravel-FF2D20" alt="Laravel" />
+  <img src="https://img.shields.io/badge/css-Tailwind-06B6D4" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/js-Alpine.js-8BC0D0" alt="Alpine.js" />
+  <img src="https://img.shields.io/badge/ui-Flowbite-1A56DB" alt="Flowbite" />
+  <img src="https://img.shields.io/badge/build-Vite-646CFF" alt="Vite" />
+  <img src="https://img.shields.io/badge/chart-Chart.js-FF6384" alt="Chart.js" />
+  <img src="https://img.shields.io/badge/database-MySQL-4479A1" alt="MySQL" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square&color=green" alt="Last Commit"></a>
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square" alt="Repo Size"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License"></a>
+  <img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green" alt="Last Commit" />
+  <img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa" alt="Repo Size" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
 </p>
 
 ---
 
-## 📖 About
+## About
 
 **SmartRapor** is a web-based student report card management system designed for schools to efficiently manage academic data. Built with **Laravel 12** and a modern flat UI design, it provides a centralized platform for administrators to manage students, teachers, classes, subjects, grading, and report card generation.
 
@@ -32,36 +32,36 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication
+### Authentication
 - Secure login system with password visibility toggle
 - Forgot password (password recovery) page
 - Change password functionality
 
-### 📊 Dashboard
+### Dashboard
 - Overview statistics cards (Total Students, Teachers, Classes, Subjects)
 - **Grade Trend Chart** — Line chart tracking average student grades per semester
 - **Grade Distribution Chart** — Bar chart showing grade distribution (A–E)
 - **Grade Completeness Chart** — Doughnut chart visualizing input progress
 - **Subject Grades by Class** — Filterable bar chart by department & subject
 
-### 📁 Master Data Management
+### Master Data Management
 - **Student Data** (`Data Siswa`) — Full CRUD with search and pagination
 - **Teacher Data** (`Data Guru`) — Manage teacher records with NIP and contact info
 - **Class Data** (`Data Kelas`) — Manage classes with department and grade level
 - **Subject Data** (`Data Mapel`) — Manage subjects with curriculum mapping
 
-### 🎓 Academic Module
+### Academic Module
 - **Teaching Assignment** (`Pengampu`) — Assign teachers to subjects and classes
 - **Grade Input** (`Input Nilai`) — Enter assignment, midterm (UTS), and final exam (UAS) scores
 - **Grade Recap** (`Rekap Nilai`) — View and filter consolidated student grades with pass/fail status
 - **Attendance** (`Presensi`) — Track student attendance records
 
-### 📄 Report Card
+### Report Card
 - **Student Report Card** (`Rapor Siswa`) — Generate and manage student report cards
 
-### 🧩 Reusable UI Components
+### Reusable UI Components
 - `<x-stat-card>` — Statistics display card
 - `<x-chart-card>` — Chart container with title and icon
 - `<x-search-toolbar>` — Search bar with filter integration
@@ -73,7 +73,7 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer        | Technology                                                     |
 |--------------|----------------------------------------------------------------|
@@ -87,7 +87,7 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 sistem-pengolahan-rapor-siswa/
@@ -111,7 +111,7 @@ sistem-pengolahan-rapor-siswa/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -182,7 +182,7 @@ sistem-pengolahan-rapor-siswa/
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 > _Screenshots coming soon — contributions welcome!_
 
@@ -195,7 +195,7 @@ Add screenshots here:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -207,12 +207,12 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
 <p align="center">
-  Built with ❤️ using <a href="https://laravel.com">Laravel</a> &amp; <a href="https://tailwindcss.com">Tailwind CSS</a>
+  Built with <a href="https://laravel.com">Laravel</a> &amp; <a href="https://tailwindcss.com">Tailwind CSS</a>
 </p>
