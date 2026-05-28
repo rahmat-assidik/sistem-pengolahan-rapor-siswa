@@ -1,4 +1,11 @@
 <?php
+
+namespace App\Http\Controllers;
+
+use App\Models\TahunAjaran;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;  // ← ini yang kurang
+
 class TahunAjaranController extends Controller
 {
     /**
@@ -25,24 +32,19 @@ class TahunAjaranController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            // Jika tahun ajaran baru aktif,
-            // nonaktifkan semua tahun ajaran lain
             if ($request->is_aktif) {
-                TahunAjaran::query()->update([
-                    'is_aktif' => false
-                ]);
+                TahunAjaran::query()->update(['is_aktif' => false]);
             }
 
             TahunAjaran::create([
-                'nama' => $request->nama,
-                'tanggal_mulai' => $request->tanggal_mulai,
+                'nama'            => $request->nama,
+                'tanggal_mulai'   => $request->tanggal_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
-                'is_aktif' => $request->is_aktif ?? false,
+                'is_aktif'        => $request->is_aktif ?? false,
             ]);
         });
 
-        return redirect()->back()
-            ->with('success', 'Tahun ajaran berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Tahun ajaran berhasil ditambahkan.');
     }
 
     /**
@@ -53,30 +55,27 @@ class TahunAjaranController extends Controller
         $tahunAjaran = TahunAjaran::findOrFail($id);
 
         $request->validate([
-            'nama' => 'required|unique:tahun_ajaran,nama,' . $id,
-            'tanggal_mulai' => 'required|date',
+            'nama'            => 'required|unique:tahun_ajaran,nama,' . $id,
+            'tanggal_mulai'   => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
-            'is_aktif' => 'nullable|boolean',
+            'is_aktif'        => 'nullable|boolean',
         ]);
 
         DB::transaction(function () use ($request, $tahunAjaran) {
 
             if ($request->is_aktif) {
-                TahunAjaran::query()->update([
-                    'is_aktif' => false
-                ]);
+                TahunAjaran::query()->update(['is_aktif' => false]);
             }
 
             $tahunAjaran->update([
-                'nama' => $request->nama,
-                'tanggal_mulai' => $request->tanggal_mulai,
+                'nama'            => $request->nama,
+                'tanggal_mulai'   => $request->tanggal_mulai,
                 'tanggal_selesai' => $request->tanggal_selesai,
-                'is_aktif' => $request->is_aktif ?? false,
+                'is_aktif'        => $request->is_aktif ?? false,
             ]);
         });
 
-        return redirect()->back()
-            ->with('success', 'Tahun ajaran berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Tahun ajaran berhasil diperbarui.');
     }
 
     /**
@@ -87,15 +86,10 @@ class TahunAjaranController extends Controller
         $tahunAjaran = TahunAjaran::findOrFail($id);
 
         DB::transaction(function () use ($tahunAjaran) {
-
-            // Hapus semester terkait
             $tahunAjaran->semester()->delete();
-
-            // Hapus tahun ajaran
             $tahunAjaran->delete();
         });
 
-        return redirect()->back()
-            ->with('success', 'Tahun ajaran berhasil dihapus.');
+        return redirect()->back()->with('success', 'Tahun ajaran berhasil dihapus.');
     }
 }

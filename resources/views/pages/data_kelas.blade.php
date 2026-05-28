@@ -7,10 +7,7 @@
         openTambah: false, 
         openEdit: false, 
         openLihat: false, 
-        selectedKelas: {
-            tahun_ajaran_id: '',
-            semester_id: ''
-        },
+        selectedKelas: {},
         editKelas(kelas) {
             this.selectedKelas = { ...kelas };
             this.openEdit = true;
@@ -34,19 +31,19 @@
                     const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = '/data_kelas/' + id;
-                    
+
                     const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-                    
+
                     const csrfInput = document.createElement('input');
                     csrfInput.type = 'hidden';
                     csrfInput.name = '_token';
                     csrfInput.value = csrfToken;
-                    
+
                     const methodInput = document.createElement('input');
                     methodInput.type = 'hidden';
                     methodInput.name = '_method';
                     methodInput.value = 'DELETE';
-                    
+
                     form.appendChild(csrfInput);
                     form.appendChild(methodInput);
                     document.body.appendChild(form);
@@ -69,33 +66,18 @@
                         <input type="text" name="nama_kelas" required placeholder="Contoh: Kelas 10-A" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                        <input type="text" name="tingkat" required placeholder="Contoh: 1 atau 10" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
-                        <input type="text" name="jurusan" placeholder="Contoh: IPA, IPS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
+                    <input type="text" name="tingkat" required placeholder="Contoh: 1 atau 10" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun Ajaran</label>
-                        <select name="tahun_ajaran_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">Pilih Tahun Ajaran</option>
-                            @foreach($tahunAjaranList as $ta)
-                                <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                        <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
-                        </select>
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
+                    <select name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                        <option value="">Pilih Wali Kelas</option>
+                        @foreach($guruList as $guru)
+                            <option value="{{ $guru->nip }}">{{ $guru->nama_guru }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
@@ -121,33 +103,21 @@
                         <input type="text" name="nama_kelas" x-model="selectedKelas.nama_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                        <input type="text" name="tingkat" x-model="selectedKelas.tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jurusan</label>
-                        <input type="text" name="jurusan" x-model="selectedKelas.jurusan" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
+                    <input type="text" name="tingkat" x-model="selectedKelas.tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tahun Ajaran</label>
-                        <select name="tahun_ajaran_id" x-model="selectedKelas.tahun_ajaran_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">Pilih Tahun Ajaran</option>
-                            @foreach($tahunAjaranList as $ta)
-                                <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                        <select name="status" x-model="selectedKelas.status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
-                        </select>
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Wali Kelas</label>
+                    <select name="wali_id" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                        <option value="">Pilih Wali Kelas</option>
+                        @foreach($guruList as $guru)
+                            <option value="{{ $guru->nip }}"
+                                x-bind:selected="selectedKelas.wali_id == '{{ $guru->nip }}'">
+                                {{ $guru->nama_guru }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
@@ -174,16 +144,12 @@
                     <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.tingkat"></span>
                 </div>
                 <div class="grid grid-cols-3 py-2 border-b border-gray-50">
-                    <span class="text-sm font-semibold text-gray-500">Jurusan</span>
-                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.jurusan || '-'"></span>
+                    <span class="text-sm font-semibold text-gray-500">Wali Kelas</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedKelas.wali ? selectedKelas.wali.nama_guru : '-'"></span>
                 </div>
                 <div class="grid grid-cols-3 py-2 border-b border-gray-50">
-                    <span class="text-sm font-semibold text-gray-500">Status Saat Ini</span>
-                    <span class="text-sm font-bold text-gray-900 col-span-2">
-                        <span class="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider" 
-                              :class="selectedKelas.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
-                              x-text="selectedKelas.status"></span>
-                    </span>
+                    <span class="text-sm font-semibold text-gray-500">Jumlah Siswa</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="(selectedKelas.kelas_siswa_count ?? 0) + ' siswa'"></span>
                 </div>
             </div>
             <div class="mt-8">
@@ -196,7 +162,7 @@
             <x-search-toolbar 
                 placeholder="Cari kelas berdasarkan Kode atau Nama..." 
                 :filters="[
-                    ['name' => 'status', 'label' => 'Status Kelas', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
+                    ['name' => 'tingkat', 'label' => 'Tingkat', 'options' => ['10' => '10', '11' => '11', '12' => '12']]
                 ]"
                 :resetUrl="route('data_kelas')"
                 tambahClick="openTambah = true"
@@ -211,8 +177,8 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tingkat</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jurusan</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Wali Kelas</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jumlah Siswa</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -223,8 +189,8 @@
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $k->kode_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $k->nama_kelas }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $k->tingkat }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $k->jurusan ?? '-' }}</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$k->status === 'Aktif' ? 'success' : 'danger'">{{ $k->status }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $k->wali?->nama_guru ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $k->kelas_siswa_count ?? 0 }} siswa</td>
                             <td class="px-6 py-4 text-center">
                                 <x-action-buttons 
                                     :lihatClick="'lihatKelas(' . json_encode($k) . ')'"
