@@ -24,7 +24,7 @@
 
 ---
 
-## 📖 About
+## About
 
 **SmartRapor** is a web-based student report card management system designed for schools to efficiently manage academic data. Built with **Laravel 12** and a modern flat UI design, it provides a centralized platform for administrators to manage students, teachers, classes, subjects, grading, and report card generation.
 
@@ -32,36 +32,36 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication
+### Authentication
 - Secure login system with password visibility toggle
 - Forgot password (password recovery) page
 - Change password functionality
 
-### 📊 Dashboard
+### Dashboard
 - Overview statistics cards (Total Students, Teachers, Classes, Subjects)
 - **Grade Trend Chart** — Line chart tracking average student grades per semester
 - **Grade Distribution Chart** — Bar chart showing grade distribution (A–E)
 - **Grade Completeness Chart** — Doughnut chart visualizing input progress
 - **Subject Grades by Class** — Filterable bar chart by department & subject
 
-### 📁 Master Data Management
+### Master Data Management
 - **Student Data** (`Data Siswa`) — Full CRUD with search and pagination
 - **Teacher Data** (`Data Guru`) — Manage teacher records with NIP and contact info
 - **Class Data** (`Data Kelas`) — Manage classes with department and grade level
 - **Subject Data** (`Data Mapel`) — Manage subjects with curriculum mapping
 
-### 🎓 Academic Module
+### Academic Module
 - **Teaching Assignment** (`Pengampu`) — Assign teachers to subjects and classes
 - **Grade Input** (`Input Nilai`) — Enter assignment, midterm (UTS), and final exam (UAS) scores
 - **Grade Recap** (`Rekap Nilai`) — View and filter consolidated student grades with pass/fail status
 - **Attendance** (`Presensi`) — Track student attendance records
 
-### 📄 Report Card
+### Report Card
 - **Student Report Card** (`Rapor Siswa`) — Generate and manage student report cards
 
-### 🧩 Reusable UI Components
+### Reusable UI Components
 - `<x-stat-card>` — Statistics display card
 - `<x-chart-card>` — Chart container with title and icon
 - `<x-search-toolbar>` — Search bar with filter integration
@@ -73,7 +73,7 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer        | Technology                                                     |
 |--------------|----------------------------------------------------------------|
@@ -87,7 +87,7 @@ The application features a clean, component-based architecture using **Blade com
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 sistem-pengolahan-rapor-siswa/
@@ -111,7 +111,7 @@ sistem-pengolahan-rapor-siswa/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -182,7 +182,7 @@ sistem-pengolahan-rapor-siswa/
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 > _Screenshots coming soon — contributions welcome!_
 
@@ -195,7 +195,7 @@ Add screenshots here:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -207,12 +207,12 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
 <p align="center">
-  Built with ❤️ using <a href="https://laravel.com">Laravel</a> &amp; <a href="https://tailwindcss.com">Tailwind CSS</a>
+  Built with <a href="https://laravel.com">Laravel</a> &amp; <a href="https://tailwindcss.com">Tailwind CSS</a>
 </p>
