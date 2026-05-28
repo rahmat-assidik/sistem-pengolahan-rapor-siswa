@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('kode_kelas');
             $table->foreign('kode_kelas')->references('kode_kelas')->on('kelas')->onDelete('cascade');
             $table->foreignId('semester_id')->constrained('semester')->onDelete('cascade');
-            $table->date('tanggal_masuk')->nullable();
-            $table->date('tanggal_keluar')->nullable();
+
             $table->enum('status', ['Aktif', 'Tidak Aktif'])->default('Aktif');
             $table->text('catatan_wali')->nullable();
             $table->timestamps();

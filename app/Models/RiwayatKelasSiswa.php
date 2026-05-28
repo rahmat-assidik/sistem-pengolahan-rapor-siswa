@@ -14,8 +14,7 @@ class RiwayatKelasSiswa extends Model
         'kode_kelas',
         'semester_id',
         'catatan_wali',
-        'tanggal_masuk',
-        'tanggal_keluar',
+
         'status',
     ];
 
