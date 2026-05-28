@@ -10,6 +10,10 @@ class Siswa extends Model
 {
     protected $table = 'siswa';
 
+    protected $primaryKey = 'nis';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'nis',
         'angkatan',
@@ -25,11 +29,11 @@ class Siswa extends Model
     }
 
     /**
-     * Relasi ke penempatan kelas (pivot kelas_siswa).
+     * Relasi ke penempatan kelas (pivot riwayat_kelas_siswa).
      */
     public function kelasSiswa(): HasMany
     {
-        return $this->hasMany(KelasSiswa::class);
+        return $this->hasMany(RiwayatKelasSiswa::class, 'nis', 'nis');
     }
 
     /**
@@ -37,7 +41,7 @@ class Siswa extends Model
      */
     public function kelas(): BelongsToMany
     {
-        return $this->belongsToMany(Kelas::class, 'kelas_siswa')
+        return $this->belongsToMany(Kelas::class, 'riwayat_kelas_siswa', 'nis', 'kode_kelas', 'nis', 'kode_kelas')
                     ->withPivot('semester_id')
                     ->withTimestamps();
     }

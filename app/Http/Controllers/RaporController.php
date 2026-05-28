@@ -7,7 +7,7 @@ use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\Semester;
 use App\Models\WaliKelas;
-use App\Models\KelasSiswa;
+use App\Models\RiwayatKelasSiswa;
 use Illuminate\Http\Request;
 
 class RaporController extends Controller
@@ -40,9 +40,9 @@ class RaporController extends Controller
         }
 
         if ($request->filled('kelas_id')) {
-            $kelasId = $request->kelas_id;
-            $query->whereHas('kelasSiswa', function ($q) use ($kelasId, $selectedSemesterId) {
-                $q->where('kelas_id', $kelasId);
+            $kelas = Kelas::find($request->kelas_id);
+            $query->whereHas('kelasSiswa', function ($q) use ($kelas, $selectedSemesterId) {
+                $q->where('kode_kelas', $kelas?->kode_kelas);
                 if ($selectedSemesterId) {
                     $q->where('semester_id', $selectedSemesterId);
                 }
@@ -55,12 +55,14 @@ class RaporController extends Controller
             if ($user->isWaliKelas()) {
                 $semesterAktif = Semester::where('is_aktif', true)->first();
 
-                // 1. ID Siswa yang SAAT INI (Semester Aktif) dibina oleh guru ini
-                $activeSiswaIds = KelasSiswa::whereIn('kelas_id', function($q) use ($user, $semesterAktif) {
-                    $q->select('kelas_id')->from('wali_kelas')
-                      ->where('guru_id', $user->guru_id)
-                      ->where('semester_id', $semesterAktif?->id);
-                })->pluck('siswa_id')->toArray();
+                // 1. NIS Siswa yang SAAT INI (Semester Aktif) dibina oleh guru ini
+                $activeSiswaIds = RiwayatKelasSiswa::whereIn('kode_kelas', function($q) use ($user, $semesterAktif) {
+                    $q->select('kelas.kode_kelas')
+                      ->from('kelas')
+                      ->join('wali_kelas', 'kelas.id', '=', 'wali_kelas.kelas_id')
+                      ->where('wali_kelas.guru_id', $user->guru_id)
+                      ->where('wali_kelas.semester_id', $semesterAktif?->id);
+                })->pluck('nis')->toArray();
 
                 // 2. ID Kelas yang dipimpin guru ini PADA SEMESTER YANG DIPILIH
                 $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)
@@ -71,11 +73,13 @@ class RaporController extends Controller
                 $query->where(function($q) use ($activeSiswaIds, $managedKelasIds, $selectedSemesterId) {
                     // Akses Kelas: Lihat semua siswa di kelas yang dipimpin pada semester terpilih
                     $q->whereHas('kelasSiswa', function ($sq) use ($managedKelasIds, $selectedSemesterId) {
-                        $sq->whereIn('kelas_id', $managedKelasIds)
-                           ->where('semester_id', $selectedSemesterId);
+                        $sq->whereIn('kode_kelas', function($subQuery) use ($managedKelasIds) {
+                            $subQuery->select('kode_kelas')->from('kelas')->whereIn('id', $managedKelasIds);
+                        })
+                        ->where('semester_id', $selectedSemesterId);
                     })
                     // Akses Rekam Jejak: Lihat histori siswa binaan sekarang di semester mana pun
-                    ->orWhereIn('id', $activeSiswaIds);
+                    ->orWhereIn('nis', $activeSiswaIds);
                 });
             } else {
                 $query->whereRaw('1 = 0');
@@ -157,7 +161,7 @@ class RaporController extends Controller
     public function saveCatatan(Request $request)
     {
         $request->validate([
-            'siswa_id' => 'required|exists:siswa,id',
+            'siswa_id' => 'required|exists:siswa,nis',
             'catatan' => 'nullable|string'
         ]);
 
@@ -166,7 +170,7 @@ class RaporController extends Controller
             return redirect()->back()->with('error', 'Semester aktif tidak ditemukan.');
         }
 
-        $kelasSiswa = KelasSiswa::where('siswa_id', $request->siswa_id)
+        $kelasSiswa = RiwayatKelasSiswa::where('nis', $request->siswa_id)
             ->where('semester_id', $semesterAktif->id)
             ->first();
 
@@ -176,8 +180,9 @@ class RaporController extends Controller
 
         // Otorisasi Wali Kelas via Tabel WaliKelas
         $user = auth()->user();
+        $kelas = Kelas::where('kode_kelas', $kelasSiswa->kode_kelas)->first();
         $isAuthorized = WaliKelas::where('guru_id', $user->guru_id)
-            ->where('kelas_id', $kelasSiswa->kelas_id)
+            ->where('kelas_id', $kelas?->id)
             ->where('semester_id', $semesterAktif->id)
             ->exists();
 

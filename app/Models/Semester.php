@@ -36,7 +36,7 @@ class Semester extends Model
      */
     public function kelasSiswa(): HasMany
     {
-        return $this->hasMany(KelasSiswa::class);
+        return $this->hasMany(RiwayatKelasSiswa::class);
     }
 
     /**

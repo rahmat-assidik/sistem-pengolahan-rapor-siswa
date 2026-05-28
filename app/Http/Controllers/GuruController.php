@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GuruController extends Controller
 {
@@ -61,4 +62,25 @@ class GuruController extends Controller
 
         return redirect()->back()->with('success', 'Data guru berhasil ditambahkan dan akun berhasil disiapkan.');
     }
+public function destroy($id)
+{
+    $guru = Guru::findOrFail($id);
+
+    \Illuminate\Support\Facades\DB::transaction(function () use ($guru) {
+
+        // Hapus semua data pengampu
+        $guru->pengampu()->delete();
+
+        // Hapus akun user jika ada
+        if ($guru->user) {
+            $guru->user()->delete();
+        }
+
+        // Hapus data guru
+        $guru->delete();
+    });
+
+    return redirect()->back()
+        ->with('success', 'Data guru berhasil dihapus.');
+}
 }

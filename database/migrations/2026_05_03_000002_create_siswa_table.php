@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('siswa', function (Blueprint $table) {
-            $table->id();
-            $table->string('nis')->unique();
+            $table->string('nis', 20);
+            $table->primary('nis');
             $table->string('nama_siswa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->text('alamat')->nullable();

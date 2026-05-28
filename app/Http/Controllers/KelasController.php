@@ -89,4 +89,33 @@ class KelasController extends Controller
 
         return redirect()->back()->with('success', 'Data kelas baru berhasil disimpan beserta penugasan wali kelas semester ini.');
     }
+    // Delate method
+    public function destroy($id)
+{
+    $kelas = Kelas::findOrFail($id);
+
+    \Illuminate\Support\Facades\DB::transaction(function () use ($kelas) {
+
+        // Ambil semua id kelas_siswa
+        $kelasSiswaIds = $kelas->kelasSiswa()->pluck('id');
+
+        // Hapus nilai yang terkait kelas_siswa
+        \App\Models\Nilai::whereIn('kelas_siswa_id', $kelasSiswaIds)->delete();
+
+        // Hapus data kelas_siswa
+        $kelas->kelasSiswa()->delete();
+
+        // Hapus wali kelas
+        $kelas->waliKelas()->delete();
+
+        // Hapus pengampu
+        $kelas->pengampu()->delete();
+
+        // Hapus kelas
+        $kelas->delete();
+    });
+
+    return redirect()->back()
+        ->with('success', 'Data kelas berhasil dihapus.');
+}
 }

@@ -92,4 +92,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/komponen_nilai/{id}', [InputNilaiController::class, 'destroyKomponen'])->name('komponen_nilai.destroy');
 
     });
+    // tahun ajaran management
+    Route::resource('tahun-ajaran', TahunAjaranController::class);
 });

@@ -13,12 +13,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('nilai', function (Blueprint $table) {
-            // Tambahkan index biasa dulu agar FK tidak error saat unique index dihapus
-            $table->index('kelas_siswa_id', 'nilai_kelas_siswa_id_idx');
+            // Nonaktifkan foreign key check sementara
+            Schema::disableForeignKeyConstraints();
             
-            // Hapus index unik lama
-            // Di MySQL, jika index unik digunakan untuk FK, kita harus punya index pengganti
-            $table->dropUnique('uq_nilai_siswa');
+            // Hapus index unik lama jika ada
+            try {
+                DB::statement('ALTER TABLE nilai DROP INDEX uq_nilai_siswa');
+            } catch (\Exception $e) {
+                // Index sudah dihapus
+            }
+            
+            // Aktifkan kembali foreign key check
+            Schema::enableForeignKeyConstraints();
             
             // Tambahkan index unik baru yang mencakup komponen_nilai_id
             $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai', 'komponen_nilai_id'], 'uq_nilai_siswa_new');
@@ -31,9 +37,21 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('nilai', function (Blueprint $table) {
-            $table->dropUnique('uq_nilai_siswa_new');
-            $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
-            $table->dropIndex('nilai_kelas_siswa_id_idx');
+            Schema::disableForeignKeyConstraints();
+            
+            try {
+                DB::statement('ALTER TABLE nilai DROP INDEX uq_nilai_siswa_new');
+            } catch (\Exception $e) {
+                // Index sudah dihapus
+            }
+            
+            try {
+                $table->unique(['kelas_siswa_id', 'pengampu_id', 'jenis_nilai'], 'uq_nilai_siswa');
+            } catch (\Exception $e) {
+                // Index sudah ada
+            }
+            
+            Schema::enableForeignKeyConstraints();
         });
     }
 };

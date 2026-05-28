@@ -117,9 +117,10 @@ class SiswaController extends Controller
             $siswa = Siswa::create($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
 
             // Hubungkan ke kelas di semester aktif
-            \App\Models\KelasSiswa::create([
-                'siswa_id' => $siswa->id,
-                'kelas_id' => $request->kelas_id,
+            $kelas = Kelas::findOrFail($request->kelas_id);
+            \App\Models\RiwayatKelasSiswa::create([
+                'nis' => $siswa->nis,
+                'kode_kelas' => $kelas->kode_kelas,
                 'semester_id' => $semesterAktif->id
             ]);
         });
@@ -146,9 +147,10 @@ class SiswaController extends Controller
 
             // Update penempatan kelas jika ada semester aktif
             if ($request->filled('kelas_id') && $semesterAktif) {
-                \App\Models\KelasSiswa::updateOrCreate(
-                    ['siswa_id' => $siswa->id, 'semester_id' => $semesterAktif->id],
-                    ['kelas_id' => $request->kelas_id]
+                $kelas = Kelas::findOrFail($request->kelas_id);
+                \App\Models\RiwayatKelasSiswa::updateOrCreate(
+                    ['nis' => $siswa->nis, 'semester_id' => $semesterAktif->id],
+                    ['kode_kelas' => $kelas->kode_kelas]
                 );
             }
         });
@@ -162,13 +164,13 @@ class SiswaController extends Controller
 
         \Illuminate\Support\Facades\DB::transaction(function() use ($id, $siswa) {
             // 1. Ambil semua ID penempatan kelas siswa ini
-            $kelasSiswaIds = \App\Models\KelasSiswa::where('siswa_id', $id)->pluck('id');
+            $kelasSiswaIds = \App\Models\RiwayatKelasSiswa::where('nis', $id)->pluck('id');
 
             // 2. Hapus semua nilai yang terhubung dengan penempatan kelas tersebut
             \App\Models\Nilai::whereIn('kelas_siswa_id', $kelasSiswaIds)->delete();
 
             // 3. Hapus data penempatan kelas
-            \App\Models\KelasSiswa::whereIn('id', $kelasSiswaIds)->delete();
+            \App\Models\RiwayatKelasSiswa::whereIn('id', $kelasSiswaIds)->delete();
 
             // 4. Hapus data utama siswa
             $siswa->delete();

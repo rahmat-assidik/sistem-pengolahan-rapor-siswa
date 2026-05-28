@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $distSikap = ['A' => 0, 'B' => 0, 'C' => 0, 'D' => 0]; // SB, B, C, K
         
         // Query Nilai hanya untuk Semester Aktif
-        $nilaiAggregat = Nilai::join('kelas_siswa', 'nilai.kelas_siswa_id', '=', 'kelas_siswa.id')
+        $nilaiAggregat = Nilai::join('riwayat_kelas_siswa', 'nilai.kelas_siswa_id', '=', 'riwayat_kelas_siswa.id')
             ->leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
             ->select('nilai.kelas_siswa_id', 'nilai.pengampu_id')
             ->selectRaw("
@@ -37,7 +37,7 @@ class DashboardController extends Controller
                 MAX(CASE WHEN nilai.jenis_nilai='p_uas' THEN nilai.skor END) as uas_val,
                 AVG(CASE WHEN nilai.jenis_nilai IN ('k_praktik','k_proyek','k_portofolio') THEN nilai.skor END) as k_avg
             ")
-            ->where('kelas_siswa.semester_id', $semesterAktif?->id)
+            ->where('riwayat_kelas_siswa.semester_id', $semesterAktif?->id)
             ->whereIn('nilai.jenis_nilai', ['p_uts','p_uas','dynamic','k_praktik','k_proyek','k_portofolio'])
             ->groupBy('nilai.kelas_siswa_id', 'nilai.pengampu_id')
             ->get();
