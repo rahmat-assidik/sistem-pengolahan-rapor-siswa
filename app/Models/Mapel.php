@@ -24,7 +24,7 @@ class Mapel extends Model
      * Relasi ke data pengampu.
      */
     public function pengampu(): HasMany
-    {
-        return $this->hasMany(Pengampu::class);
-    }
+{
+    return $this->hasMany(Pengampu::class, 'mapel_id', 'kode_mapel');
+}
 }
