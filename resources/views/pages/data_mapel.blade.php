@@ -90,9 +90,9 @@
 
         {{-- Modal Edit Mata Pelajaran --}}
         <x-modal name="openEdit" title="Edit Data Mata Pelajaran">
-            <form :action="`/data_mapel/${selectedMapel.id}`" method="POST">
-                @csrf
-                @method('PUT')
+            <form method="POST" :action="'/data_mapel/' + selectedMapel.kode_mapel">
+            @csrf
+            @method('PUT')
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
@@ -190,7 +190,7 @@
                                 <x-action-buttons 
                                     :lihatClick="'lihatMapel(' . json_encode($m) . ')'"
                                     :editClick="'editMapel(' . json_encode($m) . ')'"
-                                    :hapusClick="'konfirmasiHapus(' . $m->id . ', \'' . addslashes($m->nama_mapel) . '\')'"
+                                    :hapusClick="'konfirmasiHapus(\'' . $m->kode_mapel . '\', \'' . addslashes($m->nama_mapel) . '\')'"
                                 />
                             </td>
                         </tr>

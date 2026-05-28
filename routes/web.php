@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])->name('data_siswa.update');
         Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])->name('data_siswa.destroy');
 
-        Route::get('/data_guru', [GuruController::class, 'showGuru'])->name('data_guru');
+        Route::get('/data_guru', [GuruController::class, 'index'])->name('data_guru');
         Route::post('/data_guru', [GuruController::class, 'store'])->name('data_guru.store');
         Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
         Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
@@ -65,10 +65,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/data_kelas/{id}', [KelasController::class, 'update'])->name('data_kelas.update');
         Route::delete('/data_kelas/{id}', [KelasController::class, 'destroy'])->name('data_kelas.destroy');
 
-        Route::get('/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
+        Route::get('/data_mapel', [MapelController::class, 'index'])->name('data_mapel');
         Route::post('/data_mapel', [MapelController::class, 'store'])->name('data_mapel.store');
-        Route::put('/data_mapel/{id}', [MapelController::class, 'update'])->name('data_mapel.update');
-        Route::delete('/data_mapel/{id}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');
+        Route::get('/data_mapel/{kode_mapel}/edit', [MapelController::class, 'edit'])->name('data_mapel.edit');
+        Route::put('/data_mapel/{kode_mapel}', [MapelController::class, 'update'])->name('data_mapel.update');
+        Route::delete('/data_mapel/{kode_mapel}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');
 
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);

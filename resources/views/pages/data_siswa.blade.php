@@ -102,7 +102,7 @@
 
         {{-- Modal Edit Siswa --}}
         <x-modal name="openEdit" title="Edit Data Siswa">
-            <form :action="`/data_siswa/${selectedSiswa.id}`" method="POST">
+            <form :action="`/data_siswa/${selectedSiswa.nis}`" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -225,7 +225,7 @@
                                 <x-action-buttons 
                                     :lihatClick="'lihatSiswa(' . json_encode($s) . ')'"
                                     :editClick="'editSiswa(' . json_encode($s) . ')'"
-                                    :hapusClick="'konfirmasiHapus(' . $s->id . ', \'' . addslashes($s->nama_siswa ?? 'Siswa') . '\')'"
+                                    :hapusClick="'konfirmasiHapus(\'' . addslashes($s->nis) . '\', \'' . addslashes($s->nama_siswa ?? 'Siswa') . '\')'"
                                 />
                             </td>
                         </tr>
