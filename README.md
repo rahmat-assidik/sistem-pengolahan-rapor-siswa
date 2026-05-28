@@ -6,20 +6,20 @@
 <p align="center"><strong>Student Report Card Management System</strong></p>
 
 <p align="center">
-  ![PHP](https://img.shields.io/badge/language-PHP-777BB4)
-  ![Laravel](https://img.shields.io/badge/framework-Laravel-FF2D20)
-  ![Tailwind](https://img.shields.io/badge/css-Tailwind-06B6D4)
-  ![Alpine.js](https://img.shields.io/badge/js-Alpine.js-8BC0D0)
-  ![Flowbite](https://img.shields.io/badge/ui-Flowbite-1A56DB)
-  ![Vite](https://img.shields.io/badge/build-Vite-646CFF)
-  ![Chart.js](https://img.shields.io/badge/chart-Chart.js-FF6384)
-  ![MySQL](https://img.shields.io/badge/database-MySQL-4479A1)
+  <img src="https://img.shields.io/badge/language-PHP-777BB4" alt="PHP" />
+  <img src="https://img.shields.io/badge/framework-Laravel-FF2D20" alt="Laravel" />
+  <img src="https://img.shields.io/badge/css-Tailwind-06B6D4" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/js-Alpine.js-8BC0D0" alt="Alpine.js" />
+  <img src="https://img.shields.io/badge/ui-Flowbite-1A56DB" alt="Flowbite" />
+  <img src="https://img.shields.io/badge/build-Vite-646CFF" alt="Vite" />
+  <img src="https://img.shields.io/badge/chart-Chart.js-FF6384" alt="Chart.js" />
+  <img src="https://img.shields.io/badge/database-MySQL-4479A1" alt="MySQL" />
 </p>
 
 <p align="center">
-  ![Last Commit](https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green)
-  ![Repo Size](https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa)
-  ![License](https://img.shields.io/badge/license-MIT-blue)
+  <img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green" alt="Last Commit" />
+  <img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa" alt="Repo Size" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
 </p>
 
 ---
