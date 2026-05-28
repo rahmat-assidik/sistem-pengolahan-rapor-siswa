@@ -7,27 +7,13 @@
         openTambah: false, 
         openEdit: false, 
         openLihat: false, 
-        selectedSiswa: {
-            kelas_id: '',
-            kelas_nama: ''
-        },
+        selectedSiswa: {},
         editSiswa(siswa) {
             this.selectedSiswa = { ...siswa };
-            // Ambil ID kelas dari relasi kelasSiswa pertama
-            if (siswa.kelas_siswa && siswa.kelas_siswa.length > 0) {
-                this.selectedSiswa.kelas_id = siswa.kelas_siswa[0].kelas_id;
-            } else {
-                this.selectedSiswa.kelas_id = '';
-            }
             this.openEdit = true;
         },
         lihatSiswa(siswa) {
             this.selectedSiswa = { ...siswa };
-            if (siswa.kelas_siswa && siswa.kelas_siswa.length > 0 && siswa.kelas_siswa[0].kelas) {
-                this.selectedSiswa.kelas_nama = siswa.kelas_siswa[0].kelas.nama_kelas;
-            } else {
-                this.selectedSiswa.kelas_nama = '-';
-            }
             this.openLihat = true;
         },
         konfirmasiHapus(id, nama) {
@@ -82,15 +68,6 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas (Semester Ini)</label>
-                        <select name="kelas_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">Pilih Kelas</option>
-                            @foreach($kelasList as $kelas)
-                                <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="">Pilih Jenis Kelamin</option>
@@ -98,17 +75,19 @@
                             <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Angkatan</label>
                         <input type="number" name="angkatan" required placeholder="Contoh: 2024" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Aktif">Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                            <option value="Alumni">Alumni</option>
+                            <option value="Mutasi">Mutasi</option>
                         </select>
                     </div>
                 </div>
@@ -138,27 +117,18 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas (Semester Ini)</label>
-                        <select name="kelas_id" x-model="selectedSiswa.kelas_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">Pilih Kelas</option>
-                            @foreach($kelasList as $kelas)
-                                <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" x-model="selectedSiswa.jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
                     </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Angkatan</label>
                         <input type="number" name="angkatan" x-model="selectedSiswa.angkatan" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" x-model="selectedSiswa.status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
@@ -216,11 +186,8 @@
             <x-search-toolbar 
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
                 :filters="[
-                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
-                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
                     ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
-                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelasList->pluck('nama_kelas', 'id')->toArray()],
-                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif', 'Alumni' => 'Alumni', 'Mutasi' => 'Mutasi']]
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
@@ -235,8 +202,6 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Angkatan</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran/Sem</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
@@ -254,14 +219,6 @@
                                     {{ $s->angkatan ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $s->kelasSiswa?->first()?->kelas?->nama_kelas ?? '-' }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">
-                                @if($ks = $s->kelasSiswa?->first())
-                                    {{ $ks->semester?->tahunAjaran?->nama }} ({{ $ks->semester?->semester }})
-                                @else
-                                    -
-                                @endif
-                            </td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $s->jenis_kelamin ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status ?? '-' }}</x-badge></td>
                             <td class="px-6 py-4 text-center">
@@ -275,7 +232,7 @@
                         @endif
                         @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data siswa</p>
                             </td>
                         </tr>

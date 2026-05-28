@@ -14,6 +14,8 @@ use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
+use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\ArsipSiswaController;
 
 use App\Http\Controllers\UbahKataSandiController;
 
@@ -71,7 +73,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
         Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
-        
+        Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
         Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');
