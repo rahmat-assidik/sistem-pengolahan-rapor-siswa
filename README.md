@@ -6,42 +6,20 @@
 <p align="center"><strong>Student Report Card Management System</strong></p>
 
 <p align="center">
-  <a href="https://www.php.net/" alt="PHP" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/language-PHP-777BB4" />
-  </a>
-  <a href="https://laravel.com/" alt="Laravel" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/framework-Laravel-FF2D20" />
-  </a>
-  <a href="https://tailwindcss.com/" alt="Tailwind CSS" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/css-Tailwind-06B6D4" />
-  </a>
-  <a href="https://alpinejs.dev/" alt="Alpine.js" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/js-Alpine.js-8BC0D0" />
-  </a>
-  <a href="https://flowbite.com/" alt="Flowbite" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/ui-Flowbite-1A56DB" />
-  </a>
-  <a href="https://vitejs.dev/" alt="Vite" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/build-Vite-646CFF" />
-  </a>
-  <a href="https://www.chartjs.org/" alt="Chart.js" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/chart-Chart.js-FF6384" />
-  </a>
-  <a href="https://www.mysql.com/" alt="MySQL" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/database-MySQL-4479A1" />
-  </a>
+  ![PHP](https://img.shields.io/badge/language-PHP-777BB4)
+  ![Laravel](https://img.shields.io/badge/framework-Laravel-FF2D20)
+  ![Tailwind](https://img.shields.io/badge/css-Tailwind-06B6D4)
+  ![Alpine.js](https://img.shields.io/badge/js-Alpine.js-8BC0D0)
+  ![Flowbite](https://img.shields.io/badge/ui-Flowbite-1A56DB)
+  ![Vite](https://img.shields.io/badge/build-Vite-646CFF)
+  ![Chart.js](https://img.shields.io/badge/chart-Chart.js-FF6384)
+  ![MySQL](https://img.shields.io/badge/database-MySQL-4479A1)
 </p>
 
 <p align="center">
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa" style="text-decoration: none;">
-    <img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green" alt="Last Commit" />
-  </a>
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa" style="text-decoration: none;">
-    <img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa" alt="Repo Size" />
-  </a>
-  <a href="https://opensource.org/licenses/MIT" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
-  </a>
+  ![Last Commit](https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green)
+  ![Repo Size](https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa)
+  ![License](https://img.shields.io/badge/license-MIT-blue)
 </p>
 
 ---
