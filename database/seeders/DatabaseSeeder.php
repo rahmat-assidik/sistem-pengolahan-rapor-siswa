@@ -11,7 +11,7 @@ use App\Models\TahunAjaran;
 use App\Models\Semester;
 use App\Models\RiwayatKelasSiswa;
 use App\Models\Pengampu;
-use App\Models\WaliKelas;
+
 use App\Models\Nilai;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -93,14 +93,6 @@ class DatabaseSeeder extends Seeder
             $k11 = Kelas::create(['kode_kelas' => 'XI-MIPA-1', 'nama_kelas' => 'XI MIPA 1', 'tingkat' => 'XI']);
             $k12 = Kelas::create(['kode_kelas' => 'XII-MIPA-1', 'nama_kelas' => 'XII MIPA 1', 'tingkat' => 'XII']);
 
-            // 4. WALI KELAS
-            foreach ($smtList as $yearSmt) {
-                foreach ($yearSmt as $smt) {
-                    WaliKelas::create(['kelas_id' => $k10->id, 'semester_id' => $smt->id, 'guru_id' => $guruBambang->nip]);
-                    WaliKelas::create(['kelas_id' => $k11->id, 'semester_id' => $smt->id, 'guru_id' => $guruSri->nip]);
-                    WaliKelas::create(['kelas_id' => $k12->id, 'semester_id' => $smt->id, 'guru_id' => $guruAhmad->nip]);
-                }
-            }
 
             // 5. MAPEL
             $mtk = Mapel::create(['kode_mapel' => 'MTK', 'nama_mapel' => 'Matematika', 'kelompok' => 'Wajib']);
