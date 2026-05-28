@@ -15,15 +15,12 @@ use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
 use App\Http\Controllers\TahunAjaranController;
-<<<<<<< HEAD
-=======
 use App\Http\Controllers\ArsipSiswaController;
-
->>>>>>> ce82990fe10ce237a5057633cb1fb4fb13ee0084
 use App\Http\Controllers\UbahKataSandiController;
 
-// Auth Routes (Guest)
+// Guest Routes
 Route::middleware('guest')->group(function () {
+
     Route::get('/', function () {
         return view('pages.login');
     })->name('login');
@@ -39,62 +36,119 @@ Route::middleware('guest')->group(function () {
     })->name('lupa_sandi');
 });
 
+
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Shared Routes (Admin & Guru)
+    // Shared Routes
     Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
-    Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
-    Route::post('/data_rapor/catatan', [RaporController::class, 'saveCatatan'])->name('data_rapor.catatan');
-    Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])->name('ubah_kata_sandi');
-    Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])->name('password.update');
 
-    // Tahun Ajaran Management
+    Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
+
+    Route::post('/data_rapor/catatan', [RaporController::class, 'saveCatatan'])
+        ->name('data_rapor.catatan');
+
+    Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])
+        ->name('ubah_kata_sandi');
+
+    Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])
+        ->name('password.update');
+
+    // Tahun Ajaran
     Route::resource('tahun-ajaran', TahunAjaranController::class);
 
-    // Admin Only Routes
+    // Admin Only
     Route::middleware('role:admin')->group(function () {
 
-        // Master Data Management
-        Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
-        Route::post('/data_siswa', [SiswaController::class, 'store'])->name('data_siswa.store');
-        Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])->name('data_siswa.update');
-        Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])->name('data_siswa.destroy');
+        // Data Siswa
+        Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])
+            ->name('data_siswa');
 
-        Route::get('/data_guru', [GuruController::class, 'index'])->name('data_guru');
-        Route::post('/data_guru', [GuruController::class, 'store'])->name('data_guru.store');
-        Route::put('/data_guru/{nip}', [GuruController::class, 'update'])->name('data_guru.update');
-        Route::delete('/data_guru/{nip}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
+        Route::post('/data_siswa', [SiswaController::class, 'store'])
+            ->name('data_siswa.store');
 
-        Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
-        Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
-        Route::put('/data_kelas/{id}', [KelasController::class, 'update'])->name('data_kelas.update');
-        Route::delete('/data_kelas/{id}', [KelasController::class, 'destroy'])->name('data_kelas.destroy');
+        Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])
+            ->name('data_siswa.update');
 
-        Route::get('/data_mapel', [MapelController::class, 'showMapel'])->name('data_mapel');
-        Route::post('/data_mapel', [MapelController::class, 'store'])->name('data_mapel.store');
-        Route::put('/data_mapel/{id}', [MapelController::class, 'update'])->name('data_mapel.update');
-        Route::delete('/data_mapel/{id}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');
+        Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])
+            ->name('data_siswa.destroy');
 
-        Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
-        Route::resource('pengampu', PengampuController::class)->except(['index']);
+        // Data Guru
+        Route::get('/data_guru', [GuruController::class, 'index'])
+            ->name('data_guru');
 
-        Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
-<<<<<<< HEAD
+        Route::post('/data_guru', [GuruController::class, 'store'])
+            ->name('data_guru.store');
 
-=======
-        Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
->>>>>>> ce82990fe10ce237a5057633cb1fb4fb13ee0084
-        // Akademik Management
-        Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
-        Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');
-        Route::put('/akademik/tahun-ajaran/{id}', [AkademikController::class, 'updateTahunAjaran'])->name('akademik.ta.update');
-        Route::post('/akademik/semester', [AkademikController::class, 'storeSemester'])->name('akademik.smt.store');
-        Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])->name('akademik.set_aktif');
-        Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');
-        Route::post('/akademik/ta/set-aktif/{id}', [AkademikController::class, 'setAktifTa'])->name('akademik.ta.set_aktif');
+        Route::put('/data_guru/{nip}', [GuruController::class, 'update'])
+            ->name('data_guru.update');
 
-    }); // end role:admin
+        Route::delete('/data_guru/{nip}', [GuruController::class, 'destroy'])
+            ->name('data_guru.destroy');
 
-}); // end auth
+        // Data Kelas
+        Route::get('/data_kelas', [KelasController::class, 'showKelas'])
+            ->name('data_kelas');
+
+        Route::post('/data_kelas', [KelasController::class, 'store'])
+            ->name('data_kelas.store');
+
+        Route::put('/data_kelas/{id}', [KelasController::class, 'update'])
+            ->name('data_kelas.update');
+
+        Route::delete('/data_kelas/{id}', [KelasController::class, 'destroy'])
+            ->name('data_kelas.destroy');
+
+        // Data Mapel
+        Route::get('/data_mapel', [MapelController::class, 'showMapel'])
+            ->name('data_mapel');
+
+        Route::post('/data_mapel', [MapelController::class, 'store'])
+            ->name('data_mapel.store');
+
+        Route::put('/data_mapel/{id}', [MapelController::class, 'update'])
+            ->name('data_mapel.update');
+
+        Route::delete('/data_mapel/{id}', [MapelController::class, 'destroy'])
+            ->name('data_mapel.destroy');
+
+        // Pengampu
+        Route::get('/pengampu', [PengampuController::class, 'showPengampu'])
+            ->name('pengampu');
+
+        Route::resource('pengampu', PengampuController::class)
+            ->except(['index']);
+
+        // Rekap Nilai
+        Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])
+            ->name('rekap_nilai');
+
+        // Arsip Siswa
+        Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])
+            ->name('arsip_siswa');
+
+        // Akademik
+        Route::get('/akademik', [AkademikController::class, 'index'])
+            ->name('akademik');
+
+        Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])
+            ->name('akademik.ta.store');
+
+        Route::put('/akademik/tahun-ajaran/{id}', [AkademikController::class, 'updateTahunAjaran'])
+            ->name('akademik.ta.update');
+
+        Route::post('/akademik/semester', [AkademikController::class, 'storeSemester'])
+            ->name('akademik.smt.store');
+
+        Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])
+            ->name('akademik.set_aktif');
+
+        Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])
+            ->name('akademik.ta.nonaktifkan');
+
+        Route::post('/akademik/ta/set-aktif/{id}', [AkademikController::class, 'setAktifTa'])
+            ->name('akademik.ta.set_aktif');
+    });
+});
