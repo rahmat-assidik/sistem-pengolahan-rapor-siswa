@@ -6,20 +6,42 @@
 <p align="center"><strong>Student Report Card Management System</strong></p>
 
 <p align="center">
-  <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP"></a>
-  <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel"></a>
-  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"></a>
-  <a href="https://alpinejs.dev/"><img src="https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=flat-square&logo=alpinedotjs&logoColor=white" alt="Alpine.js"></a>
-  <a href="https://flowbite.com/"><img src="https://img.shields.io/badge/Flowbite-4.0-1A56DB?style=flat-square&logo=flowbite&logoColor=white" alt="Flowbite"></a>
-  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
-  <a href="https://www.chartjs.org/"><img src="https://img.shields.io/badge/Chart.js-4-FF6384?style=flat-square&logo=chartdotjs&logoColor=white" alt="Chart.js"></a>
-  <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL"></a>
+  <a href="https://www.php.net/" alt="PHP">
+    <img src="https://img.shields.io/badge/language-PHP-777BB4" />
+  </a>
+  <a href="https://laravel.com/" alt="Laravel">
+    <img src="https://img.shields.io/badge/framework-Laravel-FF2D20" />
+  </a>
+  <a href="https://tailwindcss.com/" alt="Tailwind CSS">
+    <img src="https://img.shields.io/badge/css-Tailwind-06B6D4" />
+  </a>
+  <a href="https://alpinejs.dev/" alt="Alpine.js">
+    <img src="https://img.shields.io/badge/js-Alpine.js-8BC0D0" />
+  </a>
+  <a href="https://flowbite.com/" alt="Flowbite">
+    <img src="https://img.shields.io/badge/ui-Flowbite-1A56DB" />
+  </a>
+  <a href="https://vitejs.dev/" alt="Vite">
+    <img src="https://img.shields.io/badge/build-Vite-646CFF" />
+  </a>
+  <a href="https://www.chartjs.org/" alt="Chart.js">
+    <img src="https://img.shields.io/badge/chart-Chart.js-FF6384" />
+  </a>
+  <a href="https://www.mysql.com/" alt="MySQL">
+    <img src="https://img.shields.io/badge/database-MySQL-4479A1" />
+  </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square&color=green" alt="Last Commit"></a>
-  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa"><img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa?style=flat-square" alt="Repo Size"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License"></a>
+  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa">
+    <img src="https://img.shields.io/github/last-commit/drvn-sss/sistem-pengolahan-rapor-siswa?color=green" alt="Last Commit" />
+  </a>
+  <a href="https://github.com/drvn-sss/sistem-pengolahan-rapor-siswa">
+    <img src="https://img.shields.io/github/repo-size/drvn-sss/sistem-pengolahan-rapor-siswa" alt="Repo Size" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+  </a>
 </p>
 
 ---
