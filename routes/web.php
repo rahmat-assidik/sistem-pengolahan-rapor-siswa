@@ -15,6 +15,11 @@ use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
 use App\Http\Controllers\TahunAjaranController;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\ArsipSiswaController;
+
+>>>>>>> ce82990fe10ce237a5057633cb1fb4fb13ee0084
 use App\Http\Controllers\UbahKataSandiController;
 
 // Auth Routes (Guest)
@@ -76,7 +81,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('pengampu', PengampuController::class)->except(['index']);
 
         Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
+<<<<<<< HEAD
 
+=======
+        Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
+>>>>>>> ce82990fe10ce237a5057633cb1fb4fb13ee0084
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
         Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');

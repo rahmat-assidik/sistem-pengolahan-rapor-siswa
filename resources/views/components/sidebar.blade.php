@@ -123,6 +123,8 @@
                 <span>Rekap Nilai</span>
             </a>
             @endif
+
+
             
             @if(auth()->check() && auth()->user()->isGuru())
             <a href="{{ route('input_nilai') }}"
@@ -150,6 +152,24 @@
             </a>
             @endif
         </div>
+
+                {{-- Arsip Section --}}
+        <div class="px-2 mb-4">
+            <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Arsip</div>
+            
+            @if(auth()->check() && auth()->user()->isAdmin())
+            <a href="{{ route('arsip_siswa') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('arsip_siswa')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V6.5m-12 0h12m-12 0V3.75a.75.75 0 01.75-.75h4.5"/>
+                </svg>
+                <span>Arsip Siswa</span>
+            </a>
+            @endif
+</div>
 
         {{-- Pengaturan Section --}}
         <div class="px-2 mb-4">
