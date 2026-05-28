@@ -8,13 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class MapelController extends Controller
 {
-    public function showMapel(Request $request)
+// menampilkan data mapel dengan fitur pencarian, filter kelompok dan status
+    public function index(Request $request)
     {
         $query = Mapel::query();
 
         if ($request->filled('search')) {
-            $query->where('nama_mapel', 'like', '%' . $request->search . '%')
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_mapel', 'like', '%' . $request->search . '%')
                   ->orWhere('kode_mapel', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->filled('kelompok')) {
@@ -25,44 +28,75 @@ class MapelController extends Controller
             $query->where('status', $request->status);
         }
 
-        $mapelData = $query->orderBy('nama_mapel')->paginate(20)->withQueryString();
+        $mapelData = $query->orderBy('nama_mapel')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('pages.data_mapel', compact('mapelData'));
     }
-// Delate method 
-    public function destroy($id)
-{
-    $mapel = Mapel::findOrFail($id);
 
-    \Illuminate\Support\Facades\DB::transaction(function () use ($mapel) {
+// strore data mapel
+    public function store(Request $request)
+    {
+        $request->validate([
+            'kode_mapel' => 'required',
+            'nama_mapel' => 'required',
+            'kelompok'   => 'required',
+            'status'     => 'required',
+        ]);
 
-        // Hapus semua data pengampu terkait mapel
-        $mapel->pengampu()->delete();
+        Mapel::create([
+            'kode_mapel' => $request->kode_mapel,
+            'nama_mapel' => $request->nama_mapel,
+            'kelompok'   => $request->kelompok,
+            'status'     => $request->status,
+        ]);
 
-        // Hapus data mapel
-        $mapel->delete();
-    });
+        return redirect()->back()
+            ->with('success', 'Data mata pelajaran berhasil ditambahkan.');
+    }
 
-    return redirect()->back()
-        ->with('success', 'Data mata pelajaran berhasil dihapus.');
-}
-public function store(Request $request)
-{
-    $request->validate([
-        'kode_mapel' => 'required',
-        'nama_mapel' => 'required',
-        'kelompok' => 'required',
-        'status' => 'required',
-    ]);
+// edit data mapel
+    public function edit($kode_mapel)
+    {
+        $mapel = Mapel::findOrFail($kode_mapel);
 
-    Mapel::create([
-        'kode_mapel' => $request->kode_mapel,
-        'nama_mapel' => $request->nama_mapel,
-        'kelompok' => $request->kelompok,
-        'status' => $request->status,
-    ]);
+        return view('pages.edit_mapel', compact('mapel'));
+    }
 
-    return redirect()->back()
-        ->with('success', 'Data mata pelajaran berhasil ditambahkan.');
-}
+//    update data mapel
+    public function update(Request $request, $kode_mapel)
+    {
+        $request->validate([
+            'kode_mapel' => 'required',
+            'nama_mapel' => 'required',
+            'kelompok'   => 'required',
+            'status'     => 'required',
+        ]);
+
+        $mapel = Mapel::findOrFail($kode_mapel);
+
+        $mapel->update([
+            'kode_mapel' => $request->kode_mapel,
+            'nama_mapel' => $request->nama_mapel,
+            'kelompok'   => $request->kelompok,
+            'status'     => $request->status,
+        ]);
+
+        return redirect()->route('data_mapel')
+            ->with('success', 'Data mata pelajaran berhasil diupdate.');
+    }
+
+// delete data mapel beserta pengampunya
+    public function destroy($kode_mapel)
+    {
+        $mapel = Mapel::findOrFail($kode_mapel);
+
+        DB::transaction(function () use ($mapel) {
+            $mapel->delete();
+        });
+
+        return redirect()->back()
+            ->with('success', 'Data mata pelajaran berhasil dihapus.');
+    }
 }
