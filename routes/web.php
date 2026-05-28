@@ -14,6 +14,8 @@ use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
+use App\Http\Controllers\TahunAjaranController;
+
 
 use App\Http\Controllers\UbahKataSandiController;
 
@@ -90,4 +92,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/komponen_nilai/{id}', [InputNilaiController::class, 'destroyKomponen'])->name('komponen_nilai.destroy');
 
     });
+    // tahun ajaran management
+    Route::resource('tahun-ajaran', TahunAjaranController::class);
 });

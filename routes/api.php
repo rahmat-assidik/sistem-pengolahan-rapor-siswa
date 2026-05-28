@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\SiswaController;
 use App\Http\Controllers\Api\GuruController;
 use App\Http\Controllers\Api\KelasController;
 use App\Http\Controllers\Api\TahunAjaranController;
+use App\Http\Controllers\Api\MapelController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,6 +22,9 @@ Route::prefix('admin')->group(function () {
     
     // Kelas Management
     Route::apiResource('kelas', KelasController::class);
+    
+    // Mata Pelajaran Management
+    Route::apiResource('mapel', MapelController::class);
     
     // Tahun Ajaran Management
     Route::apiResource('tahun-ajaran', TahunAjaranController::class);
