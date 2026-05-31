@@ -56,8 +56,8 @@ public function update(Request $request, $nip)
         'jenis_kelamin'=> $request->jenis_kelamin,
         'no_hp'        => $request->no_hp,
         'status'       => $request->status,
-        // NIP tidak diupdate
     ]);
+    
 
     return redirect()->route('data_guru')->with('success', 'Data guru berhasil diupdate');
 }
