@@ -69,6 +69,10 @@
                         <input type="text" name="nama_guru" required placeholder="Masukkan nama guru" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                    <input type="email" name="email" required placeholder="Masukkan email guru" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
@@ -115,6 +119,10 @@
                         <input type="text" name="nama_guru" x-model="selectedGuru.nama_guru" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                    <input type="email" name="email" x-model="selectedGuru.email" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
@@ -154,6 +162,10 @@
                 <div class="grid grid-cols-3 py-2 border-b border-gray-50">
                     <span class="text-sm font-semibold text-gray-500">Nama Lengkap</span>
                     <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedGuru.nama_guru"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Email</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedGuru.email || '-'"></span>
                 </div>
                 <div class="grid grid-cols-3 py-2 border-b border-gray-50">
                     <span class="text-sm font-semibold text-gray-500">Jenis Kelamin</span>
@@ -196,6 +208,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIP/Kode</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Guru</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Email</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No HP</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
@@ -208,6 +221,7 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $guruData->firstItem() + $i }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $g->nip }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $g->nama_guru }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $g->email ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $g->jenis_kelamin ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $g->no_hp ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm"><x-badge :type="$g->status === 'Aktif' ? 'success' : 'danger'">{{ $g->status }}</x-badge></td>
@@ -221,7 +235,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data guru</p>
                             </td>
                         </tr>

@@ -30,11 +30,13 @@ public function store(Request $request)
     $request->validate([
         'nip' => 'required|unique:guru,nip',
         'nama_guru' => 'required',
+        'email' => 'required|email|unique:guru,email',
     ]);
 
     Guru::create([
         'nip'          => $request->nip,
         'nama_guru'    => $request->nama_guru,
+        'email'        => $request->email,
         'jenis_kelamin'=> $request->jenis_kelamin,
         'no_hp'        => $request->no_hp,
         'status'       => $request->status,
@@ -49,10 +51,12 @@ public function update(Request $request, $nip)
 
     $request->validate([
         'nama_guru' => 'required',
+        'email' => 'required|email|unique:guru,email,' . $nip . ',nip',
     ]);
 
     $guru->update([
         'nama_guru'    => $request->nama_guru,
+        'email'        => $request->email,
         'jenis_kelamin'=> $request->jenis_kelamin,
         'no_hp'        => $request->no_hp,
         'status'       => $request->status,

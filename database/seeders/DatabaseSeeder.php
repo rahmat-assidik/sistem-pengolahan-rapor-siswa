@@ -64,17 +64,17 @@ class DatabaseSeeder extends Seeder
             }
 
             // 2. GURU & USER
-            $guruAhmad = Guru::create(['nip' => '1001', 'nama_guru' => 'Drs. Ahmad Fauzi', 'jenis_kelamin' => 'Laki-laki', 'no_hp' => '081200001001']);
-            $guruSri = Guru::create(['nip' => '1002', 'nama_guru' => 'Sri Wahyuni, S.Pd.', 'jenis_kelamin' => 'Perempuan', 'no_hp' => '081200001002']);
-            $guruBambang = Guru::create(['nip' => '1003', 'nama_guru' => 'Bambang S., M.Pd.', 'jenis_kelamin' => 'Laki-laki', 'no_hp' => '081200001003']);
-            $guruDewi = Guru::create(['nip' => '1004', 'nama_guru' => 'Dewi Kartika, S.Pd.', 'jenis_kelamin' => 'Perempuan', 'no_hp' => '081200001004']);
+            $guruAhmad = Guru::create(['nip' => '1001', 'nama_guru' => 'Drs. Ahmad Fauzi', 'email' => 'guru_1001@sekolah.local', 'jenis_kelamin' => 'Laki-laki', 'no_hp' => '081200001001']);
+            $guruSri = Guru::create(['nip' => '1002', 'nama_guru' => 'Sri Wahyuni, S.Pd.', 'email' => 'guru_1002@sekolah.local', 'jenis_kelamin' => 'Perempuan', 'no_hp' => '081200001002']);
+            $guruBambang = Guru::create(['nip' => '1003', 'nama_guru' => 'Bambang S., M.Pd.', 'email' => 'guru_1003@sekolah.local', 'jenis_kelamin' => 'Laki-laki', 'no_hp' => '081200001003']);
+            $guruDewi = Guru::create(['nip' => '1004', 'nama_guru' => 'Dewi Kartika, S.Pd.', 'email' => 'guru_1004@sekolah.local', 'jenis_kelamin' => 'Perempuan', 'no_hp' => '081200001004']);
 
             $allGurus = [$guruAhmad, $guruSri, $guruBambang, $guruDewi];
             foreach ($allGurus as $g) {
                 User::create([
                     'username' => $g->nip,
                     'nama' => $g->nama_guru,
-                    'email' => strtolower(explode(' ', $g->nama_guru)[0]) . '@sekolah.sch.id',
+                    'email' => $g->email,
                     'password' => Hash::make($g->nip),
                     'role' => 'guru',
                     'guru_id' => $g->nip
