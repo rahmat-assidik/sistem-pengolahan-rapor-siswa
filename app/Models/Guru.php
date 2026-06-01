@@ -17,22 +17,19 @@ class Guru extends Model
     protected $fillable = [
         'nip',
         'nama_guru',
+        'email',
         'jenis_kelamin',
         'no_hp',
         'status',
     ];
 
-    /**
-     * Relasi ke akun user.
-     */
+//   Relation account to user
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'guru_id', 'nip');
     }
 
-    /**
-     * Relasi ke data pengampu.
-     */
+//   Relation Teacher to User
     public function pengampu(): HasMany
     {
         return $this->hasMany(Pengampu::class, 'guru_id', 'nip');
