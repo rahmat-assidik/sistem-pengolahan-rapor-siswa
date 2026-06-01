@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
         Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
 
+        Route::get('/akun_guru', [GuruController::class, 'manageAkunGuru'])->name('akun_guru');
+        Route::post('/akun_guru', [GuruController::class, 'storeAkunGuru'])->name('akun_guru.store');
+
         Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
         Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
         Route::put('/data_kelas/{id}', [KelasController::class, 'update'])->name('data_kelas.update');
