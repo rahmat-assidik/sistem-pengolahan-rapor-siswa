@@ -60,6 +60,17 @@
                 <span>Guru</span>
             </a>
             
+            <a href="{{ route('akun_guru') }}"
+               class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                      {{ request()->is('akun_guru')
+                         ? 'bg-gray-900 text-white font-semibold'
+                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 16A8 8 0 1 1 16 8a.5.5 0 0 1-1 0A7 7 0 1 0 9 15.71v1.79a.5.5 0 0 1-1 0v-2.5a.5.5 0 0 1 1 0zm3.854-9.646a.5.5 0 0 0 0 .707l2 2a.5.5 0 0 0 .707 0l2-2a.5.5 0 0 0-.707-.707L14.5 7.793V5a.5.5 0 0 0-1 0v2.793l-1.146-1.147a.5.5 0 0 0-.707 0z"/>
+                </svg>
+                <span>Akun Guru</span>
+            </a>
+            
             <a href="{{ route('data_kelas') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
                       {{ request()->is('data_kelas')
