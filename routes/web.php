@@ -16,6 +16,7 @@ use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\ArsipSiswaController;
+use App\Http\Controllers\PembagianKelasController;
 
 use App\Http\Controllers\UbahKataSandiController;
 
@@ -78,6 +79,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('pengampu', PengampuController::class)->except(['index']);
         Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
+        
+        Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
+        Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
+        Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');
+        Route::delete('/pembagian_kelas/{id}', [PembagianKelasController::class, 'destroy'])->name('pembagian_kelas.destroy');
+        
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
         Route::post('/akademik/tahun-ajaran', [AkademikController::class, 'storeTahunAjaran'])->name('akademik.ta.store');

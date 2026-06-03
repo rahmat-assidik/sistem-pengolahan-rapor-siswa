@@ -22,7 +22,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Mapel</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Tugas</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UH</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Ulangan</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UTS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">UAS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Nilai Akhir</th>
@@ -39,7 +39,7 @@
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_kelas ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_mapel ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->tugas ?? '-' }}</td>
-                            <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uh ?? '-' }}</td>
+                            <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->ulangan ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uts ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uas ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $n->rata_pengetahuan ?? '-' }}</td>
