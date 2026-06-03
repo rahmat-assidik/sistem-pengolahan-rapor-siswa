@@ -12,6 +12,8 @@ class PembagianKelasController extends Controller
 {
     public function showPembagianKelas(Request $request)
     {
+        $semesterAktif = Semester::with('tahunAjaran')->where('is_aktif', true)->first();
+
         $query = Siswa::query();
 
         // Filter Search (Nama atau NIS)
@@ -34,11 +36,15 @@ class PembagianKelasController extends Controller
 
         $siswaData = $query->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
-        // Load kelas assignments
+        // Load kelas assignments for ACTIVE semester only
         foreach ($siswaData as $siswa) {
-            $siswa->kelasSiswa = RiwayatKelasSiswa::with(['kelas', 'semester.tahunAjaran'])
-                ->where('nis', $siswa->nis)
-                ->get();
+            $siswa->kelasAktif = null;
+            if ($semesterAktif) {
+                $siswa->kelasAktif = RiwayatKelasSiswa::with(['kelas', 'semester.tahunAjaran'])
+                    ->where('nis', $siswa->nis)
+                    ->where('semester_id', $semesterAktif->id)
+                    ->first();
+            }
         }
 
         // Ambil daftar angkatan unik
@@ -47,10 +53,7 @@ class PembagianKelasController extends Controller
         // Ambil semua kelas
         $kelasData = Kelas::orderBy('nama_kelas')->get();
 
-        // Ambil semua semester aktif
-        $semesterData = Semester::with('tahunAjaran')->where('is_aktif', true)->get();
-
-        return view('pages.pembagian_kelas', compact('siswaData', 'angkatanList', 'kelasData', 'semesterData'));
+        return view('pages.pembagian_kelas', compact('siswaData', 'angkatanList', 'kelasData', 'semesterAktif'));
     }
 
     public function store(Request $request)
@@ -58,23 +61,26 @@ class PembagianKelasController extends Controller
         $request->validate([
             'nis' => 'required|exists:siswa,nis',
             'kode_kelas' => 'required|exists:kelas,kode_kelas',
-            'semester_id' => 'required|exists:semester,id',
         ]);
 
-        // Check if already exists
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Tidak ada semester aktif. Silakan setel semester aktif terlebih dahulu.');
+        }
+
+        // Check if already exists in active semester
         $exists = RiwayatKelasSiswa::where('nis', $request->nis)
-            ->where('kode_kelas', $request->kode_kelas)
-            ->where('semester_id', $request->semester_id)
+            ->where('semester_id', $semesterAktif->id)
             ->first();
 
         if ($exists) {
-            return redirect()->back()->with('error', 'Siswa sudah ditambahkan ke kelas ini untuk semester tersebut.');
+            return redirect()->back()->with('error', 'Siswa sudah ditempatkan di sebuah kelas pada semester aktif.');
         }
 
         RiwayatKelasSiswa::create([
             'nis' => $request->nis,
             'kode_kelas' => $request->kode_kelas,
-            'semester_id' => $request->semester_id,
+            'semester_id' => $semesterAktif->id,
             'status' => 'Aktif',
         ]);
 
@@ -95,23 +101,15 @@ class PembagianKelasController extends Controller
 
         $request->validate([
             'kode_kelas' => 'required|exists:kelas,kode_kelas',
-            'semester_id' => 'required|exists:semester,id',
         ]);
 
-        // Check if new combination already exists
-        $exists = RiwayatKelasSiswa::where('nis', $kelasSiswa->nis)
-            ->where('kode_kelas', $request->kode_kelas)
-            ->where('semester_id', $request->semester_id)
-            ->where('id', '!=', $id)
-            ->first();
-
-        if ($exists) {
-            return redirect()->back()->with('error', 'Kombinasi siswa, kelas, dan semester ini sudah ada.');
+        // Check if updating to the same class
+        if ($kelasSiswa->kode_kelas == $request->kode_kelas) {
+            return redirect()->back()->with('info', 'Siswa sudah berada di kelas tersebut.');
         }
 
         $kelasSiswa->update([
             'kode_kelas' => $request->kode_kelas,
-            'semester_id' => $request->semester_id,
         ]);
 
         return redirect()->back()->with('success', 'Penempatan kelas berhasil diperbarui.');

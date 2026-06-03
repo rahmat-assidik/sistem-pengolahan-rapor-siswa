@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         $tables = [
             'user', 'guru', 'siswa', 'kelas', 'mapel', 
             'tahun_ajaran', 'semester', 'riwayat_kelas_siswa', 
-            'pengampu', 'wali_kelas', 'nilai', 'komponen_nilai'
+            'pengampu', 'wali_kelas', 'nilai'
         ];
         
         foreach ($tables as $table) {
@@ -156,39 +156,29 @@ class DatabaseSeeder extends Seeder
             $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
             $pengampus[] = Pengampu::create(['guru_id' => $guruDewi->nip, 'mapel_id' => $mtk->kode_mapel, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
 
-            // 9. ISI KOMPONEN & NILAI SAMPEL
+            // 9. ISI NILAI SAMPEL
             foreach ($pengampus as $p) {
-                // Buat Komponen Nilai Dinamis (Hanya Tugas & UH)
-                $k1 = \App\Models\KomponenNilai::create(['pengampu_id' => $p->id, 'nama_komponen' => 'Tugas Mandiri', 'tipe' => 'p_tugas']);
-                $k2 = \App\Models\KomponenNilai::create(['pengampu_id' => $p->id, 'nama_komponen' => 'Ulangan Harian', 'tipe' => 'p_uh']);
-
                 // Cari semua siswa yang ada di kelas pengampu ini
                 $siswaDiKelas = array_filter($activeKelasSiswa, function($ks) use ($p) {
                     return $ks->kode_kelas == $p->kelas->kode_kelas;
                 });
 
                 foreach ($siswaDiKelas as $ks) {
-                    // 1. Isi Nilai Komponen Dinamis (Tugas & UH)
-                    foreach ([$k1, $k2] as $komp) {
-                        Nilai::create([
-                            'kelas_siswa_id' => $ks->id,
-                            'pengampu_id' => $p->id,
-                            'komponen_nilai_id' => $komp->id,
-                            'jenis_nilai' => 'dynamic', // Kode standar untuk komponen dinamis
-                            'skor' => rand(75, 98)
-                        ]);
-                    }
+                    $tugas = rand(75, 98);
+                    $ulangan = rand(70, 95);
+                    $uts = rand(75, 95);
+                    $uas = rand(70, 90);
+                    $nilai_akhir = ($tugas + $ulangan + $uts + $uas) / 4;
 
-                    // 2. Isi Nilai Statis (UTS & UAS) - Langsung via jenis_nilai
-                    Nilai::create(['kelas_siswa_id' => $ks->id, 'pengampu_id' => $p->id, 'jenis_nilai' => 'p_uts', 'skor' => rand(75, 95)]);
-                    Nilai::create(['kelas_siswa_id' => $ks->id, 'pengampu_id' => $p->id, 'jenis_nilai' => 'p_uas', 'skor' => rand(70, 90)]);
-
-                    // 3. Isi Nilai Keterampilan
-                    Nilai::create(['kelas_siswa_id' => $ks->id, 'pengampu_id' => $p->id, 'jenis_nilai' => 'k_praktik', 'skor' => rand(78, 95)]);
-
-                    // 4. Isi Nilai Sikap
-                    Nilai::create(['kelas_siswa_id' => $ks->id, 'pengampu_id' => $p->id, 'jenis_nilai' => 's_spiritual', 'skor' => rand(3, 4)]);
-                    Nilai::create(['kelas_siswa_id' => $ks->id, 'pengampu_id' => $p->id, 'jenis_nilai' => 's_sosial', 'skor' => rand(3, 4)]);
+                    Nilai::create([
+                        'kelas_siswa_id' => $ks->id,
+                        'pengampu_id' => $p->id,
+                        'tugas' => $tugas,
+                        'ulangan' => $ulangan,
+                        'uts' => $uts,
+                        'uas' => $uas,
+                        'nilai_akhir' => $nilai_akhir
+                    ]);
                 }
             }
 

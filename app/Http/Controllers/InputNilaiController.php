@@ -9,7 +9,6 @@ use App\Models\Mapel;
 use App\Models\RiwayatKelasSiswa;
 use App\Models\Semester;
 use App\Models\Siswa;
-use App\Models\KomponenNilai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -47,12 +46,8 @@ class InputNilaiController extends Controller
 
         $siswaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
         $siswaJsonData = collect([]);
-        $komponenList = collect([]);
 
         if ($selectedPengampu && $semesterAktif) {
-            // Ambil Komponen Dinamis
-            $komponenList = KomponenNilai::where('pengampu_id', $selectedPengampu->id)->get();
-
             // Ambil KelasSiswa (Bridge antara Siswa, Kelas, dan Semester)
             $siswaList = Siswa::whereHas('kelasSiswa', function($q) use ($selectedPengampu, $semesterAktif) {
                     $q->where('kode_kelas', $selectedPengampu->kelas->kode_kelas)
@@ -72,80 +67,27 @@ class InputNilaiController extends Controller
 
             $kelasSiswaIds = $kelasSiswaMap->pluck('id');
 
-            // Ambil Nilai Vertikal dan kelompokkan
-            $nilaiGrouped = Nilai::where('pengampu_id', $selectedPengampu->id)
+            // Ambil Nilai yang fix
+            $nilaiMap = Nilai::where('pengampu_id', $selectedPengampu->id)
                 ->whereIn('kelas_siswa_id', $kelasSiswaIds)
                 ->get()
-                ->groupBy('kelas_siswa_id');
+                ->keyBy('kelas_siswa_id');
 
-            $siswaJsonData = collect($siswaList->items())->map(function ($s) use ($kelasSiswaMap, $nilaiGrouped, $komponenList) {
+            $siswaJsonData = collect($siswaList->items())->map(function ($s) use ($kelasSiswaMap, $nilaiMap) {
                 $ks = $kelasSiswaMap->get($s->nis);
-                $nSiswa = $nilaiGrouped->get($ks->id) ?? collect([]);
+                $nSiswa = $nilaiMap->get($ks->id);
                 
-                // Helper to get score by component ID
-                $getSkorKomp = fn($comp_id) => $nSiswa->firstWhere('komponen_nilai_id', $comp_id)?->skor;
-                // Helper to get score by fixed type (UTS/UAS/Sikap)
-                $getSkorFixed = fn($type) => $nSiswa->firstWhere('jenis_nilai', $type)->whereNull('komponen_nilai_id')->first()?->skor;
-
-                // Hitung Rata-rata Pengetahuan dengan pembobotan dinamis
-                $t_vals = [];
-                $uh_vals = [];
-                
-                foreach($komponenList as $komp) {
-                    $val = $getSkorKomp($komp->id);
-                    if ($val !== null) {
-                        if ($komp->tipe === 'p_tugas') $t_vals[] = $val;
-                        if ($komp->tipe === 'p_uh') $uh_vals[] = $val;
-                    }
-                }
-                
-                $t_avg = count($t_vals) > 0 ? array_sum($t_vals) / count($t_vals) : null;
-                $uh_avg = count($uh_vals) > 0 ? array_sum($uh_vals) / count($uh_vals) : null;
-
-                $nh_components = array_filter([$t_avg, $uh_avg], fn($v) => $v !== null);
-                $p_uts = $nSiswa->where('jenis_nilai', 'p_uts')->first()?->skor;
-                $p_uas = $nSiswa->where('jenis_nilai', 'p_uas')->first()?->skor;
-
-                if (count($nh_components) > 0 || $p_uts !== null || $p_uas !== null) {
-                    $nh = count($nh_components) > 0 ? array_sum($nh_components) / count($nh_components) : 0;
-                    $p_avg = round(((2 * $nh) + ($p_uts ?? 0) + ($p_uas ?? 0)) / 4, 1);
-                } else {
-                    $p_avg = null;
-                }
-
-                $k_vals = array_filter([
-                    $nSiswa->where('jenis_nilai', 'k_praktik')->first()?->skor,
-                    $nSiswa->where('jenis_nilai', 'k_proyek')->first()?->skor,
-                    $nSiswa->where('jenis_nilai', 'k_portofolio')->first()?->skor
-                ], fn($v) => $v !== null);
-                
-                $k_avg = count($k_vals) > 0 ? round(array_sum($k_vals) / count($k_vals), 2) : null;
-
-                // Konversi Skor Sikap kembali ke Huruf (4=A, 3=B, 2=C, 1=D)
-                $numToChar = [4 => 'A', 3 => 'B', 2 => 'C', 1 => 'D', 0 => 'B'];
-                
-                // Construct score array for dynamic components
-                $scores = [];
-                foreach($komponenList as $komp) {
-                    $scores['comp_' . $komp->id] = $getSkorKomp($komp->id);
-                }
-
-                return array_merge([
+                return [
                     'id' => $s->id,
                     'nis' => $s->nis,
                     'nama' => $s->nama_siswa,
-                    'p_uts' => $p_uts,
-                    'p_uas' => $p_uas,
-                    'p_avg' => $p_avg,
-                    'p_pred' => Nilai::hitungPredikat($p_avg),
-                    'k_praktik' => $nSiswa->where('jenis_nilai', 'k_praktik')->first()?->skor,
-                    'k_proyek' => $nSiswa->where('jenis_nilai', 'k_proyek')->first()?->skor,
-                    'k_portofolio' => $nSiswa->where('jenis_nilai', 'k_portofolio')->first()?->skor,
-                    'k_avg' => $k_avg,
-                    'k_pred' => Nilai::hitungPredikat($k_avg),
-                    's_spiritual' => ($recS = $nSiswa->where('jenis_nilai', 's_spiritual')->first()) ? ($numToChar[(int)$recS->skor] ?? '') : '',
-                    's_sosial' => ($recSo = $nSiswa->where('jenis_nilai', 's_sosial')->first()) ? ($numToChar[(int)$recSo->skor] ?? '') : '',
-                ], $scores);
+                    'tugas' => $nSiswa?->tugas,
+                    'ulangan' => $nSiswa?->ulangan,
+                    'uts' => $nSiswa?->uts,
+                    'uas' => $nSiswa?->uas,
+                    'nilai_akhir' => $nSiswa?->nilai_akhir,
+                    'predikat' => Nilai::hitungPredikat($nSiswa?->nilai_akhir),
+                ];
             })->values();
         }
 
@@ -155,8 +97,7 @@ class InputNilaiController extends Controller
             'kelasList',
             'selectedPengampu',
             'siswaList',
-            'siswaJsonData',
-            'komponenList'
+            'siswaJsonData'
         ));
     }
 
@@ -181,65 +122,37 @@ class InputNilaiController extends Controller
 
                 if (!$ks) continue;
 
-                foreach ($fields as $key => $value) {
-                    // Tentukan kriteria pencarian (Unique Key)
-                    $searchCriteria = [
-                        'kelas_siswa_id' => $ks->id, 
-                        'pengampu_id' => $pengampu->id,
-                    ];
+                $tugas = isset($fields['tugas']) && $fields['tugas'] !== '' ? $fields['tugas'] : null;
+                $ulangan = isset($fields['ulangan']) && $fields['ulangan'] !== '' ? $fields['ulangan'] : null;
+                $uts = isset($fields['uts']) && $fields['uts'] !== '' ? $fields['uts'] : null;
+                $uas = isset($fields['uas']) && $fields['uas'] !== '' ? $fields['uas'] : null;
+                $nilai_akhir = isset($fields['nilai_akhir']) && $fields['nilai_akhir'] !== '' ? $fields['nilai_akhir'] : null;
 
-                    if (str_starts_with($key, 'comp_')) {
-                        $searchCriteria['komponen_nilai_id'] = str_replace('comp_', '', $key);
-                        $searchCriteria['jenis_nilai'] = 'dynamic';
-                    } else {
-                        $searchCriteria['jenis_nilai'] = $key;
-                        $searchCriteria['komponen_nilai_id'] = null;
-                        
-                        // Handle Sikap conversion
-                        if (in_array($key, ['s_spiritual', 's_sosial']) && $value !== null && $value !== '') {
-                            $charToNum = ['A' => 4, 'B' => 3, 'C' => 2, 'D' => 1];
-                            $value = $charToNum[$value] ?? 3;
-                        }
-                    }
-
-                    // Logika: Jika value kosong/null, hapus data. Jika ada isi, simpan/update.
-                    if ($value === null || $value === '') {
-                        Nilai::where($searchCriteria)->delete();
-                    } else {
-                        Nilai::updateOrCreate($searchCriteria, ['skor' => $value]);
-                    }
+                // Logika hapus jika semua kosong (opsional) atau update
+                if ($tugas === null && $ulangan === null && $uts === null && $uas === null && $nilai_akhir === null) {
+                    Nilai::where('kelas_siswa_id', $ks->id)
+                         ->where('pengampu_id', $pengampu->id)
+                         ->delete();
+                } else {
+                    Nilai::updateOrCreate(
+                        [
+                            'kelas_siswa_id' => $ks->id, 
+                            'pengampu_id' => $pengampu->id
+                        ],
+                        [
+                            'tugas' => $tugas,
+                            'ulangan' => $ulangan,
+                            'uts' => $uts,
+                            'uas' => $uas,
+                            'nilai_akhir' => $nilai_akhir,
+                        ]
+                    );
                 }
             }
         });
 
         return redirect()->back()->with([
-            'success' => 'Data nilai berhasil disimpan.',
-            'active_tab' => $request->active_tab
+            'success' => 'Data nilai berhasil disimpan.'
         ]);
-    }
-
-    public function storeKomponen(Request $request)
-    {
-        $request->validate([
-            'pengampu_id' => 'required|exists:pengampu,id',
-            'nama_komponen' => 'required|string|max:100',
-            'tipe' => 'required|in:p_tugas,p_uh'
-        ]);
-
-        KomponenNilai::create($request->all());
-
-        return redirect()->back()->with('success', 'Komponen nilai berhasil ditambahkan.');
-    }
-
-    public function destroyKomponen($id)
-    {
-        $komponen = KomponenNilai::findOrFail($id);
-        
-        // Hapus semua nilai yang tertempel pada komponen ini
-        Nilai::where('komponen_nilai_id', $id)->delete();
-        
-        $komponen->delete();
-
-        return redirect()->back()->with('success', 'Komponen nilai dan seluruh datanya berhasil dihapus.');
     }
 }
