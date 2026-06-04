@@ -8,8 +8,10 @@
         openEdit: false, 
         openLihat: false, 
         selectedMapel: {},
+        originalKode: '',
         editMapel(mapel) {
             this.selectedMapel = { ...mapel };
+            this.originalKode = mapel.kode_mapel;
             this.openEdit = true;
         },
         lihatMapel(mapel) {
@@ -90,13 +92,14 @@
 
         {{-- Modal Edit Mata Pelajaran --}}
         <x-modal name="openEdit" title="Edit Data Mata Pelajaran">
-            <form method="POST" :action="'/data_mapel/' + selectedMapel.kode_mapel">
-            @csrf
-            @method('PUT')
+            <form method="POST" :action="'/data_mapel/' + originalKode">
+                @csrf
+                @method('PUT')
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
-                        <input type="text" name="kode_mapel" x-model="selectedMapel.kode_mapel" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <input type="text" name="kode_mapel" x-model="selectedMapel.kode_mapel" required readonly class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded outline-none bg-gray-100 text-gray-500 cursor-not-allowed">
+                        <p class="text-xs text-gray-400 mt-1">Kode mapel tidak dapat diubah</p>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mata Pelajaran</label>
