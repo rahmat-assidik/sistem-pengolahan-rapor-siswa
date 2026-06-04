@@ -68,7 +68,12 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                    <input type="text" name="tingkat" required placeholder="Contoh: 1 atau 10" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    <select name="tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <option value="" disabled selected>Pilih Tingkat</option>
+                        <option value="X">X</option>
+                        <option value="XI">XI</option>
+                        <option value="XII">XII</option>
+                    </select>
                 </div>
 
                 <div class="flex items-center gap-3 mt-8">
@@ -97,7 +102,12 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tingkat</label>
-                    <input type="text" name="tingkat" x-model="selectedKelas.tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                    <select name="tingkat" x-model="selectedKelas.tingkat" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <option value="" disabled>Pilih Tingkat</option>
+                        <option value="X">X</option>
+                        <option value="XI">XI</option>
+                        <option value="XII">XII</option>
+                    </select>
                 </div>
 
                 <div class="flex items-center gap-3 mt-8">
@@ -136,7 +146,7 @@
             <x-search-toolbar 
                 placeholder="Cari kelas berdasarkan Kode atau Nama..." 
                 :filters="[
-                    ['name' => 'tingkat', 'label' => 'Tingkat', 'options' => ['10' => '10', '11' => '11', '12' => '12']]
+                    ['name' => 'tingkat', 'label' => 'Tingkat', 'options' => ['X' => 'X', 'XI' => 'XI', 'XII' => 'XII']]
                 ]"
                 :resetUrl="route('data_kelas')"
                 tambahClick="openTambah = true"

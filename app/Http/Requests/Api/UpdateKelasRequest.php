@@ -16,7 +16,7 @@ class UpdateKelasRequest extends FormRequest
         return [
             'kode_kelas' => 'sometimes|required|string|unique:kelas,kode_kelas,' . $this->kelas->id . '|max:20',
             'nama_kelas' => 'sometimes|required|string|max:100',
-            'tingkat' => 'sometimes|required|integer|in:10,11,12',
+            'tingkat' => 'sometimes|required|string|in:X,XI,XII',
         ];
     }
 
@@ -24,7 +24,7 @@ class UpdateKelasRequest extends FormRequest
     {
         return [
             'kode_kelas.unique' => 'Kode kelas sudah terdaftar',
-            'tingkat.in' => 'Tingkat kelas harus 10, 11, atau 12',
+            'tingkat.in' => 'Tingkat kelas harus X, XI, atau XII',
         ];
     }
 }
