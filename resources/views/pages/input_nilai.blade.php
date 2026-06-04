@@ -3,11 +3,6 @@
 
 @section('content')
     <div class="max-w-full" x-data="inputNilai()">
-        <!-- Header Section - Flat & Clean -->
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Input Capaian Belajar</h2>
-            <p class="text-sm text-gray-500 mt-1">Kelola nilai akademik siswa untuk mata pelajaran dan kelas yang diampu.</p>
-        </div>
 
         <div class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
             <!-- Form Simpan (POST) -->
