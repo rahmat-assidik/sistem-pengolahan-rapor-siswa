@@ -54,7 +54,7 @@ class KelasController extends Controller
         $validated = $request->validate([
             'kode_kelas' => 'required|string|unique:kelas,kode_kelas',
             'nama_kelas' => 'required|string',
-            'tingkat'    => 'required|string',
+            'tingkat'    => 'required|string|in:X,XI,XII',
         ]);
 
         DB::transaction(function () use ($validated) {
@@ -73,7 +73,7 @@ class KelasController extends Controller
         $validated = $request->validate([
             'kode_kelas' => 'required|string|unique:kelas,kode_kelas,' . $id,
             'nama_kelas' => 'required|string',
-            'tingkat'    => 'required|string',
+            'tingkat'    => 'required|string|in:X,XI,XII',
         ]);
 
         DB::transaction(function () use ($validated, $id) {

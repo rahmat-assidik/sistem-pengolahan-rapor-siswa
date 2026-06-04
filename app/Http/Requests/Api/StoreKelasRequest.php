@@ -16,7 +16,7 @@ class StoreKelasRequest extends FormRequest
         return [
             'kode_kelas' => 'required|string|unique:kelas,kode_kelas|max:20',
             'nama_kelas' => 'required|string|max:100',
-            'tingkat' => 'required|integer|in:10,11,12',
+            'tingkat' => 'required|string|in:X,XI,XII',
         ];
     }
 
@@ -27,7 +27,7 @@ class StoreKelasRequest extends FormRequest
             'kode_kelas.unique' => 'Kode kelas sudah terdaftar',
             'nama_kelas.required' => 'Nama kelas harus diisi',
             'tingkat.required' => 'Tingkat kelas harus diisi',
-            'tingkat.in' => 'Tingkat kelas harus 10, 11, atau 12',
+            'tingkat.in' => 'Tingkat kelas harus X, XI, atau XII',
         ];
     }
 }
