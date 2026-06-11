@@ -7,14 +7,43 @@
         selectedIds: [],
         selectAll: false,
         isLoading: false,
+        storageKey: 'selected_students_{{ $kelas->kode_kelas }}',
+
+        init() {
+            // Muat data dari localStorage saat halaman dibuka
+            const saved = localStorage.getItem(this.storageKey);
+            if (saved) {
+                this.selectedIds = JSON.parse(saved);
+            }
+
+            // Simpan otomatis ke localStorage setiap kali ada perubahan
+            this.$watch('selectedIds', (value) => {
+                localStorage.setItem(this.storageKey, JSON.stringify(value));
+            });
+        },
 
         toggleSelectAll() {
-            this.selectAll = !this.selectAll;
+            const currentPageIds = Array.from(document.querySelectorAll('.siswa-checkbox')).map(el => el.value);
+            
             if (this.selectAll) {
-                this.selectedIds = Array.from(document.querySelectorAll('.siswa-checkbox')).map(el => el.value);
+                // Tambahkan ID halaman ini ke daftar terpilih jika belum ada
+                currentPageIds.forEach(id => {
+                    if (!this.selectedIds.includes(id)) {
+                        this.selectedIds.push(id);
+                    }
+                });
             } else {
-                this.selectedIds = [];
+                // Hapus ID halaman ini dari daftar terpilih
+                this.selectedIds = this.selectedIds.filter(id => !currentPageIds.includes(id));
             }
+        },
+
+        handleSubmit() {
+            this.isLoading = true;
+            // Hapus storage setelah submit berhasil agar tidak nyangkut untuk transaksi berikutnya
+            setTimeout(() => {
+                localStorage.removeItem(this.storageKey);
+            }, 1000);
         },
 
         konfirmasiKeluarkan(id, namaSiswa) {
