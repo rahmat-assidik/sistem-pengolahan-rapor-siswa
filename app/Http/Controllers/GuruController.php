@@ -27,64 +27,6 @@ class GuruController extends Controller
         return view('pages.data_guru', compact('guruData'));
     }
 
-    /**
-     * Menampilkan halaman untuk membuat akun guru
-     */
-    public function manageAkunGuru(Request $request)
-    {
-        $query = Guru::leftJoin('user', 'guru.nip', '=', 'user.guru_id')
-                      ->select('guru.*', 'user.username')
-                      ->distinct();
-
-        if ($request->search) {
-            $query->where('guru.nip', 'like', '%' . $request->search . '%')
-                  ->orWhere('guru.nama_guru', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter berdasarkan status akun
-        if ($request->akun_status === 'sudah') {
-            $query->whereNotNull('user.username');
-        } elseif ($request->akun_status === 'belum') {
-            $query->whereNull('user.username');
-        }
-
-        if ($request->status) {
-            $query->where('guru.status', $request->status);
-        }
-
-        $guruData = $query->paginate(10);
-
-        return view('pages.akun_guru', compact('guruData'));
-    }
-
-    /**
-     * Membuat akun guru baru
-     */
-    public function storeAkunGuru(Request $request)
-    {
-        $request->validate([
-            'nip' => 'required|exists:guru,nip|unique:user,guru_id',
-        ]);
-
-        $guru = Guru::findOrFail($request->nip);
-
-        // Cek apakah akun sudah ada
-        if ($guru->user) {
-            return redirect()->route('akun_guru')->with('error', 'Guru ini sudah memiliki akun');
-        }
-
-        // Buat user dengan password default (NIP)
-        User::create([
-            'username' => $guru->nip,
-            'nama' => $guru->nama_guru,
-            'email' => $guru->email,
-            'password' => Hash::make($guru->nip),
-            'role' => 'guru',
-            'guru_id' => $guru->nip,
-        ]);
-
-        return redirect()->route('akun_guru')->with('success', 'Akun guru berhasil dibuat. Password default: ' . $guru->nip);
-    }
 
 public function store(Request $request)
 {
@@ -94,7 +36,7 @@ public function store(Request $request)
         'email' => 'required|email|unique:guru,email',
     ]);
 
-    Guru::create([
+    $guru = Guru::create([
         'nip'          => $request->nip,
         'nama_guru'    => $request->nama_guru,
         'email'        => $request->email,
@@ -103,7 +45,17 @@ public function store(Request $request)
         'status'       => $request->status,
     ]);
 
-    return redirect()->route('data_guru')->with('success', 'Data guru berhasil ditambahkan');
+    // Otomatis buat akun guru
+    User::create([
+        'username' => $guru->nip,
+        'nama'     => $guru->nama_guru,
+        'email'    => $guru->email,
+        'password' => Hash::make($guru->nip),
+        'role'     => 'guru',
+        'guru_id'  => $guru->nip,
+    ]);
+
+    return redirect()->route('data_guru')->with('success', 'Data guru dan akun berhasil ditambahkan');
 }
 
 public function update(Request $request, $nip)
