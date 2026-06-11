@@ -112,7 +112,7 @@
                 <a href="{{ route('pembagian_kelas') }}"
                    @click="sidebarOpen = false"
                    class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                          {{ request()->is('pembagian_kelas')
+                          {{ request()->is('pembagian_kelas*')
                              ? 'bg-gray-900 text-white font-semibold'
                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                     <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">

@@ -3,7 +3,7 @@
 @section('title', 'Login - Smart Rapor')
 
 @section('content')
-    <div class="w-full max-w-md" x-data="{ showPass: false }">
+    <div class="w-full max-w-md" x-data="{ showPass: false, isLoading: false }">
         {{-- Ultra-Flat Card --}}
         <div class="bg-white p-10 rounded"> {{-- Standardized to 4px --}}
             
@@ -20,7 +20,7 @@
             </div>
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
+            <form method="POST" action="{{ route('login.post') }}" class="space-y-6" @submit="isLoading = true">
                 @csrf
 
                 @if($errors->has('username'))
@@ -58,8 +58,18 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-none">
-                    Login
+                <button type="submit" 
+                        :disabled="isLoading"
+                        class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                    <template x-if="!isLoading">
+                        <span>Login</span>
+                    </template>
+                    <template x-if="isLoading">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-spinner animate-spin"></i>
+                            <span>Memproses...</span>
+                        </div>
+                    </template>
                 </button>
             </form>
         </div>

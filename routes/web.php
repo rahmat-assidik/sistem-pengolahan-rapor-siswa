@@ -79,9 +79,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
+        Route::get('/pembagian_kelas/{kode_kelas}/kelola', [PembagianKelasController::class, 'manageStudents'])->name('pembagian_kelas.manage');
         Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
         Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');
         Route::delete('/pembagian_kelas/{id}', [PembagianKelasController::class, 'destroy'])->name('pembagian_kelas.destroy');
+        Route::post('/pembagian_kelas/bulk', [PembagianKelasController::class, 'bulkStore'])->name('pembagian_kelas.bulk');
+        Route::post('/pembagian_kelas/move-all', [PembagianKelasController::class, 'moveAll'])->name('pembagian_kelas.move_all');
         
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');
