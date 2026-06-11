@@ -58,7 +58,7 @@
         <x-modal name="openTambah" title="Tambah Mata Pelajaran Baru">
             <form action="{{ route('data_mapel.store') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
                         <input type="text" name="kode_mapel" required placeholder="Contoh: MTK" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -68,7 +68,7 @@
                         <input type="text" name="nama_mapel" required placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
                         <input type="text" name="kelompok" placeholder="Contoh: Wajib, Peminatan" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -95,7 +95,7 @@
             <form method="POST" :action="'/data_mapel/' + originalKode">
                 @csrf
                 @method('PUT')
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
                         <input type="text" name="kode_mapel" x-model="selectedMapel.kode_mapel" required readonly class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded outline-none bg-gray-100 text-gray-500 cursor-not-allowed">
@@ -106,7 +106,7 @@
                         <input type="text" name="nama_mapel" x-model="selectedMapel.nama_mapel" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
                         <input type="text" name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">

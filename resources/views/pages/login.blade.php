@@ -3,9 +3,9 @@
 @section('title', 'Login - Smart Rapor')
 
 @section('content')
-    <div class="w-full max-w-sm" x-data="{ showPass: false }">
+    <div class="w-full max-w-md" x-data="{ showPass: false }">
         {{-- Ultra-Flat Card --}}
-        <div class="bg-white border border-gray-200 p-10 rounded"> {{-- Standardized to 4px --}}
+        <div class="bg-white p-10 rounded"> {{-- Standardized to 4px --}}
             
             {{-- Simple Logo --}}
             {{-- Preferred Logo Style --}}
@@ -30,7 +30,7 @@
                 @endif
 
                 <div class="space-y-1">
-                    <label for="username" class="text-[10px] font-semibold text-gray-500">NIP</label>
+                    <label for="username" class="text-xs font-semibold text-black">NIP</label>
                     <input type="text" id="username" name="username" required
                            class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                            placeholder="NIP Anda">
@@ -38,8 +38,8 @@
 
                 <div class="space-y-1">
                     <div class="flex justify-between items-center">
-                        <label for="password" class="text-[10px] font-semibold text-gray-500">Password</label>
-                        <a href="{{ route('lupa_sandi') }}" class="text-[10px] text-gray-400 hover:text-black">Lupa sandi?</a>
+                        <label for="password" class="text-xs font-semibold text-black">Password</label>
+                        <a href="{{ route('lupa_sandi') }}" class="text-xs text-gray-500 hover:text-black">Lupa sandi?</a>
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
@@ -54,7 +54,7 @@
                 <div class="flex items-center justify-between">
                     <label class="flex items-center gap-2 cursor-pointer group">
                         <input type="checkbox" name="remember" class="w-3.5 h-3.5 border-gray-300 rounded text-black focus:ring-0 cursor-pointer">
-                        <span class="text-[10px] font-semibold text-gray-500 group-hover:text-black transition-colors">Ingat saya</span>
+                        <span class="text-xs font-semibold text-black transition-colors">Ingat saya</span>
                     </label>
                 </div>
 
@@ -63,9 +63,5 @@
                 </button>
             </form>
         </div>
-
-        <p class="text-center mt-6 text-[9px] text-gray-400 font-medium tracking-tight">
-            Sistem Informasi Rapor Digital
-        </p>
     </div>
 @endsection

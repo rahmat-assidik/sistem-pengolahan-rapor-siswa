@@ -83,7 +83,7 @@
                     <input type="hidden" name="guru_id" :value="selectedId">
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
                         <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
@@ -213,7 +213,7 @@
                     <input type="hidden" name="guru_id" :value="selectedId">
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
                         <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">

@@ -3,9 +3,9 @@
 @section('title', 'Lupa Sandi - Smart Rapor')
 
 @section('content')
-    <div class="w-full max-w-sm">
+    <div class="w-full max-w-md">
         {{-- Ultra-Flat Card --}}
-        <div class="bg-white border border-gray-200 p-10 text-center rounded">
+        <div class="bg-white p-10 text-center rounded">
             
             {{-- Preferred Logo Style --}}
             <div class="flex items-center gap-2 mb-10 justify-center">
@@ -29,7 +29,7 @@
                     @csrf
 
                     <div class="space-y-1">
-                        <label for="email" class="text-[10px] font-semibold text-gray-500">Email</label>
+                        <label for="email" class="text-xs font-semibold text-black">Email</label>
                         <input type="email" id="email" name="email" required
                                class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                                placeholder="email@sekolah.sch.id">
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-gray-100 text-[10px]">
+            <div class="mt-8 pt-6 border-t border-gray-100 text-xs">
                 <a href="{{ route('login') }}" class="font-semibold text-gray-400 hover:text-black">Kembali ke login</a>
             </div>
         </div>

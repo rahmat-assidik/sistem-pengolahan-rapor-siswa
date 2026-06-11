@@ -59,7 +59,7 @@
         <x-modal name="openTambah" title="Tambah Guru Baru">
             <form action="{{ route('data_guru.store') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIP/Kode Guru</label>
                         <input type="text" name="nip" required placeholder="Masukkan NIP" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -73,7 +73,7 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
                     <input type="email" name="email" required placeholder="Masukkan email guru" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
@@ -109,7 +109,7 @@
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="original_nip" x-bind:value="selectedGuru.original_nip">
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIP/Kode Guru</label>
                         <input type="text" name="nip" x-model="selectedGuru.nip" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50" readonly>
@@ -123,7 +123,7 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
                     <input type="email" name="email" x-model="selectedGuru.email" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" x-model="selectedGuru.jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
