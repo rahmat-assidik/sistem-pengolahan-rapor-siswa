@@ -85,9 +85,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                            <option value="Alumni">Alumni</option>
-                            <option value="Mutasi">Mutasi</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
@@ -133,9 +131,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" x-model="selectedSiswa.status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                            <option value="Alumni">Alumni</option>
-                            <option value="Mutasi">Mutasi</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
@@ -187,7 +183,7 @@
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
                 :filters="[
                     ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
-                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif', 'Alumni' => 'Alumni', 'Mutasi' => 'Mutasi']]
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"

@@ -78,11 +78,11 @@
                 title: type === 'success' ? 'Berhasil' : (type === 'error' ? 'Kesalahan' : 'Informasi'),
                 text: message,
                 icon: type,
-                confirmButtonText: 'Selesai',
-                confirmButtonColor: '#111827',
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false,
                 customClass: {
                     popup: 'rounded-xl border border-gray-100 shadow-2xl',
-                    confirmButton: 'px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded transition-all active:scale-[0.98]'
                 }
             });
         };
