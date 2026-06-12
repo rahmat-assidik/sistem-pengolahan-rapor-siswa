@@ -102,9 +102,9 @@
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $kelas->nama_kelas }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $kelas->tingkat }}</td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="inline-flex px-3 py-1 text-sm font-bold bg-blue-100 text-blue-800 rounded-full">
+                                    <x-badge type="info" :dot="false">
                                         {{ $kelas->kelas_siswa_count }} Siswa
-                                    </span>
+                                    </x-badge>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <a href="{{ route('pembagian_kelas.manage', $kelas->kode_kelas) }}" 

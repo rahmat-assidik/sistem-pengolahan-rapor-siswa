@@ -9,7 +9,6 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
-use App\Http\Controllers\RekapnilaiController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
@@ -75,7 +74,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
-        Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');

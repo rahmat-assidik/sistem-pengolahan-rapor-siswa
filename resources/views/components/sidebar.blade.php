@@ -164,18 +164,6 @@
                     </svg>
                     <span>Pengampu</span>
                 </a>
-                
-                <a href="{{ route('rekap_nilai') }}"
-                   @click="sidebarOpen = false"
-                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
-                          {{ request()->is('rekap_nilai')
-                             ? 'bg-gray-900 text-white font-semibold'
-                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    <span>Rekap Nilai</span>
-                </a>
                 @endif
 
 
