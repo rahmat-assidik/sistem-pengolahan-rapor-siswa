@@ -3,9 +3,9 @@
 @section('title', 'Login - Smart Rapor')
 
 @section('content')
-    <div class="w-full max-w-sm" x-data="{ showPass: false }">
+    <div class="w-full max-w-md" x-data="{ showPass: false, isLoading: false }">
         {{-- Ultra-Flat Card --}}
-        <div class="bg-white border border-gray-200 p-10 rounded"> {{-- Standardized to 4px --}}
+        <div class="bg-white p-10 rounded"> {{-- Standardized to 4px --}}
             
             {{-- Simple Logo --}}
             {{-- Preferred Logo Style --}}
@@ -20,7 +20,7 @@
             </div>
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
+            <form method="POST" action="{{ route('login.post') }}" class="space-y-6" @submit="isLoading = true">
                 @csrf
 
                 @if($errors->has('username'))
@@ -30,7 +30,7 @@
                 @endif
 
                 <div class="space-y-1">
-                    <label for="username" class="text-[10px] font-semibold text-gray-500">NIP</label>
+                    <label for="username" class="text-xs font-semibold text-black">NIP</label>
                     <input type="text" id="username" name="username" required
                            class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
                            placeholder="NIP Anda">
@@ -38,8 +38,8 @@
 
                 <div class="space-y-1">
                     <div class="flex justify-between items-center">
-                        <label for="password" class="text-[10px] font-semibold text-gray-500">Password</label>
-                        <a href="{{ route('lupa_sandi') }}" class="text-[10px] text-gray-400 hover:text-black">Lupa sandi?</a>
+                        <label for="password" class="text-xs font-semibold text-black">Password</label>
+                        <a href="{{ route('lupa_sandi') }}" class="text-xs text-gray-500 hover:text-black">Lupa sandi?</a>
                     </div>
                     <div class="relative">
                         <input type="password" :type="showPass ? 'text' : 'password'" id="password" name="password" required
@@ -54,18 +54,24 @@
                 <div class="flex items-center justify-between">
                     <label class="flex items-center gap-2 cursor-pointer group">
                         <input type="checkbox" name="remember" class="w-3.5 h-3.5 border-gray-300 rounded text-black focus:ring-0 cursor-pointer">
-                        <span class="text-[10px] font-semibold text-gray-500 group-hover:text-black transition-colors">Ingat saya</span>
+                        <span class="text-xs font-semibold text-black transition-colors">Ingat saya</span>
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-none">
-                    Login
+                <button type="submit" 
+                        :disabled="isLoading"
+                        class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                    <template x-if="!isLoading">
+                        <span>Login</span>
+                    </template>
+                    <template x-if="isLoading">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-spinner animate-spin"></i>
+                            <span>Memproses...</span>
+                        </div>
+                    </template>
                 </button>
             </form>
         </div>
-
-        <p class="text-center mt-6 text-[9px] text-gray-400 font-medium tracking-tight">
-            Sistem Informasi Rapor Digital
-        </p>
     </div>
 @endsection

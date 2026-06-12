@@ -56,7 +56,7 @@
         <x-modal name="openTambah" title="Tambah Siswa Baru">
             <form action="{{ route('data_siswa.store') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
                         <input type="text" name="nis" required placeholder="Masukkan NIS" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -66,7 +66,7 @@
                         <input type="text" name="nama_siswa" required placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
@@ -80,14 +80,12 @@
                         <input type="number" name="angkatan" required placeholder="Contoh: 2024" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                            <option value="Alumni">Alumni</option>
-                            <option value="Mutasi">Mutasi</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
@@ -105,7 +103,7 @@
             <form :action="`/data_siswa/${selectedSiswa.nis}`" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIS</label>
                         <input type="text" name="nis" x-model="selectedSiswa.nis" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -115,7 +113,7 @@
                         <input type="text" name="nama_siswa" x-model="selectedSiswa.nama_siswa" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" x-model="selectedSiswa.jenis_kelamin" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
@@ -128,14 +126,12 @@
                         <input type="number" name="angkatan" x-model="selectedSiswa.angkatan" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" x-model="selectedSiswa.status" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                            <option value="Alumni">Alumni</option>
-                            <option value="Mutasi">Mutasi</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
@@ -187,7 +183,7 @@
                 placeholder="Cari siswa berdasarkan NIS atau Nama..." 
                 :filters="[
                     ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
-                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif', 'Alumni' => 'Alumni', 'Mutasi' => 'Mutasi']]
+                    ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Tidak Aktif' => 'Tidak Aktif']]
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"

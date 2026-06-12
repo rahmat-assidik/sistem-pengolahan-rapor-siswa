@@ -9,7 +9,6 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
-use App\Http\Controllers\RekapnilaiController;
 use App\Http\Controllers\RaporController;
 use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
@@ -61,8 +60,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
         Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
 
-        Route::get('/akun_guru', [GuruController::class, 'manageAkunGuru'])->name('akun_guru');
-        Route::post('/akun_guru', [GuruController::class, 'storeAkunGuru'])->name('akun_guru.store');
 
         Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
         Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
@@ -77,13 +74,15 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
-        Route::get('/rekap_nilai', [RekapnilaiController::class, 'showRekapNilai'])->name('rekap_nilai');
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
+        Route::get('/pembagian_kelas/{kode_kelas}/kelola', [PembagianKelasController::class, 'manageStudents'])->name('pembagian_kelas.manage');
         Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
         Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');
         Route::delete('/pembagian_kelas/{id}', [PembagianKelasController::class, 'destroy'])->name('pembagian_kelas.destroy');
+        Route::post('/pembagian_kelas/bulk', [PembagianKelasController::class, 'bulkStore'])->name('pembagian_kelas.bulk');
+        Route::post('/pembagian_kelas/move-all', [PembagianKelasController::class, 'moveAll'])->name('pembagian_kelas.move_all');
         
         // Akademik Management
         Route::get('/akademik', [AkademikController::class, 'index'])->name('akademik');

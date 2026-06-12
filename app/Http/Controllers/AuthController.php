@@ -21,7 +21,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->with('success', 'Selamat Datang! Anda berhasil masuk ke sistem.');
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
@@ -33,6 +33,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem.');
+        return redirect()->route('login');
     }
 }

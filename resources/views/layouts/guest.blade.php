@@ -40,7 +40,7 @@
 
     @stack('styles')
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-sans px-4 antialiased">
+<body class="min-h-screen flex flex-col items-center justify-center bg-white font-sans px-4 antialiased">
 
     @yield('content')
 

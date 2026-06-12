@@ -44,7 +44,7 @@ class SiswaController extends Controller
             'nama_siswa' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'angkatan' => 'required|integer',
-            'status' => 'required|in:Aktif,Nonaktif,Alumni,Mutasi',
+            'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
         Siswa::create($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
@@ -61,7 +61,7 @@ class SiswaController extends Controller
             'nama_siswa' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'angkatan' => 'required|integer',
-            'status' => 'required|in:Aktif,Nonaktif,Alumni,Mutasi',
+            'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
         $siswa->update($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));

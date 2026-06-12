@@ -66,7 +66,7 @@
             </div>
 
             {{-- Semester Options --}}
-            <div class="p-5 grid grid-cols-2 gap-4 flex-1 bg-white">
+            <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 bg-white">
                 @foreach(['Ganjil', 'Genap'] as $smt_type)
                     @php 
                         $smt = $ta->semester->where('semester', $smt_type)->first(); 
@@ -125,7 +125,7 @@
                     <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
                     <p class="text-[11px] text-blue-700 leading-relaxed">Nama Tahun Pelajaran akan dibuat secara otomatis dalam format <span class="font-bold">YYYY/YYYY</span> berdasarkan Tanggal Mulai yang Anda pilih.</p>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai</label>
                         <input type="date" name="tanggal_mulai" required
@@ -157,7 +157,7 @@
                     <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
                     <p class="text-[11px] text-blue-700 leading-relaxed">Nama Tahun Pelajaran <span class="font-bold" x-text="taNama"></span> akan diperbarui secara otomatis berdasarkan Tanggal Mulai yang baru.</p>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tanggal Mulai</label>
                         <input type="date" name="tanggal_mulai" required x-model="taMulai"
