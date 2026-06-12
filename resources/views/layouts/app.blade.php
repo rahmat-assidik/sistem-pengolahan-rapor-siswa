@@ -103,7 +103,7 @@
     <x-sidebar />
  
     {{-- Main Content --}}
-    <main class="ml-0 lg:ml-52 min-h-screen bg-gray-50 p-4 lg:p-5 pt-16 lg:pt-4">
+    <main class="ml-0 lg:ml-52 min-h-screen bg-gray-50 p-4 lg:p-5 pt-16 lg:pt-4"> {{-- ml disesuaikan dengan lebar sidebar baru, responsive --}}
         <div class="flex flex-col gap-5">
             {{-- Error Alerts --}}
             <div class="space-y-3">
