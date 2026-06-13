@@ -16,6 +16,7 @@ use App\Http\Controllers\AkademikController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\ArsipSiswaController;
 use App\Http\Controllers\PembagianKelasController;
+use App\Http\Controllers\BobotNilaiController;
 
 use App\Http\Controllers\UbahKataSandiController;
 
@@ -92,6 +93,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/akademik/set-aktif/{id}', [AkademikController::class, 'setAktif'])->name('akademik.set_aktif');
         Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');
         Route::post('/akademik/ta/set-aktif/{id}', [AkademikController::class, 'setAktifTa'])->name('akademik.ta.set_aktif');
+
+        // Global Grade Weights Management
+        Route::get('/bobot_nilai', [BobotNilaiController::class, 'index'])->name('settings.bobot');
+        Route::put('/bobot_nilai', [BobotNilaiController::class, 'update'])->name('settings.update');
     });
 
     // Guru Only Routes

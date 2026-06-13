@@ -9,6 +9,7 @@ use App\Models\Mapel;
 use App\Models\RiwayatKelasSiswa;
 use App\Models\Semester;
 use App\Models\Siswa;
+use App\Models\BobotNilai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,7 @@ class InputNilaiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
         $user = auth()->user();
+        $settings = BobotNilai::current();
 
         $pengampuList = Pengampu::with(['mapel', 'kelas'])
             ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
@@ -25,22 +27,24 @@ class InputNilaiController extends Controller
             ->where('status', 'Aktif')
             ->get();
 
-        $mapelList = $pengampuList->pluck('mapel')->unique('id')->values();
-        $kelasList = $pengampuList->pluck('kelas')->unique('id')->values();
-
-        $mapelId = $request->get('mapel_id');
+        $mapelList = $pengampuList->pluck('mapel')->unique('kode_mapel')->values();
+        
+        $mapelId = $request->get('mapel_id', $mapelList->first()?->kode_mapel);
+        
+        // Filter kelas list based on selected mapel
+        $kelasList = $pengampuList->where('mapel_id', $mapelId)->pluck('kelas')->unique('id')->values();
+        
         $kelasId = $request->get('kelas_id');
-
-        if ($mapelId && $kelasId) {
-            $selectedPengampu = $pengampuList->where('mapel_id', $mapelId)
-                                           ->where('kelas_id', $kelasId)
-                                           ->first();
-        } else {
-            $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
-            $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        // Memastikan kelas_id valid untuk mapel yang dipilih, jika tidak valid ambil yang pertama
+        if (!$kelasList->contains('id', $kelasId)) {
+            $kelasId = $kelasList->first()?->id;
         }
 
-        if ($request->filled('pengampu_id') && !$selectedPengampu) {
+        $selectedPengampu = $pengampuList->where('mapel_id', $mapelId)
+                                       ->where('kelas_id', $kelasId)
+                                       ->first();
+
+        if ($request->filled('mapel_id') && $request->filled('kelas_id') && !$selectedPengampu) {
              return redirect()->route('input_nilai')->with('error', 'Anda tidak memiliki otoritas untuk mengakses data ini.');
         }
 
@@ -97,7 +101,8 @@ class InputNilaiController extends Controller
             'kelasList',
             'selectedPengampu',
             'siswaList',
-            'siswaJsonData'
+            'siswaJsonData',
+            'settings'
         ));
     }
 
@@ -105,14 +110,20 @@ class InputNilaiController extends Controller
     {
         $request->validate([
             'pengampu_id' => 'required|exists:pengampu,id',
-            'nilai' => 'required|array',
+            'kkm'         => 'required|integer|min:0|max:100',
+            'nilai'       => 'required|array',
         ]);
 
         $pengampu = Pengampu::findOrFail($request->pengampu_id);
         $semesterId = $pengampu->semester_id;
         $dataNilai = $request->input('nilai');
 
-        DB::transaction(function() use ($pengampu, $semesterId, $dataNilai) {
+        $settings = BobotNilai::current();
+
+        DB::transaction(function() use ($pengampu, $semesterId, $dataNilai, $request, $settings) {
+            // Update KKM pengampu
+            $pengampu->update(['kkm' => $request->kkm]);
+
             foreach ($dataNilai as $siswaId => $fields) {
                 // Cari context riwayat kelas siswa
                 $ks = RiwayatKelasSiswa::where('nis', $siswaId)
@@ -122,14 +133,29 @@ class InputNilaiController extends Controller
 
                 if (!$ks) continue;
 
-                $tugas = isset($fields['tugas']) && $fields['tugas'] !== '' ? $fields['tugas'] : null;
-                $ulangan = isset($fields['ulangan']) && $fields['ulangan'] !== '' ? $fields['ulangan'] : null;
-                $uts = isset($fields['uts']) && $fields['uts'] !== '' ? $fields['uts'] : null;
-                $uas = isset($fields['uas']) && $fields['uas'] !== '' ? $fields['uas'] : null;
-                $nilai_akhir = isset($fields['nilai_akhir']) && $fields['nilai_akhir'] !== '' ? $fields['nilai_akhir'] : null;
+                $tugas = isset($fields['tugas']) && $fields['tugas'] !== '' ? (float)$fields['tugas'] : null;
+                $ulangan = isset($fields['ulangan']) && $fields['ulangan'] !== '' ? (float)$fields['ulangan'] : null;
+                $uts = isset($fields['uts']) && $fields['uts'] !== '' ? (float)$fields['uts'] : null;
+                $uas = isset($fields['uas']) && $fields['uas'] !== '' ? (float)$fields['uas'] : null;
+                
+                // Hitung Nilai Akhir berdasarkan bobot
+                $nilai_akhir = null;
+                if ($tugas !== null || $ulangan !== null || $uts !== null || $uas !== null) {
+                    $valTugas = $tugas ?? 0;
+                    $valUlangan = $ulangan ?? 0;
+                    $valUts = $uts ?? 0;
+                    $valUas = $uas ?? 0;
+
+                    $total = ($valTugas * $settings->bobot_tugas) + 
+                             ($valUlangan * $settings->bobot_ulangan) + 
+                             ($valUts * $settings->bobot_uts) + 
+                             ($valUas * $settings->bobot_uas);
+                    
+                    $nilai_akhir = round($total / 100, 2);
+                }
 
                 // Logika hapus jika semua kosong (opsional) atau update
-                if ($tugas === null && $ulangan === null && $uts === null && $uas === null && $nilai_akhir === null) {
+                if ($tugas === null && $ulangan === null && $uts === null && $uas === null) {
                     Nilai::where('kelas_siswa_id', $ks->id)
                          ->where('pengampu_id', $pengampu->id)
                          ->delete();
