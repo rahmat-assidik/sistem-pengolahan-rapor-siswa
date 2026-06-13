@@ -23,13 +23,6 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">KKM (Kriteria Ketuntasan Minimal)</label>
-                    <input type="number" name="kkm" value="75" min="0" max="100" required
-                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all bg-gray-50"
-                           placeholder="Contoh: 75">
-                </div>
-
                 <div x-data="{
                     open: false,
                     search: '',
@@ -83,26 +76,14 @@
                     <input type="hidden" name="guru_id" :value="selectedId">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
-                            <option value="" disabled selected>Pilih Kelas</option>
-                            @foreach($kelas as $k)
-                                <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Semester</label>
-                        <select name="semester_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
-                            @foreach($semesters as $smt)
-                                <option value="{{ $smt->id }}" {{ $smt->is_aktif ? 'selected' : '' }}>
-                                    {{ $smt->semester }} - {{ $smt->tahunAjaran->nama }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
+                    <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
+                        <option value="" disabled selected>Pilih Kelas</option>
+                        @foreach($kelas as $k)
+                            <option value="{{ $k->id }}">{{ $k->nama_kelas }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 @if(session('error'))
@@ -141,12 +122,6 @@
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">KKM (Kriteria Ketuntasan Minimal)</label>
-                    <input type="number" name="kkm" x-model="selectedPengampu.kkm" min="0" max="100" required
-                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all bg-gray-50">
                 </div>
 
                 <div x-data="{
@@ -213,29 +188,16 @@
                     <input type="hidden" name="guru_id" :value="selectedId">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
-                        <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
-                            @foreach($kelas as $k)
-                                <option value="{{ $k->id }}"
-                                    x-bind:selected="selectedPengampu.kelas_id == {{ $k->id }}">
-                                    {{ $k->nama_kelas }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Semester</label>
-                        <select name="semester_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
-                            @foreach($semesters as $smt)
-                                <option value="{{ $smt->id }}"
-                                    x-bind:selected="selectedPengampu.semester_id == {{ $smt->id }}">
-                                    {{ $smt->semester }} - {{ $smt->tahunAjaran->nama }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
+                    <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
+                        @foreach($kelas as $k)
+                            <option value="{{ $k->id }}"
+                                x-bind:selected="selectedPengampu.kelas_id == {{ $k->id }}">
+                                {{ $k->nama_kelas }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
             </div>
@@ -267,10 +229,6 @@
                 <span class="text-sm font-semibold text-gray-500">Semester</span>
                 <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedPengampu.semester_nama"></span>
             </div>
-            <div class="grid grid-cols-3 py-2 border-b border-gray-100">
-                <span class="text-sm font-semibold text-gray-500">KKM</span>
-                <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedPengampu.kkm"></span>
-            </div>
         </div>
         <div class="mt-8">
             <button type="button" @click="openLihat = false" class="w-full px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded hover:bg-gray-800 transition-colors">Tutup</button>
@@ -282,8 +240,6 @@
             <x-search-toolbar
                 placeholder="Cari pengampu, guru..."
                 :filters="[
-                    ['name' => 'tahun_ajaran_id', 'label' => 'Tahun Ajaran', 'options' => $tahunAjaranList->pluck('nama', 'id')->toArray()],
-                    ['name' => 'semester', 'label' => 'Semester', 'options' => ['Ganjil' => 'Ganjil', 'Genap' => 'Genap']],
                     ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'kode_mapel')->toArray()],
                     ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
                 ]"
@@ -297,10 +253,8 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kode Mapel</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Mapel</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">KKM</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Pengampu</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Tahun Ajaran/Sem</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -310,10 +264,8 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $pengampus->firstItem() + $key }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-semibold tracking-tight">{{ $p->mapel->kode_mapel }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $p->mapel->nama_mapel }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kkm }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $p->guru->nama_guru }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $p->kelas->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $p->semester->tahunAjaran->nama }} ({{ $p->semester->semester }})</td>
                             <td class="px-6 py-4 text-center">
                                 <x-action-buttons
                                     :lihatClick="'selectedPengampu = ' . json_encode([
@@ -323,7 +275,6 @@
                                         'guru_nama'    => $p->guru->nama_guru,
                                         'kelas_nama'   => $p->kelas->nama_kelas,
                                         'semester_nama'=> $p->semester->tahunAjaran->nama . ' (' . $p->semester->semester . ')',
-                                        'kkm'          => $p->kkm,
                                     ]) . '; openLihat = true'"
                                     :editClick="'selectedPengampu = ' . json_encode([
                                         'id'          => $p->id,
@@ -331,7 +282,6 @@
                                         'guru_id'     => $p->guru_id,
                                         'kelas_id'    => $p->kelas_id,
                                         'semester_id' => $p->semester_id,
-                                        'kkm'         => $p->kkm,
                                     ]) . '; openEdit = true'"
                                     :hapusClick="'konfirmasiHapus(' . $p->id . ', \'' . addslashes($p->mapel->nama_mapel) . '\')'"
                                 />
@@ -339,7 +289,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data pengampu</p>
                             </td>
                         </tr>

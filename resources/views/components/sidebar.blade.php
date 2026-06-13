@@ -220,6 +220,20 @@
             <div class="px-2 mb-4">
                 <div class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pengaturan</div>
                 
+                @if(auth()->check() && auth()->user()->isAdmin())
+                <a href="{{ route('settings.bobot') }}"
+                   @click="sidebarOpen = false"
+                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                          {{ request()->is('bobot_nilai')
+                             ? 'bg-gray-900 text-white font-semibold'
+                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                    </svg>
+                    <span>Bobot Nilai</span>
+                </a>
+                @endif
+
                 <a href="{{ route('ubah_kata_sandi') }}"
                    @click="sidebarOpen = false"
                    class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150

@@ -2,78 +2,179 @@
 
 @section('title', 'Dashboard')
 
-@section('body-attrs')
-{{-- No extra body attrs needed --}}
-@endsection
-
 @push('head-scripts')
-    {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @endpush
 
 @section('content')
-    {{-- Dashboard Header --}}
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+    {{-- Welcome Header --}}
+    <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Selamat Datang, {{ auth()->user()->nama }}!</h1>
+            <p class="text-sm text-gray-500 font-medium">Berikut adalah ringkasan data akademik sistem hari ini.</p>
+        </div>
+        
+        @if($semesterAktif)
+        <div class="flex items-center gap-3 px-4 py-2.5 bg-white border border-gray-200 rounded shadow-sm">
+            <div class="w-8 h-8 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
+                <i class="fa-solid fa-calendar-check text-xs"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Semester Aktif</p>
+                <p class="text-xs font-black text-gray-900 leading-none">{{ $semesterAktif->semester }} - {{ $semesterAktif->tahunAjaran->nama }}</p>
+            </div>
+        </div>
+        @endif
     </div>
 
-    {{-- Statistics Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <x-stat-card label="Total Siswa" value="{{ $totalSiswa }}"
-            icon='<svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>' />
-
-        <x-stat-card label="Total Guru" value="{{ $totalGuru }}"
-            icon='<svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>' />
-
-        <x-stat-card label="Total Kelas" value="{{ $totalKelas }}"
-            icon='<svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586a2 2 0 011.414.586l7.071 7.071a2 2 0 010 2.828l-4.586 4.586a2 2 0 01-2.828 0l-7.071-7.071A2 2 0 014 9.586V4z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>' />
-
-        <x-stat-card label="Total Mapel" value="{{ $totalMapel }}"
-            icon='<svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path></svg>' />
+    {{-- Statistics Grid --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        @if(auth()->user()->isAdmin())
+            <x-stat-card label="Total Siswa" value="{{ $totalSiswa }}"
+                icon='<i class="fa-solid fa-user-graduate text-blue-500"></i>' />
+            <x-stat-card label="Total Guru" value="{{ $totalGuru }}"
+                icon='<i class="fa-solid fa-chalkboard-user text-emerald-500"></i>' />
+            <x-stat-card label="Total Kelas" value="{{ $totalKelas }}"
+                icon='<i class="fa-solid fa-school text-amber-500"></i>' />
+            <x-stat-card label="Total Mapel" value="{{ $totalMapel }}"
+                icon='<i class="fa-solid fa-book text-rose-500"></i>' />
+        @else
+            <x-stat-card label="Mapel Diampu" value="{{ $mapelDiampu }}"
+                icon='<i class="fa-solid fa-book-open text-blue-500"></i>' />
+            <x-stat-card label="Kelas Diampu" value="{{ $kelasDiampu }}"
+                icon='<i class="fa-solid fa-chalkboard text-emerald-500"></i>' />
+            <x-stat-card label="Siswa Diampu" value="{{ $totalSiswaDiampu }}"
+                icon='<i class="fa-solid fa-users text-amber-500"></i>' />
+            <x-stat-card label="Nilai Terinput" value="{{ $totalNilaiTerisi }}"
+                icon='<i class="fa-solid fa-file-signature text-rose-500"></i>' />
+        @endif
     </div>
 
-    {{-- Chart Cards --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <x-chart-card title="Distribusi Nilai Siswa"
-            icon='<svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>'>
-            <canvas id="distribusiChart" style="max-height: 250px;"></canvas>
-        </x-chart-card>
+    {{-- Main Insights --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {{-- Progress Input Card --}}
+        <div class="lg:col-span-1 bg-white rounded border border-gray-200 p-6 shadow-sm flex flex-col">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-spinner text-blue-500"></i>
+                Progres Pengisian Nilai
+            </h3>
+            
+            <div class="flex-1 flex flex-col justify-center items-center py-4">
+                @php
+                    $percentage = $totalSiswaDiampu > 0 ? round(($totalNilaiTerisi / $totalSiswaDiampu) * 100) : 0;
+                @endphp
+                
+                <div class="relative w-40 h-40">
+                    <canvas id="progressCircle"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-3xl font-black text-gray-900">{{ $percentage }}%</span>
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Selesai</span>
+                    </div>
+                </div>
 
-        <x-chart-card title="Kelengkapan Nilai"
-            icon='<svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>'>
-            <canvas id="pieChart" style="max-height: 250px;"></canvas>
-        </x-chart-card>
+                <div class="mt-8 w-full space-y-3">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-gray-500">Nilai Terisi</span>
+                        <span class="text-gray-900">{{ $totalNilaiTerisi }}</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full" style="width: {{ $percentage }}%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-gray-500">Belum Terisi</span>
+                        <span class="text-gray-900">{{ max(0, $totalSiswaDiampu - $totalNilaiTerisi) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Distribution Chart Card --}}
+        <div class="lg:col-span-2 bg-white rounded border border-gray-200 p-6 shadow-sm">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-chart-column text-emerald-500"></i>
+                Distribusi Predikat Per Kelas ({{ $semesterAktif?->semester ?? '-' }})
+            </h3>
+            
+            <div class="h-64">
+                <canvas id="distribusiChart"></canvas>
+            </div>
+
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-6 p-4 bg-gray-50 rounded border border-gray-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">Predikat A</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-sky-500 rounded-sm"></div>
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">Predikat B</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-amber-500 rounded-sm"></div>
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">Predikat C</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-rose-500 rounded-sm"></div>
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">Predikat D</span>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Distribusi Chart
-        const distribusiCtx = document.getElementById('distribusiChart').getContext('2d');
-        new Chart(distribusiCtx, {
-            type: 'bar',
+        // Progress Circle Chart
+        const progCtx = document.getElementById('progressCircle').getContext('2d');
+        new Chart(progCtx, {
+            type: 'doughnut',
             data: {
-                labels: ['A', 'B', 'C', 'D', 'E'],
-                datasets: [{ label: 'Jumlah Siswa', data: @json(array_values($distribusi)), backgroundColor: '#1f2937', borderRadius: 4 }]
+                datasets: [{
+                    data: [{{ $totalNilaiTerisi }}, {{ max(1, $totalSiswaDiampu - $totalNilaiTerisi) }}],
+                    backgroundColor: ['#10b981', '#f3f4f6'],
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
             },
             options: {
-                responsive: true, maintainAspectRatio: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { drawBorder: false } }, x: { grid: { display: false } } }
+                cutout: '85%',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } }
             }
         });
 
-        // Pie Chart
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'doughnut',
+        // Distribution Bar Chart
+        const distribusiCtx = document.getElementById('distribusiChart').getContext('2d');
+        const dataPerKelas = @json($distribusiPerKelas);
+        const labels = Object.keys(dataPerKelas);
+        
+        new Chart(distribusiCtx, {
+            type: 'bar',
             data: {
-                labels: ['Sudah di input', 'Belum di input'],
-                datasets: [{ data: [{{ $totalNilaiTerisi }}, {{ max(0, $totalNilaiSlots - $totalNilaiTerisi) }}], backgroundColor: ['#4b5563', '#d1d5db'], borderWidth: 0 }]
+                labels: labels,
+                datasets: [
+                    { label: 'A', data: labels.map(k => dataPerKelas[k].A), backgroundColor: '#10b981', borderRadius: 4 },
+                    { label: 'B', data: labels.map(k => dataPerKelas[k].B), backgroundColor: '#0ea5e9', borderRadius: 4 },
+                    { label: 'C', data: labels.map(k => dataPerKelas[k].C), backgroundColor: '#f59e0b', borderRadius: 4 },
+                    { label: 'D', data: labels.map(k => dataPerKelas[k].D), backgroundColor: '#ef4444', borderRadius: 4 }
+                ]
             },
             options: {
-                responsive: true, maintainAspectRatio: true,
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } } }
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [5, 5], drawBorder: false },
+                        ticks: { font: { size: 10, weight: 'bold' }, stepSize: 1 }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10, weight: 'bold' } }
+                    }
+                }
             }
         });
     </script>
