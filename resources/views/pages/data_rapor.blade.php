@@ -107,9 +107,9 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center">
-                                    <button title="Cetak Rapor (PDF)" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors">
+                                    <a href="{{ route('data_rapor.download', ['nis' => $r->nis, 'semester_id' => $selectedSemester?->id]) }}" title="Cetak Rapor (PDF)" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors">
                                         <i class="fa-solid fa-print"></i><span>Cetak Rapor</span>
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

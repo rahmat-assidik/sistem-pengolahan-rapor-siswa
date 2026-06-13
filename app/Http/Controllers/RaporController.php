@@ -9,6 +9,7 @@ use App\Models\Semester;
 use App\Models\WaliKelas;
 use App\Models\RiwayatKelasSiswa;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RaporController extends Controller
 {
@@ -169,5 +170,87 @@ class RaporController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Catatan wali kelas berhasil diperbarui.');
+    }
+
+    /**
+     * Generate dan download dokumen rapor siswa dalam format PDF
+     */
+    public function generateRapor($nis, $semester_id)
+    {
+        // Ambil data siswa
+        $siswa = Siswa::find($nis);
+        if (!$siswa) {
+            return redirect()->back()->with('error', 'Data siswa tidak ditemukan.');
+        }
+
+        // Ambil semester
+        $semester = Semester::find($semester_id);
+        if (!$semester) {
+            return redirect()->back()->with('error', 'Data semester tidak ditemukan.');
+        }
+
+        // Ambil penempatan kelas siswa pada semester ini
+        $kelasSiswa = RiwayatKelasSiswa::where('nis', $nis)
+            ->where('semester_id', $semester_id)
+            ->with(['kelas', 'nilai.pengampu.guru', 'nilai.pengampu.mapel'])
+            ->first();
+
+        if (!$kelasSiswa) {
+            return redirect()->back()->with('error', 'Data penempatan siswa pada semester ini tidak ditemukan.');
+        }
+
+        // Ambil data wali kelas
+        $kelas = Kelas::where('kode_kelas', $kelasSiswa->kode_kelas)->first();
+        $waliKelas = WaliKelas::where('kelas_id', $kelas?->id)
+            ->where('semester_id', $semester_id)
+            ->with('guru')
+            ->first();
+
+        // Siapkan data nilai dengan detail mata pelajaran dan guru
+        $nilaiDetails = $kelasSiswa->nilai->map(function ($nilai) {
+            return [
+                'nama_mapel' => $nilai->pengampu->mapel->nama_mapel ?? '-',
+                'nama_guru' => $nilai->pengampu->guru->nama_guru ?? '-',
+                'kkm' => $nilai->pengampu->kkm ?? 75,
+                'tugas' => $nilai->tugas,
+                'ulangan' => $nilai->ulangan,
+                'uts' => $nilai->uts,
+                'uas' => $nilai->uas,
+                'nilai_akhir' => $nilai->nilai_akhir,
+                'predikat' => Nilai::hitungPredikat($nilai->nilai_akhir),
+            ];
+        })->sortBy('nama_mapel')->values();
+
+        // Hitung rata-rata nilai
+        $rataRataNilai = $nilaiDetails->isNotEmpty() 
+            ? round($nilaiDetails->avg('nilai_akhir'), 2) 
+            : 0;
+
+        // Tentukan status kelulusan
+        $statusLulus = 'Tidak Lulus';
+        if ($rataRataNilai >= 75) {
+            $statusLulus = 'Lulus';
+        } elseif ($rataRataNilai >= 65) {
+            $statusLulus = 'Kondisional';
+        }
+
+        // Siapkan data untuk view
+        $data = [
+            'siswa' => $siswa,
+            'semester' => $semester,
+            'kelasSiswa' => $kelasSiswa,
+            'waliKelas' => $waliKelas,
+            'nilaiDetails' => $nilaiDetails,
+            'rataRataNilai' => $rataRataNilai,
+            'statusLulus' => $statusLulus,
+        ];
+
+        // Generate PDF
+        $pdf = Pdf::loadView('rapor.rapor-pdf', $data);
+        $pdf->setPaper('a4', 'portrait');
+        $tahunAjaranSafe = str_replace(['/', '\\'], '-', $semester->tahunAjaran->nama);
+        $filename = 'Rapor_' . strtoupper($siswa->nis) . '_' . $tahunAjaranSafe . '_Semester_' . $semester->semester . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
