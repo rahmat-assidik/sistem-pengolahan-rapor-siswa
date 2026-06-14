@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
     Route::post('/data_rapor/catatan', [RaporController::class, 'saveCatatan'])->name('data_rapor.catatan');
+    Route::get('/data_rapor/{nis}/download/{semester_id}', [RaporController::class, 'generateRapor'])->name('data_rapor.download');
     Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])->name('ubah_kata_sandi');
     Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])->name('password.update');
 
@@ -78,6 +79,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
+        Route::get('/pembagian_kelas/set_wali_kelas', [PembagianKelasController::class, 'showSetWaliKelas'])->name('set_wali_kelas');
+        Route::post('/pembagian_kelas/set_wali_kelas', [PembagianKelasController::class, 'updateWaliKelas'])->name('set_wali_kelas.update');
         Route::get('/pembagian_kelas/{kode_kelas}/kelola', [PembagianKelasController::class, 'manageStudents'])->name('pembagian_kelas.manage');
         Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
         Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');

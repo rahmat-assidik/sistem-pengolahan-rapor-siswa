@@ -35,6 +35,42 @@ class PembagianKelasController extends Controller
         return view('pages.pembagian_kelas', compact('kelasData', 'semesterAktif'));
     }
 
+    public function showSetWaliKelas(Request $request)
+    {
+        $semesterAktif = Semester::with('tahunAjaran')->where('is_aktif', true)->first();
+        
+        $kelasData = Kelas::with(['waliKelas' => function($q) use ($semesterAktif) {
+            if ($semesterAktif) {
+                $q->where('semester_id', $semesterAktif->id);
+            }
+        }, 'waliKelas.guru'])->orderBy('nama_kelas')->get();
+        
+        $guruList = \App\Models\Guru::orderBy('nama_guru')->get();
+
+        return view('pages.set_wali_kelas', compact('kelasData', 'semesterAktif', 'guruList'));
+    }
+
+    public function updateWaliKelas(Request $request)
+    {
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'guru_id' => 'required|exists:guru,nip',
+        ]);
+
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Tidak ada semester aktif.');
+        }
+
+        \App\Models\WaliKelas::updateOrCreate(
+            ['kelas_id' => $request->kelas_id, 'semester_id' => $semesterAktif->id],
+            ['guru_id' => $request->guru_id]
+        );
+
+        return redirect()->back()->with('success', 'Wali kelas berhasil diperbarui.');
+    }
+
+
     public function manageStudents(Request $request, $kode_kelas)
     {
         $kelas = Kelas::where('kode_kelas', $kode_kelas)->firstOrFail();

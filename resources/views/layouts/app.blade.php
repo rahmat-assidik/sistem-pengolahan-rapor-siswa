@@ -54,13 +54,18 @@
         // NProgress Global Setup
         NProgress.configure({ showSpinner: false, trickleSpeed: 200 });
 
-        window.addEventListener('beforeunload', () => {
+        // Intercept form submissions
+        document.addEventListener('submit', (e) => {
+            if (e.target.classList.contains('no-progress')) return;
             NProgress.start();
         });
 
-        document.addEventListener('submit', (e) => {
-            // Cek jika form tidak memiliki target _blank
-            if (e && e.target && e.target.target !== '_blank') {
+        // Intercept link clicks
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && (link.classList.contains('no-progress') || link.target === '_blank')) return;
+            
+            if (link && link.getAttribute('href') && link.getAttribute('href') !== '#') {
                 NProgress.start();
             }
         });
