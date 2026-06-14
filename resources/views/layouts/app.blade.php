@@ -54,13 +54,18 @@
         // NProgress Global Setup
         NProgress.configure({ showSpinner: false, trickleSpeed: 200 });
 
-        window.addEventListener('beforeunload', () => {
+        // Intercept form submissions
+        document.addEventListener('submit', (e) => {
+            if (e.target.classList.contains('no-progress')) return;
             NProgress.start();
         });
 
-        document.addEventListener('submit', (e) => {
-            // Cek jika form tidak memiliki target _blank
-            if (e && e.target && e.target.target !== '_blank') {
+        // Intercept link clicks
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && (link.classList.contains('no-progress') || link.target === '_blank')) return;
+            
+            if (link && link.getAttribute('href') && link.getAttribute('href') !== '#') {
                 NProgress.start();
             }
         });
@@ -103,7 +108,7 @@
     <x-sidebar />
  
     {{-- Main Content --}}
-    <main class="ml-0 lg:ml-52 min-h-screen bg-gray-50 p-4 lg:p-5 pt-16 lg:pt-4">
+    <main class="ml-0 lg:ml-52 min-h-screen bg-gray-50 p-4 lg:p-5 pt-16 lg:pt-4"> {{-- ml disesuaikan dengan lebar sidebar baru, responsive --}}
         <div class="flex flex-col gap-5">
             {{-- Error Alerts --}}
             <div class="space-y-3">

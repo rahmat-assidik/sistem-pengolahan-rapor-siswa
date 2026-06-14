@@ -6,6 +6,12 @@
     <div class="max-w-full" x-data="{ 
         openMoveAll: false,
     }">
+        {{-- Tabs --}}
+        <div class="flex gap-4 mb-6 border-b border-gray-200">
+            <a href="{{ route('pembagian_kelas') }}" class="px-4 py-2 text-sm font-semibold text-gray-900 border-b-2 border-gray-900">Pembagian Kelas</a>
+            <a href="{{ route('set_wali_kelas') }}" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-900">Set Wali Kelas</a>
+        </div>
+
         {{-- Modal Pindah Semua Siswa --}}
         <x-modal name="openMoveAll" title="Pindah Semua Siswa Antar Kelas">
             <form action="{{ route('pembagian_kelas.move_all') }}" method="POST">
