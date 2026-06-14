@@ -20,7 +20,7 @@ class WaliKelas extends Model
      */
     public function guru(): BelongsTo
     {
-        return $this->belongsTo(Guru::class);
+        return $this->belongsTo(Guru::class, 'guru_id', 'nip');
     }
 
     /**

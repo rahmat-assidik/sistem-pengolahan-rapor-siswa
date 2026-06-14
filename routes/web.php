@@ -79,6 +79,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
+        Route::get('/pembagian_kelas/set_wali_kelas', [PembagianKelasController::class, 'showSetWaliKelas'])->name('set_wali_kelas');
+        Route::post('/pembagian_kelas/set_wali_kelas', [PembagianKelasController::class, 'updateWaliKelas'])->name('set_wali_kelas.update');
         Route::get('/pembagian_kelas/{kode_kelas}/kelola', [PembagianKelasController::class, 'manageStudents'])->name('pembagian_kelas.manage');
         Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
         Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');
