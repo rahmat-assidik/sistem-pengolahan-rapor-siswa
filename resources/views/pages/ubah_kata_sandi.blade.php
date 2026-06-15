@@ -25,13 +25,11 @@
                     <button @click="activeTab = 'profil'" 
                             :class="activeTab === 'profil' ? 'bg-gray-900 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
                             class="w-full px-4 py-2.5 text-xs font-bold rounded transition-all flex items-center gap-3">
-                        <i class="fa-solid fa-address-card text-sm"></i>
                         <span>Informasi Profil</span>
                     </button>
                     <button @click="activeTab = 'keamanan'" 
                             :class="activeTab === 'keamanan' ? 'bg-gray-900 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'"
                             class="w-full px-4 py-2.5 text-xs font-bold rounded transition-all flex items-center gap-3 mt-1">
-                        <i class="fa-solid fa-shield-halved text-sm"></i>
                         <span>Keamanan & Sandi</span>
                     </button>
                 </div>
@@ -115,83 +113,164 @@
                     {{-- Tab: Keamanan --}}
                     <div x-show="activeTab === 'keamanan'" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
                         <div class="p-6 border-b border-gray-100 bg-gray-50/50">
-                            <h2 class="text-lg font-bold text-gray-900 tracking-tight">Pembaruan Kata Sandi</h2>
-                            <p class="text-xs text-gray-500 font-semibold mt-1">Kami menyarankan Anda untuk mengganti kata sandi secara berkala.</p>
+                            <h2 class="text-lg font-bold text-gray-900 tracking-tight">Keamanan & Akses</h2>
+                            <p class="text-xs text-gray-500 font-semibold mt-1">Kelola kata sandi dan proteksi akun Anda.</p>
                         </div>
 
                         <div class="p-6">
+                            {{-- Success Alert --}}
                             @if(session('status'))
-                                <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded flex items-center gap-3">
-                                    <i class="fa-solid fa-circle-check text-lg"></i>
-                                    {{ session('status') }}
+                                <div x-data="{ show: true }" x-show="show" 
+                                     class="mb-6 p-4 bg-emerald-600 border border-emerald-700 rounded shadow-sm flex items-start gap-4 text-white animate-gentle-pulse">
+                                    <div class="w-8 h-8 bg-emerald-500/50 rounded flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-xs font-bold uppercase tracking-wider mb-0.5">Berhasil</h4>
+                                        <p class="text-[11px] font-medium leading-relaxed opacity-95">{{ session('status') }}</p>
+                                    </div>
+                                    <button @click="show = false" class="text-white/50 hover:text-white transition-colors">
+                                        <i class="fa-solid fa-xmark text-xs"></i>
+                                    </button>
                                 </div>
                             @endif
 
-                            <form action="{{ route('password.update') }}" method="POST" class="space-y-6">
-                                @csrf
-                                @method('PUT')
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Kata Sandi Saat Ini</label>
-                                    <div class="relative">
-                                        <input :type="showOld ? 'text' : 'password'" name="current_password" required
-                                               class="w-full pl-4 pr-12 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all bg-gray-50 @error('current_password') border-red-500 @enderror">
-                                        <button type="button" @click="showOld = !showOld" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
-                                            <i class="fa-solid" :class="showOld ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                        </button>
+                            {{-- Unified Error Alert --}}
+                            @if($errors->any())
+                                <div x-data="{ show: true }" x-show="show"
+                                     class="mb-6 p-4 bg-rose-600 border border-rose-700 rounded shadow-sm flex items-start gap-4 text-white animate-gentle-pulse">
+                                    <div class="w-8 h-8 bg-rose-500/50 rounded flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-circle-exclamation"></i>
                                     </div>
-                                    @error('current_password')
-                                        <p class="text-[10px] text-red-600 mt-1.5 font-bold uppercase tracking-tight">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Kata Sandi Baru</label>
-                                        <div class="relative">
-                                            <input :type="showNew ? 'text' : 'password'" name="new_password" x-model="newPassword" required
-                                                   class="w-full pl-4 pr-12 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all bg-gray-50 @error('new_password') border-red-500 @enderror">
-                                            <button type="button" @click="showNew = !showNew" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
-                                                <i class="fa-solid" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                            </button>
-                                        </div>
-                                        
-                                        {{-- Strength Meter --}}
-                                        <div class="mt-3" x-show="newPassword.length > 0">
-                                            <div class="flex items-center justify-between mb-1.5">
-                                                <span class="text-[10px] font-bold uppercase tracking-tight" :class="strengthClass" x-text="'Keamanan: ' + strengthText"></span>
-                                                <span class="text-[10px] font-bold text-gray-400" x-text="newPassword.length + '/8 Karakter'"></span>
-                                            </div>
-                                            <div class="h-1.5 w-full bg-gray-100 rounded overflow-hidden flex gap-0.5">
-                                                <div class="h-full transition-all duration-500" :style="'width: ' + (strengthScore >= 1 ? '25%' : '0%')" :class="strengthScore >= 1 ? (strengthScore === 1 ? 'bg-rose-500' : (strengthScore === 2 ? 'bg-amber-500' : 'bg-emerald-500')) : 'bg-transparent'"></div>
-                                                <div class="h-full transition-all duration-500" :style="'width: ' + (strengthScore >= 2 ? '25%' : '0%')" :class="strengthScore >= 2 ? (strengthScore === 2 ? 'bg-amber-500' : 'bg-emerald-500') : 'bg-transparent'"></div>
-                                                <div class="h-full transition-all duration-500" :style="'width: ' + (strengthScore >= 3 ? '25%' : '0%')" :class="strengthScore >= 3 ? (strengthScore === 3 ? 'bg-emerald-500' : 'bg-emerald-500') : 'bg-transparent'"></div>
-                                                <div class="h-full transition-all duration-500" :style="'width: ' + (strengthScore >= 4 ? '25%' : '0%')" :class="strengthScore >= 4 ? 'bg-emerald-500' : 'bg-transparent'"></div>
-                                            </div>
-                                        </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-xs font-bold uppercase tracking-wider mb-0.5">Terjadi Kesalahan</h4>
+                                        <ul class="list-disc list-inside text-[11px] font-medium leading-relaxed opacity-95">
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Konfirmasi Sandi Baru</label>
-                                        <div class="relative">
-                                            <input :type="showConfirm ? 'text' : 'password'" name="new_password_confirmation" x-model="confirmPassword" required
-                                                   class="w-full pl-4 pr-12 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all bg-gray-50">
-                                            <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
-                                                <i class="fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                            </button>
-                                        </div>
-                                        <p x-show="confirmPassword && newPassword !== confirmPassword" class="text-[10px] text-rose-600 mt-1.5 font-bold uppercase tracking-tight">Kata sandi tidak cocok</p>
-                                    </div>
-                                </div>
-
-                                <div class="pt-6 border-t border-gray-100 flex items-center justify-end">
-                                    <button type="submit" :disabled="newPassword.length < 8 || newPassword !== confirmPassword"
-                                            class="px-6 py-2.5 bg-gray-900 text-white text-xs font-bold rounded hover:bg-gray-800 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider">
-                                        <i class="fa-solid fa-check"></i>
-                                        <span>Perbarui Kata Sandi</span>
+                                    <button @click="show = false" class="text-white/50 hover:text-white transition-colors">
+                                        <i class="fa-solid fa-xmark text-xs"></i>
                                     </button>
                                 </div>
-                            </form>
+                            @endif
+
+                            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                                {{-- Form Section --}}
+                                <div class="xl:col-span-7">
+                                    <form action="{{ route('password.update') }}" method="POST" class="space-y-5" @submit="isLoading = true">
+                                        @csrf
+                                        @method('PUT')
+                                        
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kata Sandi Saat Ini</label>
+                                            <div class="relative group">
+                                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors">
+                                                    <i class="fa-solid fa-lock-open text-xs"></i>
+                                                </div>
+                                                <input :type="showOld ? 'text' : 'password'" name="current_password" required
+                                                       class="w-full pl-10 pr-12 py-3 text-sm border border-gray-200 rounded focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none transition-all bg-white @error('current_password') border-rose-500 bg-rose-50/30 @enderror"
+                                                       placeholder="••••••••">
+                                                <button type="button" @click="showOld = !showOld" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
+                                                    <i class="fa-solid" :class="showOld ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="h-px bg-gray-100 my-2"></div>
+
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kata Sandi Baru</label>
+                                            <div class="relative group">
+                                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors">
+                                                    <i class="fa-solid fa-key text-xs"></i>
+                                                </div>
+                                                <input :type="showNew ? 'text' : 'password'" name="new_password" x-model="newPassword" required
+                                                       class="w-full pl-10 pr-12 py-3 text-sm border border-gray-200 rounded focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none transition-all bg-white @error('new_password') border-rose-500 bg-rose-50/30 @enderror"
+                                                       placeholder="Minimal 8 karakter">
+                                                <button type="button" @click="showNew = !showNew" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
+                                                    <i class="fa-solid" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Konfirmasi Sandi Baru</label>
+                                            <div class="relative group">
+                                                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors">
+                                                    <i class="fa-solid fa-check-double text-xs"></i>
+                                                </div>
+                                                <input :type="showConfirm ? 'text' : 'password'" name="new_password_confirmation" x-model="confirmPassword" required
+                                                       class="w-full pl-10 pr-12 py-3 text-sm border border-gray-200 rounded focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none transition-all bg-white"
+                                                       placeholder="Ulangi kata sandi baru">
+                                                <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
+                                                    <i class="fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-4">
+                                            <button type="submit" :disabled="isLoading"
+                                                    class="w-full md:w-auto px-8 py-3 bg-gray-900 text-white text-sm font-bold rounded hover:bg-gray-800 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed tracking-wide">
+                                                <i x-show="!isLoading" class="fa-solid fa-floppy-disk text-xs"></i>
+                                                <i x-show="isLoading" class="fa-solid fa-spinner fa-spin text-xs"></i>
+                                                <span x-text="isLoading ? 'Menyimpan...' : 'Simpan Perubahan'"></span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {{-- Requirements & Strength Section --}}
+                                <div class="xl:col-span-5 space-y-6">
+                                    {{-- Strength Card --}}
+                                    <div class="p-5 bg-gray-50 border border-gray-200 rounded shadow-sm">
+                                        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Kekuatan Sandi</h4>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="flex items-end justify-between">
+                                                <div class="flex flex-col">
+                                                    <span class="text-[10px] font-bold uppercase tracking-tight mb-1" :class="strengthClass" x-text="strengthText"></span>
+                                                    <span class="text-lg font-black text-gray-900" x-text="Math.min(strengthScore * 25, 100) + '%'"></span>
+                                                </div>
+                                                <div class="text-[10px] font-bold text-gray-400 bg-white px-2 py-1 rounded border border-gray-100" x-text="newPassword.length + ' / 8+'"></div>
+                                            </div>
+
+                                            <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden flex gap-1 p-0.5">
+                                                <template x-for="i in 4">
+                                                    <div class="h-full flex-1 rounded-full transition-all duration-500" 
+                                                         :class="strengthScore >= i ? strengthBgClass : 'bg-gray-100'"></div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-6 space-y-3">
+                                            <template x-for="(req, index) in requirementList" :key="index">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-5 h-5 rounded flex items-center justify-center transition-all duration-300"
+                                                         :class="req.check ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-300'">
+                                                        <i class="fa-solid" :class="req.check ? 'fa-check text-[10px]' : 'fa-circle text-[6px]'"></i>
+                                                    </div>
+                                                    <span class="text-[11px] font-bold transition-colors duration-300"
+                                                          :class="req.check ? 'text-gray-900' : 'text-gray-400'"
+                                                          x-text="req.label"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    {{-- Info Alert - Standardized Style --}}
+                                    <div class="p-4 bg-sky-600 border border-sky-700 rounded shadow-md flex items-start gap-4 text-white">
+                                        <div class="w-8 h-8 bg-sky-500/50 rounded flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold uppercase tracking-wider mb-0.5">Panduan Keamanan</h4>
+                                            <p class="text-[11px] font-medium leading-relaxed opacity-95">Kata sandi yang kuat setidaknya mengandung kombinasi huruf besar, angka, dan simbol untuk mencegah akses tidak sah.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -211,9 +290,19 @@ function accountSettings() {
         showConfirm: false,
         newPassword: '',
         confirmPassword: '',
+        isLoading: false,
 
         init() {
             this.$watch('activeTab', val => localStorage.setItem('settingTab', val));
+        },
+
+        get requirementList() {
+            return [
+                { label: 'Minimal 8 Karakter', check: this.newPassword.length >= 8 },
+                { label: 'Huruf Besar (A-Z)', check: /[A-Z]/.test(this.newPassword) },
+                { label: 'Angka (0-9)', check: /[0-9]/.test(this.newPassword) },
+                { label: 'Simbol Khusus (@$!%*?)', check: /[^A-Za-z0-9]/.test(this.newPassword) },
+            ];
         },
 
         get strengthScore() {
@@ -233,9 +322,13 @@ function accountSettings() {
         get strengthClass() {
             const classes = ['text-rose-500', 'text-rose-400', 'text-amber-500', 'text-emerald-500', 'text-emerald-600'];
             return classes[this.strengthScore] || 'text-rose-500';
+        },
+
+        get strengthBgClass() {
+            const classes = ['bg-rose-500', 'bg-rose-500', 'bg-amber-500', 'bg-emerald-500', 'bg-emerald-600'];
+            return classes[this.strengthScore] || 'bg-rose-500';
         }
     }
 }
 </script>
 @endpush
-
