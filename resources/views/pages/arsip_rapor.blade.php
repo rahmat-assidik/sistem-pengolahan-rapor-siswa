@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Arsip Siswa')
+@section('title', 'Arsip Rapor')
 
 @section('content')
     <div class="max-w-full" x-data="{ 
@@ -13,8 +13,8 @@
     }">
 
 
-        {{-- Modal Lihat Siswa / Track Record --}}
-        <x-modal name="openLihat" title="Track Record Siswa">
+        {{-- Modal Lihat Siswa / Track Record Rapor --}}
+        <x-modal name="openLihat" title="Arsip Rapor Siswa">
             <div class="space-y-6">
                 <!-- Data Identitas -->
                 <div>
@@ -45,9 +45,9 @@
                     </div>
                 </div>
 
-                <!-- Track Record / Riwayat Kelas -->
+                <!-- Arsip Rapor / Riwayat Akademik -->
                 <div>
-                    <h4 class="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider">Riwayat Akademik (Kelas)</h4>
+                    <h4 class="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider">Arsip Rapor (Riwayat)</h4>
                     <div class="overflow-x-auto border border-gray-200 rounded">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-gray-100 border-b border-gray-200">
@@ -55,6 +55,7 @@
                                     <th class="px-4 py-2.5 font-bold text-gray-700 text-xs tracking-wider">Tahun Ajaran</th>
                                     <th class="px-4 py-2.5 font-bold text-gray-700 text-xs tracking-wider">Semester</th>
                                     <th class="px-4 py-2.5 font-bold text-gray-700 text-xs tracking-wider">Kelas</th>
+                                    <th class="px-4 py-2.5 font-bold text-gray-700 text-xs tracking-wider text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 bg-white">
@@ -63,12 +64,22 @@
                                         <td class="px-4 py-2.5 text-gray-700 font-medium" x-text="riwayat.semester?.tahun_ajaran?.nama ?? '-'"></td>
                                         <td class="px-4 py-2.5 text-gray-700 font-medium" x-text="riwayat.semester?.semester ?? '-'"></td>
                                         <td class="px-4 py-2.5 text-gray-900 font-bold" x-text="riwayat.kelas?.nama_kelas ?? '-'"></td>
+                                        <td class="px-4 py-2.5 text-center">
+                                            <template x-if="riwayat.nilai && riwayat.nilai.length > 0">
+                                                <a :href="'/data_rapor/' + selectedSiswa.nis + '/download/' + riwayat.semester_id" class="inline-flex items-center gap-1 px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold rounded">
+                                                    <i class="fa-solid fa-download"></i> Unduh
+                                                </a>
+                                            </template>
+                                            <template x-if="!riwayat.nilai || riwayat.nilai.length === 0">
+                                                <span class="text-gray-400 text-[10px]">Tidak ada nilai</span>
+                                            </template>
+                                        </td>
                                     </tr>
                                 </template>
                                 <template x-if="!selectedSiswa.kelas_siswa || selectedSiswa.kelas_siswa.length === 0">
                                     <tr>
-                                        <td colspan="3" class="px-4 py-6 text-center text-gray-500 text-xs font-semibold">
-                                            Belum ada riwayat kelas
+                                        <td colspan="4" class="px-4 py-6 text-center text-gray-500 text-xs font-semibold">
+                                            Belum ada riwayat rapor
                                         </td>
                                     </tr>
                                 </template>
@@ -85,13 +96,13 @@
         <div class="bg-white rounded border border-gray-200 overflow-hidden">
             {{-- Toolbar Section --}}
             <x-search-toolbar 
-                placeholder="Cari arsip berdasarkan NIS atau Nama..." 
+                placeholder="Cari arsip rapor berdasarkan NIS atau Nama..." 
                 :showTambah="false"
                 :filters="[
                     ['name' => 'angkatan', 'label' => 'Angkatan', 'options' => $angkatanList],
                     ['name' => 'status', 'label' => 'Status Siswa', 'options' => ['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif', 'Alumni' => 'Alumni', 'Mutasi' => 'Mutasi']]
                 ]"
-                :resetUrl="route('arsip_siswa')"
+                :resetUrl="route('arsip_rapor')"
             />
 
             {{-- Table Section --}}
@@ -124,8 +135,8 @@
                             <td class="px-6 py-4 text-sm"><x-badge :type="$s->status === 'Aktif' ? 'success' : 'danger'">{{ $s->status ?? '-' }}</x-badge></td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2 flex-wrap">
-                                    <button type="button" @click='lihatSiswa(@json($s))' title="Lihat Track Record" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors">
-                                        <i class="fa-solid fa-clock-rotate-left"></i><span>Track Record</span>
+                                    <button type="button" @click='lihatSiswa(@json($s))' title="Lihat Riwayat Rapor" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors">
+                                        <i class="fa-solid fa-file-pdf"></i><span>Riwayat Rapor</span>
                                     </button>
                                 </div>
                             </td>
@@ -134,7 +145,7 @@
                         @empty
                         <tr>
                             <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                                <p class="text-sm font-medium">Tidak ada data arsip siswa</p>
+                                <p class="text-sm font-medium">Tidak ada data arsip rapor</p>
                             </td>
                         </tr>
                         @endforelse

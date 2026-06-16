@@ -14,7 +14,7 @@ use App\Http\Controllers\PengampuController;
 use App\Http\Controllers\InputNilaiController;
 use App\Http\Controllers\AkademikController;
 use App\Http\Controllers\TahunAjaranController;
-use App\Http\Controllers\ArsipSiswaController;
+use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\PembagianKelasController;
 use App\Http\Controllers\BobotNilaiController;
 
@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
-        Route::get('/arsip_siswa', [ArsipSiswaController::class, 'showArsipSiswa'])->name('arsip_siswa');
+        Route::get('/arsip_rapor', [ArsipRaporController::class, 'showArsipRapor'])->name('arsip_rapor');
         
         Route::get('/pembagian_kelas', [PembagianKelasController::class, 'showPembagianKelas'])->name('pembagian_kelas');
         Route::get('/pembagian_kelas/set_wali_kelas', [PembagianKelasController::class, 'showSetWaliKelas'])->name('set_wali_kelas');
