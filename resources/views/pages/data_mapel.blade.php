@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="max-w-full" x-data="{ 
-        openTambah: false, 
-        openEdit: false, 
+        openTambah: {{ $errors->any() && old('form_source') === 'tambah' ? 'true' : 'false' }}, 
+        openEdit: {{ $errors->any() && old('form_source') === 'edit' ? 'true' : 'false' }}, 
         openLihat: false, 
-        selectedMapel: {},
-        originalKode: '',
+        selectedMapel: {!! $errors->any() && old('form_source') === 'edit' ? json_encode(old()) : '{}' !!},
+        originalKode: '{{ old('form_source') === 'edit' ? old('kode_mapel') : '' }}',
         editMapel(mapel) {
             this.selectedMapel = { ...mapel };
             this.originalKode = mapel.kode_mapel;
@@ -58,27 +58,44 @@
         <x-modal name="openTambah" title="Tambah Mata Pelajaran Baru">
             <form action="{{ route('data_mapel.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="form_source" value="tambah">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
-                        <input type="text" name="kode_mapel" required placeholder="Contoh: MTK" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <input type="text" name="kode_mapel" value="{{ old('form_source') === 'tambah' ? old('kode_mapel') : '' }}" required placeholder="Contoh: MTK" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        @error('kode_mapel')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mata Pelajaran</label>
-                        <input type="text" name="nama_mapel" required placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <input type="text" name="nama_mapel" value="{{ old('form_source') === 'tambah' ? old('nama_mapel') : '' }}" required placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        @error('nama_mapel')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
-                        <input type="text" name="kelompok" placeholder="Contoh: Wajib, Peminatan" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <select name="kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="" disabled @selected(old('form_source') === 'tambah' && !old('kelompok'))>-- Pilih Kelompok --</option>
+                            <option value="Wajib" @selected(old('form_source') === 'tambah' && old('kelompok') === 'Wajib')>Wajib</option>
+                            <option value="Peminatan" @selected(old('form_source') === 'tambah' && old('kelompok') === 'Peminatan')>Peminatan</option>
+                        </select>
+                        @error('kelompok')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
+                            <option value="Aktif" @selected(old('form_source') === 'tambah' && old('status', 'Aktif') === 'Aktif')>Aktif</option>
+                            <option value="Tidak Aktif" @selected(old('form_source') === 'tambah' && old('status') === 'Tidak Aktif')>Tidak Aktif</option>
                         </select>
+                        @error('status')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
@@ -95,21 +112,34 @@
             <form method="POST" :action="'/data_mapel/' + originalKode">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="form_source" value="edit">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
                         <input type="text" name="kode_mapel" x-model="selectedMapel.kode_mapel" required readonly class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded outline-none bg-gray-100 text-gray-500 cursor-not-allowed">
                         <p class="text-xs text-gray-400 mt-1">Kode mapel tidak dapat diubah</p>
+                        @error('kode_mapel')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mata Pelajaran</label>
                         <input type="text" name="nama_mapel" x-model="selectedMapel.nama_mapel" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        @error('nama_mapel')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
-                        <input type="text" name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                        <select name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                            <option value="Wajib">Wajib</option>
+                            <option value="Peminatan">Peminatan</option>
+                        </select>
+                        @error('kelompok')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
@@ -117,6 +147,9 @@
                             <option value="Aktif">Aktif</option>
                             <option value="Tidak Aktif">Tidak Aktif</option>
                         </select>
+                        @error('status')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 <div class="flex items-center gap-3 mt-8">
