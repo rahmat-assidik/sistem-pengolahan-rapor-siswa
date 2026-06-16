@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\Siswa;
 
-class ArsipSiswaController extends Controller
+class ArsipRaporController extends Controller
 {
-    public function showArsipSiswa(Request $request)
+    public function showArsipRapor(Request $request)
     {
         $query = Siswa::query();
 
@@ -30,7 +30,7 @@ class ArsipSiswaController extends Controller
             $query->where('status', $request->status);
         }
 
-        $siswaData = $query->with(['kelasSiswa.semester.tahunAjaran', 'kelasSiswa.kelas'])
+        $siswaData = $query->with(['kelasSiswa.semester.tahunAjaran', 'kelasSiswa.kelas', 'kelasSiswa.nilai'])
                            ->orderBy('nama_siswa')
                            ->paginate(20)
                            ->withQueryString();
@@ -38,6 +38,6 @@ class ArsipSiswaController extends Controller
         // Ambil daftar angkatan unik untuk filter
         $angkatanList = Siswa::whereNotNull('angkatan')->distinct()->orderBy('angkatan', 'desc')->pluck('angkatan', 'angkatan')->toArray();
 
-        return view('pages.arsip_siswa', compact('siswaData', 'angkatanList'));
+        return view('pages.arsip_rapor', compact('siswaData', 'angkatanList'));
     }
 }
