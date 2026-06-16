@@ -60,7 +60,7 @@
 
                 <button type="submit" 
                         :disabled="isLoading"
-                        class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                        class="w-full py-3 bg-black text-white text-sm font-semibold tracking-tight rounded hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
                     <template x-if="!isLoading">
                         <span>Login</span>
                     </template>
