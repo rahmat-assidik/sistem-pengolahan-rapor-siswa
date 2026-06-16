@@ -33,15 +33,15 @@ public function store(Request $request)
    $request->validate([
     'nip' => [
         'required',
-        'digits:4',
-        'regex:/^[0-9]+$/',
+        'numeric',
+        'digits_between:4,10',
         'unique:guru,nip'
     ],
     'nama_guru' => 'required',
     'email' => 'required|email|unique:guru,email',
 ], [
     'nip.required' => 'NIP wajib diisi.',
-    'nip.digits'   => 'NIP harus terdiri dari 4 digit angka.',
+    'nip.digits'   => 'NIP harus terdiri dari 4-10 digit angka.',
     'nip.regex'    => 'NIP hanya boleh berisi angka.',
     'nip.unique'   => 'NIP sudah digunakan.',
 

@@ -70,7 +70,7 @@
             type="text"
             name="nip"
             required
-            maxlength="18"
+            maxlength="10"
             placeholder="Masukkan NIP"
             oninput="this.value=this.value.replace(/[^0-9]/g,'')"
             class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
