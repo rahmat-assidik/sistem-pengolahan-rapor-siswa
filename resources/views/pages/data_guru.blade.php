@@ -59,16 +59,37 @@
         <x-modal name="openTambah" title="Tambah Guru Baru">
             <form action="{{ route('data_guru.store') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">NIP/Kode Guru</label>
-                        <input type="text" name="nip" required placeholder="Masukkan NIP" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
-                        <input type="text" name="nama_guru" required placeholder="Masukkan nama guru" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                </div>
+              <div class="grid grid-cols-2 gap-4 mb-4">
+
+    <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+            NIP/Kode Guru
+        </label>
+
+        <input
+            type="text"
+            name="nip"
+            required
+            maxlength="18"
+            placeholder="Masukkan NIP"
+            oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+            class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+    </div>
+
+    <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+            Nama Lengkap
+        </label>
+
+        <input
+            type="text"
+            name="nama_guru"
+            required
+            placeholder="Masukkan nama guru"
+            class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+    </div>
+
+</div>
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
                     <input type="email" name="email" required placeholder="Masukkan email guru" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
