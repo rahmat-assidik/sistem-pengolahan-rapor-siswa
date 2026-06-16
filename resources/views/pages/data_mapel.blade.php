@@ -55,40 +55,163 @@
         }
     }">
         {{-- Modal Tambah Mata Pelajaran --}}
-        <x-modal name="openTambah" title="Tambah Mata Pelajaran Baru">
-            <form action="{{ route('data_mapel.store') }}" method="POST">
-                @csrf
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Mata Pelajaran</label>
-                        <input type="text" name="kode_mapel" required placeholder="Contoh: MTK" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Mata Pelajaran</label>
-                        <input type="text" name="nama_mapel" required placeholder="Masukkan nama mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
-                        <input type="text" name="kelompok" placeholder="Contoh: Wajib, Peminatan" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
-                        <select name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 mt-8">
-                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
-                        <i class="fa-solid fa-save"></i><span>Simpan Data</span>
-                    </button>
-                    <button type="button" @click="openTambah = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
-                </div>
-            </form>
-        </x-modal>
+<x-modal name="openTambah" title="Tambah Mata Pelajaran Baru">
+    <form action="{{ route('data_mapel.store') }}" method="POST">
+        @csrf
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+            {{-- Kode Mapel --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Kode Mata Pelajaran
+                </label>
+
+                <input
+                    type="text"
+                    name="kode_mapel"
+                    value="{{ old('kode_mapel') }}"
+                    placeholder="Contoh: MTK"
+                    class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors bg-gray-50
+                    @error('kode_mapel')
+                        border-red-500
+                    @else
+                        border-gray-300 focus:border-gray-900
+                    @enderror">
+
+                @error('kode_mapel')
+                    <p class="mt-1 text-sm text-red-600">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Nama Mapel --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Nama Mata Pelajaran
+                </label>
+
+                <input
+                    type="text"
+                    name="nama_mapel"
+                    value="{{ old('nama_mapel') }}"
+                    placeholder="Masukkan nama mapel"
+                    class="w-full px-3 py-2.5 text-sm border rounded outline-none transition-colors bg-gray-50
+                    @error('nama_mapel')
+                        border-red-500
+                    @else
+                        border-gray-300 focus:border-gray-900
+                    @enderror">
+
+                @error('nama_mapel')
+                    <p class="mt-1 text-sm text-red-600">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+            {{-- Kelompok --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Kelompok
+                </label>
+
+                <select
+                    name="kelompok"
+                    class="w-full px-3 py-2.5 text-sm border rounded bg-gray-50 text-gray-700
+                    @error('kelompok')
+                        border-red-500
+                    @else
+                        border-gray-300
+                    @enderror">
+
+                    <option value="">
+                        -- Pilih Kelompok --
+                    </option>
+
+                    <option value="Wajib"
+                        {{ old('kelompok') == 'Wajib' ? 'selected' : '' }}>
+                        Wajib
+                    </option>
+
+                    <option value="Peminatan"
+                        {{ old('kelompok') == 'Peminatan' ? 'selected' : '' }}>
+                        Peminatan
+                    </option>
+
+                </select>
+
+                @error('kelompok')
+                    <p class="mt-1 text-sm text-red-600">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Status --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Status
+                </label>
+
+                <select
+                    name="status"
+                    class="w-full px-3 py-2.5 text-sm border rounded bg-gray-50 text-gray-700
+                    @error('status')
+                        border-red-500
+                    @else
+                        border-gray-300
+                    @enderror">
+
+                    <option value="Aktif"
+                        {{ old('status') == 'Aktif' ? 'selected' : '' }}>
+                        Aktif
+                    </option>
+
+                    <option value="Tidak Aktif"
+                        {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>
+                        Tidak Aktif
+                    </option>
+
+                </select>
+
+                @error('status')
+                    <p class="mt-1 text-sm text-red-600">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-3 mt-8">
+
+            <button
+                type="submit"
+                class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
+
+                <i class="fa-solid fa-save"></i>
+                <span>Simpan Data</span>
+
+            </button>
+
+            <button
+                type="button"
+                @click="openTambah = false"
+                class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">
+
+                Batal
+
+            </button>
+
+        </div>
+    </form>
+</x-modal>
 
         {{-- Modal Edit Mata Pelajaran --}}
         <x-modal name="openEdit" title="Edit Data Mata Pelajaran">
@@ -107,10 +230,13 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
-                        <input type="text" name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
-                    </div>
+                   <div>
+    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelompok</label>
+    <select name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+        <option value="Wajib">Wajib</option>
+        <option value="Peminatan">Peminatan</option>
+    </select>
+</div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Status</label>
                         <select name="status" x-model="selectedMapel.status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">

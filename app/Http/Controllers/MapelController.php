@@ -39,14 +39,22 @@ class MapelController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_mapel' => 'required',
+            'kode_mapel' => 'required|unique:mapel,kode_mapel',
             'nama_mapel' => 'required',
-            'kelompok'   => 'required',
-            'status'     => 'required',
+            'kelompok'   => 'required|in:Wajib,Peminatan',
+            'status'     => 'required|in:Aktif,Tidak Aktif',
+        ], [
+            'kode_mapel.required' => 'Kode mapel wajib diisi.',
+            'kode_mapel.unique'   => 'Kode mapel ini sudah digunakan, silakan pakai kode lain.',
+            'nama_mapel.required' => 'Nama mapel wajib diisi.',
+            'kelompok.required'   => 'Kelompok wajib dipilih.',
+            'kelompok.in'         => 'Kelompok harus salah satu dari: Wajib atau Peminatan.',
+            'status.required'     => 'Status wajib dipilih.',
+            'status.in'           => 'Status harus salah satu dari: Aktif atau Tidak Aktif.',
         ]);
 
         Mapel::create([
-            'kode_mapel' => $request->kode_mapel,
+            'kode_mapel' => strtoupper($request->kode_mapel),
             'nama_mapel' => $request->nama_mapel,
             'kelompok'   => $request->kelompok,
             'status'     => $request->status,
@@ -70,14 +78,21 @@ class MapelController extends Controller
         $request->validate([
             'kode_mapel' => 'required',
             'nama_mapel' => 'required',
-            'kelompok'   => 'required',
-            'status'     => 'required',
+            'kelompok'   => 'required|in:Wajib,Peminatan',
+            'status'     => 'required|in:Aktif,Tidak Aktif',
+        ], [
+            'kode_mapel.required' => 'Kode mapel wajib diisi.',
+            'nama_mapel.required' => 'Nama mapel wajib diisi.',
+            'kelompok.required'   => 'Kelompok wajib dipilih.',
+            'kelompok.in'         => 'Kelompok harus salah satu dari: Wajib atau Peminatan.',
+            'status.required'     => 'Status wajib dipilih.',
+            'status.in'           => 'Status harus salah satu dari: Aktif atau Tidak Aktif.',
         ]);
 
         $mapel = Mapel::findOrFail($kode_mapel);
 
         $mapel->update([
-            'kode_mapel' => $request->kode_mapel,
+            'kode_mapel' => strtoupper($request->kode_mapel),
             'nama_mapel' => $request->nama_mapel,
             'kelompok'   => $request->kelompok,
             'status'     => $request->status,
