@@ -56,7 +56,7 @@
         <x-modal name="openTambah" title="Tambah Kelas Baru">
             <form action="{{ route('data_kelas.store') }}" method="POST">
                 @csrf
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
                         <input type="text" name="kode_kelas" required placeholder="Contoh: 10-A" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
@@ -85,7 +85,7 @@
             <form :action="`/data_kelas/${selectedKelas.id}`" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kode Kelas</label>
                         <input type="text" name="kode_kelas" x-model="selectedKelas.kode_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
