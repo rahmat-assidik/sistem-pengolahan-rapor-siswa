@@ -60,6 +60,9 @@ class DashboardController extends Controller
             $pengampuQuery->where('guru_id', $user->guru_id);
         }
         
+        // Filter pengampu berdasarkan semester aktif
+        $pengampuQuery->where('semester_id', $semesterAktif?->id);
+        
         $pengampuList = $pengampuQuery->get();
         $totalSiswaDiampu = 0;
         foreach ($pengampuList as $p) {
