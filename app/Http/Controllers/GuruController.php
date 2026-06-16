@@ -30,11 +30,27 @@ class GuruController extends Controller
 
 public function store(Request $request)
 {
-    $request->validate([
-        'nip' => 'required|unique:guru,nip',
-        'nama_guru' => 'required',
-        'email' => 'required|email|unique:guru,email',
-    ]);
+   $request->validate([
+    'nip' => [
+        'required',
+        'digits:4',
+        'regex:/^[0-9]+$/',
+        'unique:guru,nip'
+    ],
+    'nama_guru' => 'required',
+    'email' => 'required|email|unique:guru,email',
+], [
+    'nip.required' => 'NIP wajib diisi.',
+    'nip.digits'   => 'NIP harus terdiri dari 4 digit angka.',
+    'nip.regex'    => 'NIP hanya boleh berisi angka.',
+    'nip.unique'   => 'NIP sudah digunakan.',
+
+    'nama_guru.required' => 'Nama guru wajib diisi.',
+
+    'email.required' => 'Email wajib diisi.',
+    'email.email'    => 'Format email tidak valid.',
+    'email.unique'   => 'Email sudah digunakan.',
+]);
 
     $guru = Guru::create([
         'nip'          => $request->nip,

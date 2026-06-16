@@ -35,14 +35,24 @@ class MapelController extends Controller
         return view('pages.data_mapel', compact('mapelData'));
     }
 
-// strore data mapel
+// store data mapel
     public function store(Request $request)
     {
         $request->validate([
-            'kode_mapel' => 'required',
-            'nama_mapel' => 'required',
-            'kelompok'   => 'required',
-            'status'     => 'required',
+            'kode_mapel' => 'required|unique:mapel,kode_mapel',
+            'nama_mapel' => 'required|string|max:255|unique:mapel,nama_mapel',
+            'kelompok'   => 'required|in:Wajib,Peminatan,Muatan Lokal',
+            'status'     => 'required|in:Aktif,Tidak Aktif',
+        ], [
+            'kode_mapel.required' => 'Kode mapel wajib diisi.',
+            'kode_mapel.unique'   => 'Kode mapel ini sudah digunakan, silakan pakai kode lain.',
+            'nama_mapel.required' => 'Nama mapel wajib diisi.',
+            'nama_mapel.max'      => 'Nama mapel maksimal 255 karakter.',
+            'nama_mapel.unique'   => 'Nama mata pelajaran ini sudah digunakan, silakan pakai nama lain.',
+            'kelompok.required'   => 'Kelompok wajib dipilih.',
+            'kelompok.in'         => 'Kelompok harus salah satu dari: Wajib, Peminatan, atau Muatan Lokal.',
+            'status.required'     => 'Status wajib dipilih.',
+            'status.in'           => 'Status harus salah satu dari: Aktif atau Tidak Aktif.',
         ]);
 
         Mapel::create([
@@ -69,9 +79,17 @@ class MapelController extends Controller
     {
         $request->validate([
             'kode_mapel' => 'required',
-            'nama_mapel' => 'required',
-            'kelompok'   => 'required',
-            'status'     => 'required',
+            'nama_mapel' => 'required|string|max:30|unique:mapel,nama_mapel,' . $kode_mapel . ',kode_mapel',
+            'kelompok'   => 'required|in:Wajib,Peminatan,Muatan Lokal',
+            'status'     => 'required|in:Aktif,Tidak Aktif',
+        ], [
+            'kode_mapel.required' => 'Kode mapel wajib diisi.',
+            'nama_mapel.required' => 'Nama mapel wajib diisi.',
+            'nama_mapel.max'      => 'Nama mapel maksimal 30 karakter.',
+            'kelompok.required'   => 'Kelompok wajib dipilih.',
+            'kelompok.in'         => 'Kelompok harus salah satu dari: Wajib, Peminatan, atau Muatan Lokal.',
+            'status.required'     => 'Status wajib dipilih.',
+            'status.in'           => 'Status harus salah satu dari: Aktif atau Tidak Aktif.',
         ]);
 
         $mapel = Mapel::findOrFail($kode_mapel);

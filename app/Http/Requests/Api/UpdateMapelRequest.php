@@ -22,7 +22,7 @@ class UpdateMapelRequest extends FormRequest
         return [
             'kode_mapel' => 'sometimes|required|string|unique:mapel,kode_mapel,' . $this->mapel->id . '|max:20',
             'nama_mapel' => 'sometimes|required|string|max:100',
-            'kelompok' => 'nullable|string|max:50',
+            'kelompok' => 'nullable|in:Wajib,Peminatan,Muatan Lokal',
             'status' => 'nullable|in:Aktif,Tidak Aktif',
         ];
     }
@@ -38,7 +38,7 @@ class UpdateMapelRequest extends FormRequest
             'kode_mapel.max' => 'Kode mata pelajaran maksimal 20 karakter',
             'nama_mapel.required' => 'Nama mata pelajaran harus diisi',
             'nama_mapel.max' => 'Nama mata pelajaran maksimal 100 karakter',
-            'kelompok.max' => 'Kelompok maksimal 50 karakter',
+            'kelompok.in' => 'Kelompok harus salah satu dari: Wajib, Peminatan, atau Muatan Lokal',
             'status.in' => 'Status harus Aktif atau Tidak Aktif',
         ];
     }
