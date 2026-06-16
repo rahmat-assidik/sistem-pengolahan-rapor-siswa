@@ -82,6 +82,7 @@
                             <option value="" disabled @selected(old('form_source') === 'tambah' && !old('kelompok'))>-- Pilih Kelompok --</option>
                             <option value="Wajib" @selected(old('form_source') === 'tambah' && old('kelompok') === 'Wajib')>Wajib</option>
                             <option value="Peminatan" @selected(old('form_source') === 'tambah' && old('kelompok') === 'Peminatan')>Peminatan</option>
+                            <option value="Muatan Lokal" @selected(old('form_source') === 'tambah' && old('kelompok') === 'Muatan Lokal')>Muatan Lokal</option>
                         </select>
                         @error('kelompok')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
@@ -136,6 +137,7 @@
                         <select name="kelompok" x-model="selectedMapel.kelompok" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
                             <option value="Wajib">Wajib</option>
                             <option value="Peminatan">Peminatan</option>
+                            <option value="Muatan Lokal">Muatan Lokal</option>
                         </select>
                         @error('kelompok')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
