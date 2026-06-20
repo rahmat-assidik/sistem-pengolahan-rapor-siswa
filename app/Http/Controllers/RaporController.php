@@ -133,20 +133,20 @@ class RaporController extends Controller
     }
 
     /**
-     * Generate dan download dokumen rapor siswa dalam format PDF
+     * Ambil data lengkap untuk laporan rapor siswa
      */
-    public function generateRapor($nis, $semester_id)
+    private function getRaporData($nis, $semester_id)
     {
         // Ambil data siswa
         $siswa = Siswa::find($nis);
         if (!$siswa) {
-            return redirect()->back()->with('error', 'Data siswa tidak ditemukan.');
+            return ['error' => 'Data siswa tidak ditemukan.'];
         }
 
         // Ambil semester
         $semester = Semester::find($semester_id);
         if (!$semester) {
-            return redirect()->back()->with('error', 'Data semester tidak ditemukan.');
+            return ['error' => 'Data semester tidak ditemukan.'];
         }
 
         // Ambil penempatan kelas siswa pada semester ini
@@ -156,7 +156,7 @@ class RaporController extends Controller
             ->first();
 
         if (!$kelasSiswa) {
-            return redirect()->back()->with('error', 'Data penempatan siswa pada semester ini tidak ditemukan.');
+            return ['error' => 'Data penempatan siswa pada semester ini tidak ditemukan.'];
         }
 
         // Ambil data wali kelas
@@ -195,7 +195,7 @@ class RaporController extends Controller
         }
 
         // Siapkan data untuk view
-        $data = [
+        return [
             'siswa' => $siswa,
             'semester' => $semester,
             'kelasSiswa' => $kelasSiswa,
@@ -204,13 +204,43 @@ class RaporController extends Controller
             'rataRataNilai' => $rataRataNilai,
             'statusLulus' => $statusLulus,
         ];
+    }
+
+    /**
+     * Generate dan download dokumen rapor siswa dalam format PDF
+     */
+    public function generateRapor($nis, $semester_id)
+    {
+        $data = $this->getRaporData($nis, $semester_id);
+        if (isset($data['error'])) {
+            return redirect()->back()->with('error', $data['error']);
+        }
 
         // Generate PDF
         $pdf = Pdf::loadView('rapor.rapor-pdf', $data);
         $pdf->setPaper('a4', 'portrait');
-        $tahunAjaranSafe = str_replace(['/', '\\'], '-', $semester->tahunAjaran->nama);
-        $filename = 'Rapor_' . strtoupper($siswa->nis) . '_' . $tahunAjaranSafe . '_Semester_' . $semester->semester . '.pdf';
+        $tahunAjaranSafe = str_replace(['/', '\\'], '-', $data['semester']->tahunAjaran->nama);
+        $filename = 'Rapor_' . strtoupper($data['siswa']->nis) . '_' . $tahunAjaranSafe . '_Semester_' . $data['semester']->semester . '.pdf';
 
         return $pdf->download($filename);
+    }
+
+    /**
+     * Generate dan stream dokumen rapor siswa dalam format PDF untuk preview
+     */
+    public function previewRapor($nis, $semester_id)
+    {
+        $data = $this->getRaporData($nis, $semester_id);
+        if (isset($data['error'])) {
+            return response($data['error'], 404);
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('rapor.rapor-pdf', $data);
+        $pdf->setPaper('a4', 'portrait');
+        $tahunAjaranSafe = str_replace(['/', '\\'], '-', $data['semester']->tahunAjaran->nama);
+        $filename = 'Rapor_' . strtoupper($data['siswa']->nis) . '_' . $tahunAjaranSafe . '_Semester_' . $data['semester']->semester . '.pdf';
+
+        return $pdf->stream($filename, ["Attachment" => false]);
     }
 }

@@ -35,7 +35,7 @@
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 -translate-y-8 scale-95"
         style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);"
-        class="relative bg-white rounded shadow-[0_20px_60px_rgba(0,0,0,0.25)] overflow-hidden w-full {{ $maxWidth }} transform transition-all z-10"
+        class="relative bg-white rounded shadow-[0_20px_60px_rgba(0,0,0,0.25)] overflow-y-auto max-h-[90vh] w-full {{ $maxWidth }} transform transition-all z-10"
     >
         {{-- Modal Header --}}
         <div class="px-6 pt-6 pb-2">

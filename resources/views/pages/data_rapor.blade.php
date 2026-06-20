@@ -5,6 +5,9 @@
     <div class="max-w-full" x-data="{ 
         openCatatan: false, 
         openFilter: false,
+        openPreview: false,
+        previewUrl: '',
+        previewLoading: false,
         currentSiswaId: null, 
         currentNama: '', 
         currentCatatan: '',
@@ -13,8 +16,13 @@
             this.currentNama = nama;
             this.currentCatatan = catatan;
             this.openCatatan = true;
+        },
+        openPreviewModal(url) {
+            this.previewUrl = url;
+            this.previewLoading = true;
+            this.openPreview = true;
         }
-    }">
+    }" x-init="$watch('openPreview', value => { if (!value) { previewUrl = ''; } })">
         {{-- Filter Modal --}}
         <x-modal name="openFilter" title="Pilih Kelas & Semester">
             <form action="{{ route('data_rapor') }}" method="GET">
@@ -60,6 +68,35 @@
                     <button type="button" @click="openCatatan = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
+        </x-modal>
+
+        {{-- Preview Modal --}}
+        <x-modal name="openPreview" title="Preview Rapor" maxWidth="max-w-5xl">
+            <div class="w-full">
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-xs text-gray-500 font-medium">Anda sedang melihat dokumen preview rapor siswa.</p>
+                    <a :href="previewUrl.replace('/preview/', '/download/')" class="no-progress inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors" title="Download PDF">
+                        <i class="fa-solid fa-download"></i><span>Download PDF</span>
+                    </a>
+                </div>
+                <div class="relative w-full h-[650px] bg-gray-100 border border-gray-200 rounded overflow-hidden shadow-inner">
+                    {{-- Spinner --}}
+                    <div class="absolute inset-0 flex items-center justify-center bg-white z-10" x-show="previewLoading">
+                        <div class="flex flex-col items-center gap-2">
+                            <svg class="animate-spin h-8 w-8 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-xs text-gray-500 font-medium">Memuat Dokumen...</span>
+                        </div>
+                    </div>
+                    <iframe 
+                        :src="previewUrl" 
+                        class="w-full h-full border-none"
+                        @load="previewLoading = false">
+                    </iframe>
+                </div>
+            </div>
         </x-modal>
 
 
@@ -119,16 +156,28 @@
 
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col gap-1">
-                                        <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">{{ $r->kelasSiswa?->first()?->catatan_wali ?? 'Belum ada catatan' }}</p>
-                                        @if(auth()->user()->isGuru() && auth()->user()->guru_id === $r->kelasSiswa?->first()?->kelas?->wali_id)
-                                        <button @click="openModal('{{ $r->id }}', '{{ $r->nama_siswa ?? 'Siswa' }}', '{{ $r->kelasSiswa?->first()?->catatan_wali ?? '' }}')" class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 text-left">
-                                            <i class="fa-solid fa-pen-to-square"></i> Edit Catatan
-                                        </button>
+                                        <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">
+                                            {{ $r->kelasSiswa?->first()?->catatan_wali ?? 'Belum ada catatan' }}
+                                        </p>
+
+                                        @if(auth()->user()->isWaliKelas())
+                                            <button
+                                                @click="openModal('{{ $r->nis }}', '{{ $r->nama_siswa }}', '{{ $r->kelasSiswa?->first()?->catatan_wali ?? '' }}')"
+                                                class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 text-left">
+                                                <i class="fa-solid fa-pen-to-square"></i> Edit Catatan
+                                            </button>
                                         @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="flex items-center justify-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button 
+                                            @click="openPreviewModal('{{ route('data_rapor.preview', ['nis' => $r->nis, 'semester_id' => $selectedSemester?->id]) }}')"
+                                            type="button" 
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 hover:bg-gray-200 hover:text-gray-900 rounded transition-colors" 
+                                            title="Preview Rapor">
+                                            <i class="fa-solid fa-eye"></i><span>Preview</span>
+                                        </button>
                                         <a href="{{ route('data_rapor.download', ['nis' => $r->nis, 'semester_id' => $selectedSemester?->id]) }}" class="no-progress inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors" title="Cetak Rapor (PDF)">
                                             <i class="fa-solid fa-print"></i><span>Cetak Rapor</span>
                                         </a>
