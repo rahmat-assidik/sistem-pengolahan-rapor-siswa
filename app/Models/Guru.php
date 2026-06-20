@@ -21,6 +21,7 @@ class Guru extends Model
         'jenis_kelamin',
         'no_hp',
         'status',
+        'signature_path',
     ];
 
 //   Relation account to user

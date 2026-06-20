@@ -232,6 +232,27 @@
                     </svg>
                     <span>Bobot Nilai</span>
                 </a>
+                <a href="{{ route('admin.signatures.index') }}"
+                   @click="sidebarOpen = false"
+                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                          {{ request()->is('settings/signature')
+                             ? 'bg-gray-900 text-white font-semibold'
+                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <i class="fa-solid fa-signature w-4 h-4 flex-shrink-0"></i>
+                    <span>Tanda Tangan KS</span>
+                </a>
+                @endif
+
+                @if(auth()->check() && auth()->user()->isWaliKelas())
+                <a href="{{ route('guru.signature.show') }}"
+                   @click="sidebarOpen = false"
+                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                          {{ request()->is('guru/signature')
+                             ? 'bg-gray-900 text-white font-semibold'
+                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <i class="fa-solid fa-signature w-4 h-4 flex-shrink-0"></i>
+                    <span>Tanda Tangan Wali Kelas</span>
+                </a>
                 @endif
 
                 <a href="{{ route('ubah_kata_sandi') }}"
