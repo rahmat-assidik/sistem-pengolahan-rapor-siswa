@@ -6,6 +6,7 @@ use App\Models\Guru;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class GuruController extends Controller
 {
@@ -103,5 +104,45 @@ public function update(Request $request, $nip)
 
         return redirect()->route('data_guru')
             ->with('success', 'Data guru berhasil dihapus');
+    }
+
+    public function uploadSignature(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user->isWaliKelas()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Hanya Wali Kelas yang dapat mengunggah tanda tangan.');
+        }
+
+        $request->validate([
+            'signature' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $guru = Guru::where('nip', $user->guru_id)->first();
+
+        if ($guru && $request->hasFile('signature')) {
+            // Delete old signature if exists
+            if ($guru->signature_path) {
+                Storage::disk('public')->delete($guru->signature_path);
+            }
+            
+            $path = $request->file('signature')->store('signatures', 'public');
+            
+            $guru->update(['signature_path' => $path]);
+
+            return redirect()->back()->with('success', 'Tanda tangan berhasil diperbarui.');
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengunggah tanda tangan.');
+    }
+
+    public function showSignatureForm()
+    {
+        $user = auth()->user();
+        if (!$user->isWaliKelas()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Hanya Wali Kelas yang dapat mengakses halaman ini.');
+        }
+        
+        $guru = Guru::where('nip', $user->guru_id)->first();
+        return view('pages.guru_signature', compact('guru'));
     }
 }
