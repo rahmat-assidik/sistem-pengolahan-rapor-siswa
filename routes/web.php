@@ -17,7 +17,7 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\PembagianKelasController;
 use App\Http\Controllers\BobotNilaiController;
-
+use App\Http\Controllers\TandaTanganController;
 use App\Http\Controllers\UbahKataSandiController;
 
 // Auth Routes (Guest)
@@ -101,6 +101,9 @@ Route::middleware('auth')->group(function () {
         // Global Grade Weights Management
         Route::get('/bobot_nilai', [BobotNilaiController::class, 'index'])->name('settings.bobot');
         Route::put('/bobot_nilai', [BobotNilaiController::class, 'update'])->name('settings.update');
+        // Admin Signature Settings
+        Route::get('/settings/signature', [TandaTanganController::class, 'showSettings'])->name('admin.signatures.index');
+        Route::post('/settings/signature', [TandaTanganController::class, 'updateSignature'])->name('admin.signatures.update');
     });
 
     // Guru Only Routes
@@ -109,7 +112,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/input_nilai', [InputNilaiController::class, 'store'])->name('input_nilai.store');
         Route::post('/komponen_nilai', [InputNilaiController::class, 'storeKomponen'])->name('komponen_nilai.store');
         Route::delete('/komponen_nilai/{id}', [InputNilaiController::class, 'destroyKomponen'])->name('komponen_nilai.destroy');
-
+        
+        // Guru Signature Upload
+        Route::get('/guru/signature', [GuruController::class, 'showSignatureForm'])->name('guru.signature.show');
+        Route::post('/guru/signature', [GuruController::class, 'uploadSignature'])->name('guru.signature.upload');
     });
     // tahun ajaran management
     Route::resource('tahun-ajaran', TahunAjaranController::class);

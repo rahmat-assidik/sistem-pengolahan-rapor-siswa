@@ -21,7 +21,7 @@
         .catatan-section { border: 1px solid #000; padding: 5px; margin-bottom: 10px; }
         .signatures { width: 100%; margin-top: 15px; }
         .signature-box { width: 33%; float: left; text-align: center; }
-        .signature-space { height: 40px; }
+        .signature-space { height: 60px; }
     </style>
 </head>
 <body>
@@ -134,12 +134,24 @@
             </div>
             <div class="signature-box">
                 <p>Kepala Sekolah</p>
-                <div class="signature-space"></div>
-                <p>____________________</p>
+                <div class="signature-space">
+                    @php $ksTtd = \App\Models\TandaTangan::where('key', 'kepala_sekolah_ttd_path')->first(); @endphp
+                    @if($ksTtd && file_exists(storage_path('app/public/' . $ksTtd->value)))
+                        <img src="{{ storage_path('app/public/' . $ksTtd->value) }}" style="height: 70px; width: auto; max-width: 150px; margin-bottom: 10px;">
+                    @endif
+                </div>
+                <p>
+                    @php $ksNama = \App\Models\TandaTangan::where('key', 'kepala_sekolah_nama')->value('value'); @endphp
+                    {{ $ksNama ?? '____________________' }}
+                </p>
             </div>
             <div class="signature-box">
                 <p>Wali Kelas</p>
-                <div class="signature-space"></div>
+                <div class="signature-space">
+                    @if($waliKelas?->guru->signature_path && file_exists(storage_path('app/public/' . $waliKelas->guru->signature_path)))
+                        <img src="{{ storage_path('app/public/' . $waliKelas->guru->signature_path) }}" style="height: 70px; width: auto; max-width: 150px; margin-bottom: 10px;">
+                    @endif
+                </div>
                 <p>{{ $waliKelas?->guru->nama_guru ?? '____________________' }}</p>
             </div>
         </div>
