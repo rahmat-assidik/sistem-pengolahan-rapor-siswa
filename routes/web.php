@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/data_rapor', [RaporController::class, 'showRapor'])->name('data_rapor');
     Route::post('/data_rapor/catatan', [RaporController::class, 'saveCatatan'])->name('data_rapor.catatan');
     Route::get('/data_rapor/{nis}/download/{semester_id}', [RaporController::class, 'generateRapor'])->name('data_rapor.download');
+    Route::get('/data_rapor/{nis}/preview/{semester_id}', [RaporController::class, 'previewRapor'])->name('data_rapor.preview');
     Route::get('/ubah_kata_sandi', [UbahKataSandiController::class, 'showUbahKataSandi'])->name('ubah_kata_sandi');
     Route::put('/password/update', [UbahKataSandiController::class, 'updatePassword'])->name('password.update');
 
