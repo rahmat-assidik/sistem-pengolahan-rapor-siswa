@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/data_mapel/{kode_mapel}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');
 
         Route::get('/pengampu', [PengampuController::class, 'showPengampu'])->name('pengampu');
+        Route::post('/pengampu/import', [PengampuController::class, 'importFromSemester'])->name('pengampu.import');
         Route::resource('pengampu', PengampuController::class)->except(['index']);
         Route::get('/arsip_rapor', [ArsipRaporController::class, 'showArsipRapor'])->name('arsip_rapor');
         
@@ -87,6 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pembagian_kelas', [PembagianKelasController::class, 'store'])->name('pembagian_kelas.store');
         Route::put('/pembagian_kelas/{id}', [PembagianKelasController::class, 'update'])->name('pembagian_kelas.update');
         Route::delete('/pembagian_kelas/{id}', [PembagianKelasController::class, 'destroy'])->name('pembagian_kelas.destroy');
+        Route::post('/pembagian_kelas/import', [PembagianKelasController::class, 'importFromSemester'])->name('pembagian_kelas.import');
         Route::post('/pembagian_kelas/bulk', [PembagianKelasController::class, 'bulkStore'])->name('pembagian_kelas.bulk');
         Route::post('/pembagian_kelas/move-all', [PembagianKelasController::class, 'moveAll'])->name('pembagian_kelas.move_all');
         

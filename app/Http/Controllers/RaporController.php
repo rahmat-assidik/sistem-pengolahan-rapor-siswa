@@ -16,12 +16,10 @@ class RaporController extends Controller
     public function showRapor(Request $request)
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
-        $allSemesters = Semester::join('tahun_ajaran', 'semester.tahun_ajaran_id', '=', 'tahun_ajaran.id')
-            ->select('semester.*')
-            ->orderBy('tahun_ajaran.tanggal_mulai', 'desc')
-            ->orderBy('semester.semester', 'desc')
-            ->with('tahunAjaran')
-            ->get();
+        
+        // Ambil hanya semester dari tahun ajaran yang aktif
+        $activeTa = \App\Models\TahunAjaran::where('is_aktif', true)->first();
+        $allSemesters = $activeTa ? $activeTa->semester()->with('tahunAjaran')->get() : collect();
         
         $selectedSemesterId = $request->get('semester_id', $semesterAktif?->id);
         $selectedSemester = Semester::find($selectedSemesterId);
