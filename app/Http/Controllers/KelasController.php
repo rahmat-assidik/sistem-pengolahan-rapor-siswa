@@ -104,4 +104,15 @@ class KelasController extends Controller
 
         return redirect()->back()->with('success', 'Data kelas berhasil dihapus.');
     }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\KelasImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data kelas berhasil diimport.');
+    }
 }

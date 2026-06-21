@@ -56,22 +56,26 @@ Route::middleware('auth')->group(function () {
         // Master Data Management
         Route::get('/data_siswa', [SiswaController::class, 'showDataSiswa'])->name('data_siswa');
         Route::post('/data_siswa', [SiswaController::class, 'store'])->name('data_siswa.store');
+        Route::post('/data_siswa/import', [SiswaController::class, 'import'])->name('data_siswa.import');
         Route::put('/data_siswa/{id}', [SiswaController::class, 'update'])->name('data_siswa.update');
         Route::delete('/data_siswa/{id}', [SiswaController::class, 'destroy'])->name('data_siswa.destroy');
 
         Route::get('/data_guru', [GuruController::class, 'index'])->name('data_guru');
         Route::post('/data_guru', [GuruController::class, 'store'])->name('data_guru.store');
+        Route::post('/data_guru/import', [GuruController::class, 'import'])->name('data_guru.import');
         Route::put('/data_guru/{id}', [GuruController::class, 'update'])->name('data_guru.update');
         Route::delete('/data_guru/{id}', [GuruController::class, 'destroy'])->name('data_guru.destroy');
 
 
         Route::get('/data_kelas', [KelasController::class, 'showKelas'])->name('data_kelas');
         Route::post('/data_kelas', [KelasController::class, 'store'])->name('data_kelas.store');
+        Route::post('/data_kelas/import', [KelasController::class, 'import'])->name('data_kelas.import');
         Route::put('/data_kelas/{id}', [KelasController::class, 'update'])->name('data_kelas.update');
         Route::delete('/data_kelas/{id}', [KelasController::class, 'destroy'])->name('data_kelas.destroy');
 
         Route::get('/data_mapel', [MapelController::class, 'index'])->name('data_mapel');
         Route::post('/data_mapel', [MapelController::class, 'store'])->name('data_mapel.store');
+        Route::post('/data_mapel/import', [MapelController::class, 'import'])->name('data_mapel.import');
         Route::get('/data_mapel/{kode_mapel}/edit', [MapelController::class, 'edit'])->name('data_mapel.edit');
         Route::put('/data_mapel/{kode_mapel}', [MapelController::class, 'update'])->name('data_mapel.update');
         Route::delete('/data_mapel/{kode_mapel}', [MapelController::class, 'destroy'])->name('data_mapel.destroy');

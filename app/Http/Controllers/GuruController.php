@@ -135,6 +135,17 @@ public function update(Request $request, $nip)
         return redirect()->back()->with('error', 'Gagal mengunggah tanda tangan.');
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\GuruImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data guru berhasil diimport.');
+    }
+
     public function showSignatureForm()
     {
         $user = auth()->user();
