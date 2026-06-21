@@ -15,7 +15,6 @@ class RiwayatKelasSiswa extends Model
         'semester_id',
         'catatan_wali',
 
-        'status',
         'status_rapor',
     ];
 

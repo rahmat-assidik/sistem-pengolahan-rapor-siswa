@@ -108,14 +108,14 @@ class RaporController extends Controller
                 }
                 $nilaiPerMapel = $ks->nilai->map(fn ($n) => $n->nilai_akhir)->filter(fn($v) => $v !== null);
                 $siswa->rata_rata = $nilaiPerMapel->isNotEmpty() ? round($nilaiPerMapel->avg(), 1) : null;
-                $siswa->status_lulus = $siswa->rata_rata >= 75 ? 'Lulus' : ($siswa->rata_rata >= 65 ? 'Kondisional' : 'Tidak Lulus');
-                
-                if ($ks->status_rapor === 'Tidak Tuntas') {
-                    $siswa->ranking = '-';
-                } else {
+
+                if ($ks->status_rapor === 'Tuntas') {
                     $siswa->ranking = $rankingMap[$siswa->nis] ?? '-';
+                } else {
+                    $siswa->ranking = '-';
                 }
                 return $siswa;
+
             });
         }
 
@@ -252,13 +252,13 @@ class RaporController extends Controller
             return $b->total_uas <=> $a->total_uas;
         })->values();
 
-        if ($kelasSiswa->status_rapor === 'Tidak Tuntas') {
-            $ranking = '-';
-        } else {
+        if ($kelasSiswa->status_rapor === 'Tuntas') {
             $rankIndex = $sortedRanking->search(function($item) use ($nis) {
                 return $item->nis == $nis;
             });
             $ranking = ($rankIndex !== false) ? $rankIndex + 1 : '-';
+        } else {
+            $ranking = '-';
         }
 
         $jumlahSiswa = $allSiswaKelas->count();

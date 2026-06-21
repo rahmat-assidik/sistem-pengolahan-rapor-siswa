@@ -102,7 +102,6 @@
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
-                                <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Peringkat</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status Rapor</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan Wali</th>
@@ -116,17 +115,6 @@
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $r->nis ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $r->nama_siswa ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $r->kelasSiswa?->first()?->kelas?->nama_kelas ?? '-' }}</td>
-                                <td class="px-6 py-4 text-center">
-                                    @if($r->status_lulus === 'Lulus')
-                                        <x-badge type="success">Lulus</x-badge>
-                                    @elseif($r->status_lulus === 'Kondisional')
-                                        <x-badge type="warning">Kondisional</x-badge>
-                                    @elseif($r->status_lulus === 'Tidak Lulus')
-                                        <x-badge type="danger">Tidak Lulus</x-badge>
-                                    @else
-                                        <span class="text-sm text-gray-400">-</span>
-                                    @endif
-                                </td>
                                 <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">
                                     {{ $r->ranking ?? '-' }}
                                 </td>

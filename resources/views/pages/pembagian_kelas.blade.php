@@ -58,9 +58,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Dari Kelas (Asal)</label>
-                    <select name="from_kode_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                        <option value="">-- Pilih Kelas Asal --</option>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Dari Kelas (Asal) - Opsional</label>
+                    <select name="from_kode_kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                        <option value="">-- Semua Kelas --</option>
                         @foreach(\App\Models\Kelas::orderBy('nama_kelas')->get() as $kelas)
                             <option value="{{ $kelas->kode_kelas }}">{{ $kelas->nama_kelas }}</option>
                         @endforeach

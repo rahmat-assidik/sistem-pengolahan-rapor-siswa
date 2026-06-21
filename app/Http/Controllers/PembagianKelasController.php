@@ -279,10 +279,6 @@ class PembagianKelasController extends Controller
 
     public function moveAll(Request $request)
     {
-        $request->validate([
-            'from_kode_kelas' => 'required|exists:kelas,kode_kelas',
-        ]);
-
         $semesterAktif = Semester::with('tahunAjaran')->where('is_aktif', true)->first();
         if (!$semesterAktif) {
             return redirect()->back()->with('error', 'Tidak ada semester aktif.');
@@ -307,9 +303,13 @@ class PembagianKelasController extends Controller
             return redirect()->back()->with('error', 'Data semester Genap tahun ajaran sebelumnya tidak ditemukan untuk acuan kenaikan kelas.');
         }
 
-        $siswaDiKelas = RiwayatKelasSiswa::where('kode_kelas', $request->from_kode_kelas)
-            ->where('semester_id', $semesterAktif->id)
-            ->get();
+        $query = RiwayatKelasSiswa::where('semester_id', $semesterAktif->id);
+        
+        if ($request->filled('from_kode_kelas')) {
+            $query->where('kode_kelas', $request->from_kode_kelas);
+        }
+        
+        $siswaDiKelas = $query->get();
 
         $successCount = 0;
         $failedCount = 0;
