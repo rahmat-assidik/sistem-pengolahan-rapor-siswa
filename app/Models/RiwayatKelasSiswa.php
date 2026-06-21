@@ -16,6 +16,7 @@ class RiwayatKelasSiswa extends Model
         'catatan_wali',
 
         'status',
+        'status_rapor',
     ];
 
     protected $appends = ['kelas_id'];
