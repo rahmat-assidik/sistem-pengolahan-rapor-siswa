@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Pengampu')
-@section('body-attrs') x-data="{ openTambah: false, openEdit: false, openLihat: false, selectedPengampu: {} }" @endsection
+@section('body-attrs') x-data="{ openTambah: false, openEdit: false, openLihat: false, openImport: false, selectedPengampu: {} }" @endsection
 
 @section('content')
 
@@ -102,20 +102,41 @@
         </form>
     </x-modal>
 
+    {{-- Modal Import --}}
+    <x-modal name="openImport" title="Impor Data Pengampu dari Semester Lain">
+        <form action="{{ route('pengampu.import') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Pilih Semester Sumber</label>
+                <select name="source_semester_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                    <option value="">-- Pilih Semester --</option>
+                    @foreach(\App\Models\Semester::with('tahunAjaran')->orderBy('tahun_ajaran_id', 'desc')->orderBy('semester', 'desc')->get() as $sem)
+                        <option value="{{ $sem->id }}">{{ $sem->tahunAjaran->nama ?? '-' }} - {{ $sem->semester }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex items-center gap-3 mt-8">
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors shadow-md">
+                    <i class="fa-solid fa-download"></i><span>Impor Data</span>
+                </button>
+                <button type="button" @click="openImport = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+            </div>
+        </form>
+    </x-modal>
+
     {{-- Modal Edit --}}
     <x-modal name="openEdit" title="Edit Penugasan Pengampu">
         <form method="POST" :action="'/pengampu/' + selectedPengampu.id">
             @csrf
             @method('PUT')
             <div class="space-y-4">
-
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mata Pelajaran</label>
                     <div class="relative">
                         <select name="mapel_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
                             @foreach($mapels as $mapel)
-                                <option value="{{ $mapel->kode_mapel }}"
-                                    x-bind:selected="selectedPengampu.mapel_id === '{{ $mapel->kode_mapel }}'">
+                                <option value="{{ $mapel->kode_kelas }}"
+                                    x-bind:selected="selectedPengampu.mapel_id === '{{ $mapel->kode_kelas }}'">
                                     {{ $mapel->nama_mapel }} ({{ $mapel->kode_mapel }})
                                 </option>
                             @endforeach
@@ -123,83 +144,22 @@
                         <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
                     </div>
                 </div>
-
-                <div x-data="{
-                    open: false,
-                    search: '',
-                    selectedId: '',
-                    selectedName: '',
-                    gurus: {{ $gurus->map(fn($g) => ['id' => $g->nip, 'nama' => $g->nama_guru])->toJson() }},
-                    get filteredGurus() {
-                        if (this.search === '') return this.gurus;
-                        return this.gurus.filter(g => g.nama.toLowerCase().includes(this.search.toLowerCase()));
-                    },
-                    selectGuru(guru) {
-                        this.selectedId = guru.id;
-                        this.selectedName = guru.nama;
-                        this.search = guru.nama;
-                        this.open = false;
-                    },
-                    init() {
-                        this.$watch('$root.selectedPengampu', (val) => {
-                            if (val && val.guru_id) {
-                                const found = this.gurus.find(g => g.id == val.guru_id);
-                                if (found) {
-                                    this.selectedId = found.id;
-                                    this.search = found.nama;
-                                }
-                            }
-                        });
-                    }
-                }" class="relative">
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Guru Pengampu</label>
-                    <div class="relative">
-                        <input type="text"
-                               x-model="search"
-                               @focus="open = true"
-                               @click.away="open = false; if(!selectedId) search = ''"
-                               placeholder="Cari dan pilih guru..."
-                               class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-all pr-10 bg-gray-50"
-                               autocomplete="off">
-                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <i class="fa-solid fa-magnifying-glass text-xs" x-show="!search"></i>
-                            <i class="fa-solid fa-xmark text-xs cursor-pointer hover:text-gray-600" x-show="search" @click="search = ''; selectedId = ''; selectedName = ''"></i>
-                        </div>
-                    </div>
-                    <div x-show="open"
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="opacity-0 translate-y-1"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         class="absolute z-[60] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto"
-                         style="display: none;">
-                        <template x-for="guru in filteredGurus" :key="guru.id">
-                            <div @click="selectGuru(guru)"
-                                 class="px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center justify-between"
-                                 :class="selectedId === guru.id ? 'bg-blue-50 text-blue-700 font-bold' : 'hover:bg-gray-50 text-gray-700'">
-                                <span x-text="guru.nama"></span>
-                                <i class="fa-solid fa-check text-[10px]" x-show="selectedId === guru.id"></i>
-                            </div>
-                        </template>
-                        <div x-show="filteredGurus.length === 0" class="px-4 py-8 text-center text-gray-400">
-                            <i class="fa-solid fa-user-slash block mb-2 text-lg"></i>
-                            <p class="text-xs font-medium">Guru tidak ditemukan</p>
-                        </div>
-                    </div>
-                    <input type="hidden" name="guru_id" :value="selectedId">
+                    <select name="guru_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
+                        @foreach($gurus as $g)
+                            <option value="{{ $g->nip }}" x-bind:selected="selectedPengampu.guru_id === '{{ $g->nip }}'">{{ $g->nama_guru }}</option>
+                        @endforeach
+                    </select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kelas</label>
                     <select name="kelas_id" required class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none bg-gray-50 transition-all appearance-none cursor-pointer">
                         @foreach($kelas as $k)
-                            <option value="{{ $k->id }}"
-                                x-bind:selected="selectedPengampu.kelas_id == {{ $k->id }}">
-                                {{ $k->nama_kelas }}
-                            </option>
+                            <option value="{{ $k->id }}" x-bind:selected="selectedPengampu.kelas_id == {{ $k->id }}">{{ $k->nama_kelas }}</option>
                         @endforeach
                     </select>
                 </div>
-
             </div>
             <div class="flex items-center gap-3 mt-8">
                 <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
@@ -225,10 +185,6 @@
                 <span class="text-sm font-semibold text-gray-500">Kelas</span>
                 <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedPengampu.kelas_nama"></span>
             </div>
-            <div class="grid grid-cols-3 py-2 border-b border-gray-100">
-                <span class="text-sm font-semibold text-gray-500">Semester</span>
-                <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedPengampu.semester_nama"></span>
-            </div>
         </div>
         <div class="mt-8">
             <button type="button" @click="openLihat = false" class="w-full px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded hover:bg-gray-800 transition-colors">Tutup</button>
@@ -237,15 +193,22 @@
 
     <div class="max-w-full">
         <div class="bg-white rounded border border-gray-200">
-            <x-search-toolbar
-                placeholder="Cari pengampu, guru..."
-                :filters="[
-                    ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'kode_mapel')->toArray()],
-                    ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
-                ]"
-                :resetUrl="route('pengampu')"
-                tambahClick="openTambah = true"
-            />
+            {{-- Toolbar Section --}}
+            <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-gray-200 bg-gray-50">
+                <x-search-toolbar
+                    placeholder="Cari pengampu, guru..."
+                    :filters="[
+                        ['name' => 'mapel_id', 'label' => 'Filter Mapel', 'options' => $mapels->pluck('nama_mapel', 'kode_mapel')->toArray()],
+                        ['name' => 'kelas_id', 'label' => 'Filter Kelas', 'options' => $kelas->pluck('nama_kelas', 'id')->toArray()]
+                    ]"
+                    :resetUrl="route('pengampu')"
+                    tambahClick="openTambah = true"
+                />
+                <button @click="openImport = true" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors shadow-sm">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Impor Data Semester</span>
+                </button>
+            </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-900">
@@ -269,19 +232,16 @@
                             <td class="px-6 py-4 text-center">
                                 <x-action-buttons
                                     :lihatClick="'selectedPengampu = ' . json_encode([
-                                        'id'           => $p->id,
                                         'mapel_id'     => $p->mapel_id,
                                         'mapel_nama'   => $p->mapel->nama_mapel,
                                         'guru_nama'    => $p->guru->nama_guru,
                                         'kelas_nama'   => $p->kelas->nama_kelas,
-                                        'semester_nama'=> $p->semester->tahunAjaran->nama . ' (' . $p->semester->semester . ')',
                                     ]) . '; openLihat = true'"
                                     :editClick="'selectedPengampu = ' . json_encode([
                                         'id'          => $p->id,
                                         'mapel_id'    => $p->mapel_id,
                                         'guru_id'     => $p->guru_id,
                                         'kelas_id'    => $p->kelas_id,
-                                        'semester_id' => $p->semester_id,
                                     ]) . '; openEdit = true'"
                                     :hapusClick="'konfirmasiHapus(' . $p->id . ', \'' . addslashes($p->mapel->nama_mapel) . '\')'"
                                 />

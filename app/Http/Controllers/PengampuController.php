@@ -113,6 +113,56 @@ class PengampuController extends Controller
         return redirect()->back()->with('success', 'Data pengampu berhasil diupdate.');
     }
 
+    public function importFromSemester(Request $request)
+    {
+        $request->validate([
+            'source_semester_id' => 'required|exists:semester,id',
+        ]);
+
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Tidak ada semester aktif.');
+        }
+
+        if ($request->source_semester_id == $semesterAktif->id) {
+            return redirect()->back()->with('error', 'Tidak dapat mengimpor dari semester yang sama.');
+        }
+
+        $pengampusSebelumnya = Pengampu::where('semester_id', $request->source_semester_id)->get();
+
+        if ($pengampusSebelumnya->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data pengampu di semester yang dipilih.');
+        }
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($pengampusSebelumnya as $p) {
+                $exists = Pengampu::where('guru_id', $p->guru_id)
+                    ->where('mapel_id', $p->mapel_id)
+                    ->where('kelas_id', $p->kelas_id)
+                    ->where('semester_id', $semesterAktif->id)
+                    ->exists();
+
+                if (!$exists) {
+                    Pengampu::create([
+                        'guru_id'     => $p->guru_id,
+                        'mapel_id'    => $p->mapel_id,
+                        'kelas_id'    => $p->kelas_id,
+                        'kkm'         => $p->kkm,
+                        'status'      => $p->status,
+                        'semester_id' => $semesterAktif->id,
+                    ]);
+                }
+            }
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Data pengampu berhasil diimpor.');
+    }
+
     public function destroy($id)
     {
         $pengampu = Pengampu::findOrFail($id);
