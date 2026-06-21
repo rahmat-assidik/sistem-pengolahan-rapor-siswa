@@ -19,6 +19,7 @@ use App\Http\Controllers\PembagianKelasController;
 use App\Http\Controllers\BobotNilaiController;
 use App\Http\Controllers\TandaTanganController;
 use App\Http\Controllers\UbahKataSandiController;
+use App\Http\Controllers\StatusRaporController;
 
 // Auth Routes (Guest)
 Route::middleware('guest')->group(function () {
@@ -116,6 +117,11 @@ Route::middleware('auth')->group(function () {
         // Guru Signature Upload
         Route::get('/guru/signature', [GuruController::class, 'showSignatureForm'])->name('guru.signature.show');
         Route::post('/guru/signature', [GuruController::class, 'uploadSignature'])->name('guru.signature.upload');
+
+        // Status Rapor (Wali Kelas only, additional check in controller)
+        Route::get('/status_rapor', [StatusRaporController::class, 'index'])->name('status_rapor');
+        Route::put('/status_rapor/update', [StatusRaporController::class, 'updateStatus'])->name('status_rapor.update');
+        Route::put('/status_rapor/bulk-update', [StatusRaporController::class, 'bulkUpdateStatus'])->name('status_rapor.bulk_update');
     });
     // tahun ajaran management
     Route::resource('tahun-ajaran', TahunAjaranController::class);

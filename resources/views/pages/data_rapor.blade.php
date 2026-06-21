@@ -3,20 +3,10 @@
 
 @section('content')
     <div class="max-w-full" x-data="{ 
-        openCatatan: false, 
         openFilter: false,
         openPreview: false,
         previewUrl: '',
         previewLoading: false,
-        currentSiswaId: null, 
-        currentNama: '', 
-        currentCatatan: '',
-        openModal(id, nama, catatan) {
-            this.currentSiswaId = id;
-            this.currentNama = nama;
-            this.currentCatatan = catatan;
-            this.openCatatan = true;
-        },
         openPreviewModal(url) {
             this.previewUrl = url;
             this.previewLoading = true;
@@ -48,24 +38,6 @@
                 <div class="flex items-center gap-3 mt-6">
                     <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800">Tampilkan Data</button>
                     <button type="button" @click="openFilter = false" class="px-6 py-2.5 bg-gray-100 text-gray-600 text-sm font-semibold rounded hover:bg-gray-200">Batal</button>
-                </div>
-            </form>
-        </x-modal>
-
-        {{-- Modal Catatan Wali --}}
-        <x-modal name="openCatatan" title="Catatan Wali Kelas">
-            <form action="{{ route('data_rapor.catatan') }}" method="POST">
-                @csrf
-                <input type="hidden" name="siswa_id" :value="currentSiswaId">
-                <div class="mb-4">
-                    <p class="text-sm text-gray-600 mb-2">Memberikan catatan perkembangan untuk siswa: <span class="font-bold text-gray-900" x-text="currentNama"></span></p>
-                    <textarea name="catatan" x-model="currentCatatan" rows="4" class="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors resize-none" placeholder="Masukkan catatan wali kelas di sini..."></textarea>
-                </div>
-                <div class="flex items-center gap-3 mt-6">
-                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-gray-800 transition-colors">
-                        <i class="fa-solid fa-save"></i><span>Simpan Catatan</span>
-                    </button>
-                    <button type="button" @click="openCatatan = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
             </form>
         </x-modal>
@@ -131,6 +103,7 @@
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
+                                <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status Rapor</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan Wali</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
                             </tr>
@@ -153,20 +126,24 @@
                                         <span class="text-sm text-gray-400">-</span>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 text-center">
+                                    @php $statusRapor = $r->kelasSiswa?->first()?->status_rapor ?? 'Belum Ditentukan'; @endphp
+                                    @if($statusRapor === 'Tuntas')
+                                        <x-badge type="success">Tuntas</x-badge>
+                                    @elseif($statusRapor === 'Tidak Tuntas')
+                                        <x-badge type="danger">Tidak Tuntas</x-badge>
+                                    @else
+                                        <x-badge type="default">Belum Ditentukan</x-badge>
+                                    @endif
+                                </td>
 
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col gap-1">
-                                        <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">
-                                            {{ $r->kelasSiswa?->first()?->catatan_wali ?? 'Belum ada catatan' }}
+                                        <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40" title="{{ strip_tags($r->kelasSiswa?->first()?->catatan_wali) }}">
+                                            {{ strip_tags($r->kelasSiswa?->first()?->catatan_wali) ?? 'Belum ada catatan' }}
                                         </p>
 
-                                        @if(auth()->user()->isWaliKelas())
-                                            <button
-                                                @click="openModal('{{ $r->nis }}', '{{ $r->nama_siswa }}', '{{ $r->kelasSiswa?->first()?->catatan_wali ?? '' }}')"
-                                                class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 text-left">
-                                                <i class="fa-solid fa-pen-to-square"></i> Edit Catatan
-                                            </button>
-                                        @endif
+
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-center">
