@@ -195,6 +195,20 @@
                     <span>Rapor Siswa</span>
                 </a>
                 @endif
+
+                @if(auth()->check() && auth()->user()->isWaliKelas())
+                <a href="{{ route('status_rapor') }}"
+                   @click="sidebarOpen = false"
+                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                          {{ request()->is('status_rapor')
+                             ? 'bg-gray-900 text-white font-semibold'
+                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Status Rapor</span>
+                </a>
+                @endif
             </div>
 
     {{-- Arsip Section --}}

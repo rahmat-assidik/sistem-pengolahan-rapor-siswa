@@ -123,7 +123,7 @@
 
         <div class="catatan-section">
             <strong>Catatan Wali Kelas:</strong><br>
-            {{ $kelasSiswa->catatan_wali ?? '-' }}
+            {!! nl2br($kelasSiswa->catatan_wali ?? '-') !!}
         </div>
 
         <div class="signatures">
