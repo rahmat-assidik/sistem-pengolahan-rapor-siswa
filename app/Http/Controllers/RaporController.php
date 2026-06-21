@@ -65,18 +65,58 @@ class RaporController extends Controller
 
             $siswaData = $query->orderBy('nama_siswa')->paginate(20)->withQueryString();
 
+            // Hitung Ranking untuk semua siswa di kelas ini
+            $allSiswaKelas = RiwayatKelasSiswa::where('kode_kelas', $kodeKelas)
+                ->where('semester_id', $selectedSemesterId)
+                ->with('nilai')
+                ->get();
+            
+            $rankingData = $allSiswaKelas->map(function($ks) {
+                return (object) [
+                    'nis' => $ks->nis,
+                    'status_rapor' => $ks->status_rapor,
+                    'total_akhir' => $ks->nilai->avg('nilai_akhir'),
+                    'total_tugas' => $ks->nilai->avg('tugas'),
+                    'total_ulangan' => $ks->nilai->avg('ulangan'),
+                    'total_uts' => $ks->nilai->avg('uts'),
+                    'total_uas' => $ks->nilai->avg('uas'),
+                ];
+            });
+
+            $sortedRanking = $rankingData->filter(function($item) {
+                return $item->status_rapor !== 'Tidak Tuntas';
+            })->sort(function($a, $b) {
+                if ($a->total_akhir != $b->total_akhir) return $b->total_akhir <=> $a->total_akhir;
+                if ($a->total_tugas != $b->total_tugas) return $b->total_tugas <=> $a->total_tugas;
+                if ($a->total_ulangan != $b->total_ulangan) return $b->total_ulangan <=> $a->total_ulangan;
+                if ($a->total_uts != $b->total_uts) return $b->total_uts <=> $a->total_uts;
+                return $b->total_uas <=> $a->total_uas;
+            })->values();
+
+            $rankingMap = [];
+            foreach ($sortedRanking as $index => $item) {
+                $rankingMap[$item->nis] = $index + 1;
+            }
+
             // Hitung rata-rata dan status kelulusan (Aggregasi)
-            $siswaData->getCollection()->transform(function ($siswa) {
+            $siswaData->getCollection()->transform(function ($siswa) use ($rankingMap) {
                 // ... (existing transformation logic)
                 $ks = $siswa->kelasSiswa->first();
                 if (!$ks || $ks->nilai->isEmpty()) {
                     $siswa->rata_rata = null;
                     $siswa->status_lulus = '-';
+                    $siswa->ranking = '-';
                     return $siswa;
                 }
                 $nilaiPerMapel = $ks->nilai->map(fn ($n) => $n->nilai_akhir)->filter(fn($v) => $v !== null);
                 $siswa->rata_rata = $nilaiPerMapel->isNotEmpty() ? round($nilaiPerMapel->avg(), 1) : null;
                 $siswa->status_lulus = $siswa->rata_rata >= 75 ? 'Lulus' : ($siswa->rata_rata >= 65 ? 'Kondisional' : 'Tidak Lulus');
+                
+                if ($ks->status_rapor === 'Tidak Tuntas') {
+                    $siswa->ranking = '-';
+                } else {
+                    $siswa->ranking = $rankingMap[$siswa->nis] ?? '-';
+                }
                 return $siswa;
             });
         }
@@ -186,6 +226,45 @@ class RaporController extends Controller
             ? round($nilaiDetails->avg('nilai_akhir'), 2) 
             : 0;
 
+        // Hitung Ranking Siswa di Kelas
+        $allSiswaKelas = RiwayatKelasSiswa::where('kode_kelas', $kelasSiswa->kode_kelas)
+            ->where('semester_id', $semester_id)
+            ->with('nilai')
+            ->get();
+        
+        $rankingData = $allSiswaKelas->map(function($ks) {
+            return (object) [
+                'nis' => $ks->nis,
+                'status_rapor' => $ks->status_rapor,
+                'total_akhir' => $ks->nilai->avg('nilai_akhir'),
+                'total_tugas' => $ks->nilai->avg('tugas'),
+                'total_ulangan' => $ks->nilai->avg('ulangan'),
+                'total_uts' => $ks->nilai->avg('uts'),
+                'total_uas' => $ks->nilai->avg('uas'),
+            ];
+        });
+
+        $sortedRanking = $rankingData->filter(function($item) {
+            return $item->status_rapor !== 'Tidak Tuntas';
+        })->sort(function($a, $b) {
+            if ($a->total_akhir != $b->total_akhir) return $b->total_akhir <=> $a->total_akhir;
+            if ($a->total_tugas != $b->total_tugas) return $b->total_tugas <=> $a->total_tugas;
+            if ($a->total_ulangan != $b->total_ulangan) return $b->total_ulangan <=> $a->total_ulangan;
+            if ($a->total_uts != $b->total_uts) return $b->total_uts <=> $a->total_uts;
+            return $b->total_uas <=> $a->total_uas;
+        })->values();
+
+        if ($kelasSiswa->status_rapor === 'Tidak Tuntas') {
+            $ranking = '-';
+        } else {
+            $rankIndex = $sortedRanking->search(function($item) use ($nis) {
+                return $item->nis == $nis;
+            });
+            $ranking = ($rankIndex !== false) ? $rankIndex + 1 : '-';
+        }
+
+        $jumlahSiswa = $allSiswaKelas->count();
+
         // Tentukan status kelulusan
         $statusLulus = 'Tidak Lulus';
         if ($rataRataNilai >= 75) {
@@ -203,6 +282,8 @@ class RaporController extends Controller
             'nilaiDetails' => $nilaiDetails,
             'rataRataNilai' => $rataRataNilai,
             'statusLulus' => $statusLulus,
+            'ranking' => $ranking,
+            'jumlahSiswa' => $jumlahSiswa,
         ];
     }
 

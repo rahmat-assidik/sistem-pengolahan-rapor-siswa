@@ -118,6 +118,10 @@
                     <td>{{ terbilang($rataRata) }}</td>
                     <td></td>
                 </tr>
+                <tr style="font-weight: bold; background: #eee;">
+                    <td colspan="3" style="text-align: right;">Peringkat Kelas</td>
+                    <td colspan="3" style="text-align: center;">{{ $ranking }} dari {{ $jumlahSiswa }} Siswa</td>
+                </tr>
             </tfoot>
         </table>
 

@@ -103,6 +103,7 @@
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Kelas</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status</th>
+                                <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Peringkat</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Status Rapor</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Catatan Wali</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-white tracking-wider">Aksi</th>
@@ -125,6 +126,9 @@
                                     @else
                                         <span class="text-sm text-gray-400">-</span>
                                     @endif
+                                </td>
+                                <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">
+                                    {{ $r->ranking ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @php $statusRapor = $r->kelasSiswa?->first()?->status_rapor ?? 'Belum Ditentukan'; @endphp
