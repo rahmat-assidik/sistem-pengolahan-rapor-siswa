@@ -42,12 +42,13 @@ class SiswaController extends Controller
         $request->validate([
             'nis' => 'required|unique:siswa,nis',
             'nama_siswa' => 'required|string|max:255',
+            'nama_orang_tua' => 'nullable|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'angkatan' => 'required|integer',
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
-        Siswa::create($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
+        Siswa::create($request->only(['nis', 'nama_siswa', 'nama_orang_tua', 'jenis_kelamin', 'angkatan', 'status']));
 
         return redirect()->back()->with('success', 'Data siswa berhasil ditambahkan.');
     }
@@ -59,12 +60,13 @@ class SiswaController extends Controller
         $request->validate([
             'nis' => 'required|unique:siswa,nis,' . $id . ',nis',
             'nama_siswa' => 'required|string|max:255',
+            'nama_orang_tua' => 'nullable|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'angkatan' => 'required|integer',
             'status' => 'required|in:Aktif,Tidak Aktif',
         ]);
 
-        $siswa->update($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
+        $siswa->update($request->only(['nis', 'nama_siswa', 'nama_orang_tua', 'jenis_kelamin', 'angkatan', 'status']));
 
         return redirect()->back()->with('success', 'Data siswa berhasil diperbarui.');
     }
@@ -88,5 +90,16 @@ class SiswaController extends Controller
         });
 
         return redirect()->back()->with('success', 'Data siswa dan seluruh riwayat nilai berhasil dihapus.');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\SiswaImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data siswa berhasil diimport.');
     }
 }
