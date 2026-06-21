@@ -31,7 +31,7 @@
         <table class="info-table">
             <tr><td class="label">Nama Peserta Didik</td><td>: {{ $siswa->nama_siswa }}</td><td class="label">Kelas</td><td>: {{ $kelasSiswa->kelas->nama_kelas ?? '-' }}</td></tr>
             <tr><td class="label">NIS</td><td>: {{ $siswa->nis }}</td><td class="label">Semester</td><td>: {{ $semester->semester == 1 ? 'Ganjil' : 'Genap' }}</td></tr>
-            <tr><td colspan="2"></td><td class="label">Tahun Pelajaran</td><td>: {{ $semester->tahunAjaran->nama }}</td></tr>
+            <tr><td class="label">Nama Orang Tua/Wali</td><td>: {{ $siswa->nama_orang_tua ?? '-' }}</td><td class="label">Tahun Pelajaran</td><td>: {{ $semester->tahunAjaran->nama }}</td></tr>
         </table>
 
         @php
@@ -134,7 +134,7 @@
             <div class="signature-box">
                 <p>Orang Tua/Wali</p>
                 <div class="signature-space"></div>
-                <p>( . . . . . . . . . . . . . )</p>
+                <p>{{ $siswa->nama_orang_tua ?? '( . . . . . . . . . . . . . )' }}</p>
             </div>
             <div class="signature-box">
                 <p>Kepala Sekolah</p>

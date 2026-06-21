@@ -3,6 +3,8 @@
     'placeholder' => 'Cari...',
     'showTambah' => true,
     'tambahClick' => 'openTambah = true',
+    'importClick' => null,
+    'importLabel' => 'Import Excel',
     'resetUrl' => null,
     'filters' => [] {{-- Array of objects: ['name' => 'status', 'label' => 'Status', 'options' => ['Aktif', 'Tidak Aktif']] --}}
 ])
@@ -46,6 +48,17 @@
                 <a href="{{ $resetUrl }}" class="px-4 py-2.5 text-gray-500 hover:text-red-600 transition-colors text-xs font-semibold tracking-tight whitespace-nowrap">
                     Reset
                 </a>
+            @endif
+
+            @if($importClick)
+            <button
+                type="button"
+                @click="{{ $importClick }}"
+                class="px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded hover:bg-green-700 transition-colors flex items-center gap-2 whitespace-nowrap"
+            >
+                <i class="fa-solid fa-file-excel"></i>
+                <span>{{ $importLabel }}</span>
+            </button>
             @endif
 
             @if($showTambah)

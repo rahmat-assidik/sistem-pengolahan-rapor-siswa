@@ -21,6 +21,7 @@ class Siswa extends Model
         'nis',
         'angkatan',
         'nama_siswa',
+        'nama_orang_tua',
         'jenis_kelamin',
         'status',
     ];

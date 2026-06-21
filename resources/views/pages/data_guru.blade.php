@@ -5,6 +5,7 @@
 @section('content')
     <div class="max-w-full" x-data="{ 
         openTambah: false, 
+        openImport: false,
         openEdit: false, 
         openLihat: false, 
         selectedGuru: {},
@@ -124,6 +125,27 @@
             </form>
         </x-modal>
 
+        {{-- Modal Import Guru --}}
+        <x-modal name="openImport" title="Import Data Guru (Excel/CSV)">
+            <div class="mb-4 text-sm text-gray-600">
+                Pastikan format file sesuai. 
+                <a href="{{ asset('templates/template_guru.csv') }}" class="text-blue-600 font-semibold hover:underline" target="_blank" download>Download Template CSV</a>
+            </div>
+            <form action="{{ route('data_guru.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Pilih File (.xlsx, .xls, .csv)</label>
+                    <input type="file" name="file" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                </div>
+                <div class="flex items-center gap-3 mt-8">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white text-sm font-semibold rounded hover:bg-green-700 transition-colors">
+                        <i class="fa-solid fa-file-arrow-up"></i><span>Import Data</span>
+                    </button>
+                    <button type="button" @click="openImport = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+                </div>
+            </form>
+        </x-modal>
+
         {{-- Modal Edit Guru --}}
         <x-modal name="openEdit" title="Edit Data Guru">
             <form :action="`/data_guru/${selectedGuru.original_nip}`" method="POST">
@@ -219,6 +241,7 @@
                 ]"
                 :resetUrl="route('data_guru')"
                 tambahClick="openTambah = true"
+                importClick="openImport = true"
             />
 
             {{-- Table Section --}}

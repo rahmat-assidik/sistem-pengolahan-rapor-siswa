@@ -5,6 +5,7 @@
 @section('content')
     <div class="max-w-full" x-data="{ 
         openTambah: false, 
+        openImport: false,
         openEdit: false, 
         openLihat: false, 
         selectedSiswa: {},
@@ -66,6 +67,10 @@
                         <input type="text" name="nama_siswa" required placeholder="Masukkan nama siswa" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Orang Tua/Wali</label>
+                    <input type="text" name="nama_orang_tua" placeholder="Masukkan nama orang tua" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
@@ -98,6 +103,27 @@
             </form>
         </x-modal>
 
+        {{-- Modal Import Siswa --}}
+        <x-modal name="openImport" title="Import Data Siswa (Excel/CSV)">
+            <div class="mb-4 text-sm text-gray-600">
+                Pastikan format file sesuai. 
+                <a href="{{ asset('templates/template_siswa.csv') }}" class="text-blue-600 font-semibold hover:underline" target="_blank" download>Download Template CSV</a>
+            </div>
+            <form action="{{ route('data_siswa.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Pilih File (.xlsx, .xls, .csv)</label>
+                    <input type="file" name="file" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
+                </div>
+                <div class="flex items-center gap-3 mt-8">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white text-sm font-semibold rounded hover:bg-green-700 transition-colors">
+                        <i class="fa-solid fa-file-arrow-up"></i><span>Import Data</span>
+                    </button>
+                    <button type="button" @click="openImport = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+                </div>
+            </form>
+        </x-modal>
+
         {{-- Modal Edit Siswa --}}
         <x-modal name="openEdit" title="Edit Data Siswa">
             <form :action="`/data_siswa/${selectedSiswa.nis}`" method="POST">
@@ -112,6 +138,10 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
                         <input type="text" name="nama_siswa" x-model="selectedSiswa.nama_siswa" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                     </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Orang Tua/Wali</label>
+                    <input type="text" name="nama_orang_tua" x-model="selectedSiswa.nama_orang_tua" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
@@ -156,6 +186,10 @@
                     <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.nama_siswa"></span>
                 </div>
                 <div class="grid grid-cols-3 py-2 border-b border-gray-50">
+                    <span class="text-sm font-semibold text-gray-500">Nama Orang Tua</span>
+                    <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.nama_orang_tua || '-'"></span>
+                </div>
+                <div class="grid grid-cols-3 py-2 border-b border-gray-50">
                     <span class="text-sm font-semibold text-gray-500">Jenis Kelamin</span>
                     <span class="text-sm font-bold text-gray-900 col-span-2" x-text="selectedSiswa.jenis_kelamin"></span>
                 </div>
@@ -187,6 +221,7 @@
                 ]"
                 :resetUrl="route('data_siswa')"
                 tambahClick="openTambah = true"
+                importClick="openImport = true"
             />
 
             {{-- Table Section --}}
@@ -197,6 +232,7 @@
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">NIS</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Nama Orang Tua</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Angkatan</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Jenis Kelamin</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white tracking-wider">Status</th>
@@ -210,6 +246,7 @@
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $siswaData->firstItem() + $i }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $s->nis ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $s->nama_siswa ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $s->nama_orang_tua ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">
                                 <span class="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-[10px] font-bold text-gray-700">
                                     {{ $s->angkatan ?? '-' }}
@@ -228,7 +265,7 @@
                         @endif
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-sm font-medium">Tidak ada data siswa</p>
                             </td>
                         </tr>
