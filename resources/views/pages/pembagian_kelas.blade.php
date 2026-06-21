@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="max-w-full" x-data="{ 
+        openImport: false, 
         openMoveAll: false,
     }">
         {{-- Tabs --}}
@@ -12,8 +13,30 @@
             <a href="{{ route('set_wali_kelas') }}" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-900">Set Wali Kelas</a>
         </div>
 
+        {{-- Modal Impor Data --}}
+        <x-modal name="openImport" title="Impor Data dari Semester Lain">
+            <form action="{{ route('pembagian_kelas.import') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Pilih Semester Sumber</label>
+                    <select name="source_semester_id" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                        <option value="">-- Pilih Semester --</option>
+                        @foreach(\App\Models\Semester::with('tahunAjaran')->orderBy('tahun_ajaran_id', 'desc')->orderBy('semester', 'desc')->get() as $sem)
+                            <option value="{{ $sem->id }}">{{ $sem->tahunAjaran->nama ?? '-' }} - {{ $sem->semester }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-center gap-3 mt-8">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors shadow-md">
+                        <i class="fa-solid fa-download"></i><span>Impor Data</span>
+                    </button>
+                    <button type="button" @click="openImport = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
+                </div>
+            </form>
+        </x-modal>
+
         {{-- Modal Pindah Semua Siswa --}}
-        <x-modal name="openMoveAll" title="Pindah Semua Siswa Antar Kelas">
+        <x-modal name="openMoveAll" title="Pindah Semua Siswa Secara Otomatis">
             <form action="{{ route('pembagian_kelas.move_all') }}" method="POST">
                 @csrf
                 <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6">
@@ -23,31 +46,25 @@
                         </div>
                         <div class="ml-3">
                             <p class="text-sm text-amber-700">
-                                Fitur ini akan memindahkan <strong>seluruh siswa</strong> dari satu kelas ke kelas lainnya pada semester aktif.
+                                Fitur ini akan memindahkan siswa secara otomatis berdasarkan status rapor dari semester genap tahun sebelumnya:
+                                <ul class="list-disc ml-4 mt-2">
+                                    <li><strong>Tuntas:</strong> Naik ke tingkat berikutnya.</li>
+                                    <li><strong>Tidak Tuntas:</strong> Tetap di kelas.</li>
+                                    <li><strong>Kelas XII Tuntas:</strong> Dinyatakan Lulus.</li>
+                                </ul>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Dari Kelas (Asal)</label>
-                        <select name="from_kode_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">-- Pilih Kelas Asal --</option>
-                            @foreach(\App\Models\Kelas::orderBy('nama_kelas')->get() as $kelas)
-                                <option value="{{ $kelas->kode_kelas }}">{{ $kelas->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Ke Kelas (Tujuan)</label>
-                        <select name="to_kode_kelas" required class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
-                            <option value="">-- Pilih Kelas Tujuan --</option>
-                            @foreach(\App\Models\Kelas::orderBy('nama_kelas')->get() as $kelas)
-                                <option value="{{ $kelas->kode_kelas }}">{{ $kelas->nama_kelas }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Dari Kelas (Asal) - Opsional</label>
+                    <select name="from_kode_kelas" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:border-gray-900 outline-none transition-colors bg-gray-50 text-gray-700 cursor-pointer">
+                        <option value="">-- Semua Kelas --</option>
+                        @foreach(\App\Models\Kelas::orderBy('nama_kelas')->get() as $kelas)
+                            <option value="{{ $kelas->kode_kelas }}">{{ $kelas->nama_kelas }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="mb-4">
@@ -56,7 +73,7 @@
 
                 <div class="flex items-center gap-3 mt-8">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-600 text-white text-sm font-semibold rounded hover:bg-amber-700 transition-colors shadow-md">
-                        <i class="fa-solid fa-right-left"></i><span>Proses Pindah Semua</span>
+                        <i class="fa-solid fa-right-left"></i><span>Proses Automasi</span>
                     </button>
                     <button type="button" @click="openMoveAll = false" class="px-6 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 rounded hover:bg-gray-200 transition-colors">Batal</button>
                 </div>
@@ -78,6 +95,10 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
+                    <button @click="openImport = true" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors shadow-sm">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Impor Data Semester</span>
+                    </button>
                     <button @click="openMoveAll = true" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white text-sm font-semibold rounded hover:bg-amber-700 transition-colors shadow-sm">
                         <i class="fa-solid fa-right-left"></i>
                         <span>Pindah Semua Siswa</span>

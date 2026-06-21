@@ -5,7 +5,6 @@
 @section('content')
     <div class="max-w-full" x-data="{
         selectedIds: [],
-        selectAll: false,
         isLoading: false,
         storageKey: 'selected_students_{{ $kelas->kode_kelas }}',
 
@@ -22,10 +21,15 @@
             });
         },
 
-        toggleSelectAll() {
+        isAllSelected() {
+            const currentPageIds = Array.from(document.querySelectorAll('.siswa-checkbox')).map(el => el.value);
+            return currentPageIds.length > 0 && currentPageIds.every(id => this.selectedIds.includes(id));
+        },
+
+        toggleSelectAll(checked) {
             const currentPageIds = Array.from(document.querySelectorAll('.siswa-checkbox')).map(el => el.value);
             
-            if (this.selectAll) {
+            if (checked) {
                 // Tambahkan ID halaman ini ke daftar terpilih jika belum ada
                 currentPageIds.forEach(id => {
                     if (!this.selectedIds.includes(id)) {
@@ -201,7 +205,7 @@
                                 <thead class="bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
                                     <tr>
                                         <th class="px-4 py-3 text-center">
-                                            <input type="checkbox" @click="toggleSelectAll()" x-model="selectAll" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <input type="checkbox" @change="toggleSelectAll($event.target.checked)" :checked="isAllSelected()" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                         </th>
                                         <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nama Siswa</th>
                                         <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Angkatan</th>

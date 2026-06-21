@@ -212,11 +212,10 @@ class PembagianKelasController extends Controller
         return redirect()->back()->with('success', 'Penempatan kelas berhasil diperbarui.');
     }
 
-    public function moveAll(Request $request)
+    public function importFromSemester(Request $request)
     {
         $request->validate([
-            'from_kode_kelas' => 'required|exists:kelas,kode_kelas',
-            'to_kode_kelas' => 'required|exists:kelas,kode_kelas|different:from_kode_kelas',
+            'source_semester_id' => 'required|exists:semester,id',
         ]);
 
         $semesterAktif = Semester::where('is_aktif', true)->first();
@@ -224,10 +223,151 @@ class PembagianKelasController extends Controller
             return redirect()->back()->with('error', 'Tidak ada semester aktif.');
         }
 
-        $affected = RiwayatKelasSiswa::where('kode_kelas', $request->from_kode_kelas)
-            ->where('semester_id', $semesterAktif->id)
-            ->update(['kode_kelas' => $request->to_kode_kelas]);
+        if ($request->source_semester_id == $semesterAktif->id) {
+            return redirect()->back()->with('error', 'Tidak dapat mengimpor dari semester yang sama.');
+        }
 
-        return redirect()->back()->with('success', "Berhasil memindahkan $affected siswa dari kelas " . $request->from_kode_kelas . " ke kelas " . $request->to_kode_kelas);
+        $penempatanSebelumnya = RiwayatKelasSiswa::where('semester_id', $request->source_semester_id)->get();
+        $waliKelasSebelumnya = \App\Models\WaliKelas::where('semester_id', $request->source_semester_id)->get();
+
+        if ($penempatanSebelumnya->isEmpty() && $waliKelasSebelumnya->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data penempatan kelas atau wali kelas di semester yang dipilih.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Import Penempatan Siswa
+            foreach ($penempatanSebelumnya as $penempatan) {
+                $exists = RiwayatKelasSiswa::where('nis', $penempatan->nis)
+                    ->where('semester_id', $semesterAktif->id)
+                    ->exists();
+
+                if (!$exists) {
+                    RiwayatKelasSiswa::create([
+                        'nis' => $penempatan->nis,
+                        'kode_kelas' => $penempatan->kode_kelas,
+                        'semester_id' => $semesterAktif->id,
+                        'status' => 'Aktif',
+                        'status_rapor' => 'Belum Ditentukan',
+                    ]);
+                }
+            }
+
+            // Import Wali Kelas
+            foreach ($waliKelasSebelumnya as $wk) {
+                $exists = \App\Models\WaliKelas::where('kelas_id', $wk->kelas_id)
+                    ->where('semester_id', $semesterAktif->id)
+                    ->exists();
+
+                if (!$exists) {
+                    \App\Models\WaliKelas::create([
+                        'kelas_id' => $wk->kelas_id,
+                        'guru_id' => $wk->guru_id,
+                        'semester_id' => $semesterAktif->id,
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Data penempatan kelas dan wali kelas berhasil diimpor.');
+    }
+
+    public function moveAll(Request $request)
+    {
+        $semesterAktif = Semester::with('tahunAjaran')->where('is_aktif', true)->first();
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Tidak ada semester aktif.');
+        }
+
+        // 1. Dapatkan Tahun Ajaran aktif dan sebelumnya
+        $taAktif = $semesterAktif->tahunAjaran;
+        $taSebelumnya = \App\Models\TahunAjaran::where('tanggal_mulai', '<', $taAktif->tanggal_mulai)
+            ->orderBy('tanggal_mulai', 'desc')
+            ->first();
+
+        if (!$taSebelumnya) {
+            return redirect()->back()->with('error', 'Data tahun ajaran sebelumnya tidak ditemukan.');
+        }
+
+        // 2. Dapatkan semester Genap dari tahun ajaran sebelumnya
+        $semesterGenapLalu = Semester::where('tahun_ajaran_id', $taSebelumnya->id)
+            ->where('semester', 'Genap')
+            ->first();
+
+        if (!$semesterGenapLalu) {
+            return redirect()->back()->with('error', 'Data semester Genap tahun ajaran sebelumnya tidak ditemukan untuk acuan kenaikan kelas.');
+        }
+
+        $query = RiwayatKelasSiswa::where('semester_id', $semesterAktif->id);
+        
+        if ($request->filled('from_kode_kelas')) {
+            $query->where('kode_kelas', $request->from_kode_kelas);
+        }
+        
+        $siswaDiKelas = $query->get();
+
+        $successCount = 0;
+        $failedCount = 0;
+
+        DB::beginTransaction();
+        try {
+            foreach ($siswaDiKelas as $ks) {
+                // 3. Ambil status rapor dari semester Genap tahun lalu
+                $dataRaporLalu = RiwayatKelasSiswa::where('nis', $ks->nis)
+                    ->where('semester_id', $semesterGenapLalu->id)
+                    ->first();
+
+                $statusRapor = $dataRaporLalu ? $dataRaporLalu->status_rapor : 'Belum Ditentukan';
+
+                if ($statusRapor === 'Tuntas') {
+                    $kelasAsal = $ks->kelas;
+                    $tingkat = $kelasAsal->tingkat;
+                    
+                    if ($tingkat === 'XII') {
+                        $ks->siswa->update(['status' => 'Tidak Aktif']); // Lulus
+                        $successCount++;
+                    } else {
+                        $nextTingkat = ($tingkat === 'X') ? 'XI' : 'XII';
+                        
+                        $baseName = trim(str_replace($tingkat, '', $kelasAsal->nama_kelas));
+                        $namaKelasTujuan = $nextTingkat . ' ' . $baseName;
+
+                        $kelasTujuan = Kelas::where('nama_kelas', $namaKelasTujuan)->first();
+
+                        if ($kelasTujuan) {
+                            $alreadyAssigned = RiwayatKelasSiswa::where('nis', $ks->nis)
+                                ->where('semester_id', $semesterAktif->id)
+                                ->where('kode_kelas', $kelasTujuan->kode_kelas)
+                                ->exists();
+
+                            if (!$alreadyAssigned) {
+                                $ks->update([
+                                    'kode_kelas' => $kelasTujuan->kode_kelas,
+                                    'status_rapor' => 'Belum Ditentukan'
+                                ]);
+                                $successCount++;
+                            } else {
+                                $failedCount++; 
+                            }
+                        } else {
+                            $failedCount++;
+                        }
+                    }
+                } else {
+                    $failedCount++;
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal memproses: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', "Berhasil memproses $successCount siswa, $failedCount siswa tidak berpindah/lulus.");
     }
 }
