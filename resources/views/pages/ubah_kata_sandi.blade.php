@@ -52,10 +52,10 @@
                         <div class="p-6 border-b border-gray-100 bg-gray-50/50">
                             <div class="flex items-center gap-5">
                                 <div class="w-16 h-16 bg-gray-900 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-sm border-2 border-white">
-                                    {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
+                                    <i class="fa-solid fa-user"></i>
                                 </div>
                                 <div>
-                                    <h2 class="text-lg font-bold text-gray-900 tracking-tight">{{ auth()->user()->nama }}</h2>
+                                    <h2 class="text-lg font-bold text-gray-900 tracking-tight">Profil Pengguna</h2>
                                     <p class="text-xs text-gray-500 font-semibold">{{ auth()->user()->role === 'admin' ? 'Administrator Sistem' : 'Guru Pengampu' }}</p>
                                 </div>
                             </div>
@@ -64,13 +64,6 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-5">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nama Lengkap</label>
-                                        <div class="flex items-center gap-3 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-700">
-                                            <i class="fa-solid fa-user text-gray-400 text-xs"></i>
-                                            {{ auth()->user()->nama }}
-                                        </div>
-                                    </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Username / NIP</label>
                                         <div class="flex items-center gap-3 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-700">
@@ -95,16 +88,6 @@
                                             {{ now()->format('d M Y, H:i') }}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded flex items-start gap-3">
-                                <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded flex items-center justify-center shrink-0">
-                                    <i class="fa-solid fa-circle-exclamation"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-xs font-bold text-amber-900 mb-0.5 uppercase tracking-wide">Butuh Ubah Data Profil?</h4>
-                                    <p class="text-[11px] text-amber-700 leading-relaxed font-medium">Untuk alasan keamanan, perubahan nama dan NIP hanya dapat dilakukan oleh Administrator melalui menu Manajemen Guru.</p>
                                 </div>
                             </div>
                         </div>
@@ -270,7 +253,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
 

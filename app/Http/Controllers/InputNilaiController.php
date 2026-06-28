@@ -118,7 +118,7 @@ class InputNilaiController extends Controller
         $semesterId = $pengampu->semester_id;
         $dataNilai = $request->input('nilai');
 
-        $settings = BobotNilai::current();
+        $settings = BobotNilai::forPengampu($pengampu->id) ?? BobotNilai::current();
 
         DB::transaction(function() use ($pengampu, $semesterId, $dataNilai, $request, $settings) {
             // Update KKM pengampu

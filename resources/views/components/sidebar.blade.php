@@ -26,10 +26,10 @@
     {{-- Sidebar --}}
     <aside id="sidebar"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-           class="fixed top-0 left-0 z-50 flex flex-col w-52 min-h-screen bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out lg:translate-x-0">
+           class="fixed top-0 left-0 z-50 flex flex-col w-52 h-screen bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out lg:translate-x-0">
 
         {{-- Logo --}}
-        <div class="px-5 py-5 border-b border-gray-100">
+        <div class="flex-shrink-0 px-5 py-5 border-b border-gray-100">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-gray-900 rounded flex items-center justify-center text-white">
@@ -180,6 +180,18 @@
                     </svg>
                     <span>Input Nilai</span>
                 </a>
+                
+                <a href="{{ route('guru.bobot') }}"
+                   @click="sidebarOpen = false"
+                   class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
+                          {{ request()->is('bobot_nilai_guru')
+                             ? 'bg-gray-900 text-white font-semibold'
+                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                    </svg>
+                    <span>Konfigurasi Bobot</span>
+                </a>
                 @endif
                 
                 @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isWaliKelas()))
@@ -286,7 +298,7 @@
         </nav>
 
         {{-- Logout --}}
-        <div class="p-3 border-t border-gray-200">
+        <div class="flex-shrink-0 p-3 border-t border-gray-200">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
@@ -301,4 +313,3 @@
         </div>
 
     </aside>
-</div>

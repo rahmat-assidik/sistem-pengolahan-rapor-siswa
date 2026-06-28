@@ -105,9 +105,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/akademik/ta/nonaktifkan/{id}', [AkademikController::class, 'nonaktifkanTa'])->name('akademik.ta.nonaktifkan');
         Route::post('/akademik/ta/set-aktif/{id}', [AkademikController::class, 'setAktifTa'])->name('akademik.ta.set_aktif');
 
-        // Global Grade Weights Management
+        // Global Grade Weights Management (View Only)
         Route::get('/bobot_nilai', [BobotNilaiController::class, 'index'])->name('settings.bobot');
-        Route::put('/bobot_nilai', [BobotNilaiController::class, 'update'])->name('settings.update');
         // Admin Signature Settings
         Route::get('/settings/signature', [TandaTanganController::class, 'showSettings'])->name('admin.signatures.index');
         Route::post('/settings/signature', [TandaTanganController::class, 'updateSignature'])->name('admin.signatures.update');
@@ -119,6 +118,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/input_nilai', [InputNilaiController::class, 'store'])->name('input_nilai.store');
         Route::post('/komponen_nilai', [InputNilaiController::class, 'storeKomponen'])->name('komponen_nilai.store');
         Route::delete('/komponen_nilai/{id}', [InputNilaiController::class, 'destroyKomponen'])->name('komponen_nilai.destroy');
+
+        // Bobot Nilai Guru
+        Route::get('/bobot_nilai_guru', [BobotNilaiController::class, 'indexGuru'])->name('guru.bobot');
+        Route::put('/bobot_nilai_guru/{pengampuId}', [BobotNilaiController::class, 'updateGuru'])->name('guru.bobot.update');
         
         // Guru Signature Upload
         Route::get('/guru/signature', [GuruController::class, 'showSignatureForm'])->name('guru.signature.show');

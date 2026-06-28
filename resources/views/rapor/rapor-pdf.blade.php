@@ -158,11 +158,6 @@
                 </div>
                 <p>{{ $waliKelas?->guru->nama_guru ?? '____________________' }}</p>
             </div>
-            <div class="signature-box">
-                <p>Wali Kelas</p>
-                <div class="signature-space"></div>
-                <p>{{ $waliKelas?->guru->nama_guru ?? '____________________' }}</p>
-            </div>
         </div>
     </div>
 </body>

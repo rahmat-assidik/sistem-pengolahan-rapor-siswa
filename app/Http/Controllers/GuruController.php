@@ -65,7 +65,6 @@ public function store(Request $request)
     // Otomatis buat akun guru
     User::create([
         'username' => $guru->nip,
-        'nama'     => $guru->nama_guru,
         'email'    => $guru->email,
         'password' => Hash::make($guru->nip),
         'role'     => 'guru',

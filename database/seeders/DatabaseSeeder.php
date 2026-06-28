@@ -58,22 +58,28 @@ class DatabaseSeeder extends Seeder
             ]);
 
             // 2. GURU & USER
+            $faker = \Faker\Factory::create('id_ID');
             $gurus = [];
-            for ($i = 1; $i <= 10; $i++) {
-                $nip = "100" . $i;
-                $gender = $i % 2 == 0 ? 'Perempuan' : 'Laki-laki';
+            
+            // List of Indonesian Names for Gurus
+            $namaDepan = ['Budi', 'Siti', 'Agus', 'Dewi', 'Ahmad', 'Rina', 'Joko', 'Ani', 'Eko', 'Putri', 'Fajar', 'Dian', 'Andi', 'Sari', 'Hendra', 'Maya', 'Rizky', 'Nur', 'Wawan', 'Lestari'];
+            $namaBelakang = ['Santoso', 'Wijaya', 'Pratama', 'Hidayat', 'Saputra', 'Wulandari', 'Kurniawan', 'Ramadhani', 'Setiawan', 'Permata', 'Nugroho', 'Pratiwi', 'Haryanto', 'Utami', 'Purnomo', 'Indah', 'Pradana', 'Amalia', 'Sulistyo', 'Dewi'];
+
+            for ($i = 0; $i < 20; $i++) {
+                $nip = "100" . ($i + 1);
+                $gender = $i % 2 == 0 ? 'Laki-laki' : 'Perempuan';
+                $nama = $namaDepan[$i] . ' ' . $namaBelakang[$i] . ', S.Pd.';
                 $g = Guru::create([
                     'nip' => $nip,
-                    'nama_guru' => ($gender == 'Laki-laki' ? 'Bpk. ' : 'Ibu ') . "Guru $i, S.Pd.",
-                    'email' => "guru$i@sekolah.local",
+                    'nama_guru' => $nama,
+                    'email' => "guru" . ($i + 1) . "@sekolah.sch.id",
                     'jenis_kelamin' => $gender,
-                    'no_hp' => '0812' . str_pad($i, 8, '0', STR_PAD_LEFT)
+                    'no_hp' => '0812' . rand(11111111, 99999999)
                 ]);
                 $gurus[] = $g;
 
                 User::create([
                     'username' => $g->nip,
-                    'nama' => $g->nama_guru,
                     'email' => $g->email,
                     'password' => Hash::make($g->nip),
                     'role' => 'guru',
@@ -83,7 +89,6 @@ class DatabaseSeeder extends Seeder
 
             User::create([
                 'username' => 'admin',
-                'nama' => 'Administrator',
                 'email' => 'admin@sekolah.sch.id',
                 'password' => Hash::make('12345678'),
                 'role' => 'admin'
@@ -109,66 +114,74 @@ class DatabaseSeeder extends Seeder
 
             // 4. MAPEL
             $mapelData = [
-                ['MTK', 'Matematika'],
-                ['BIN', 'Bahasa Indonesia'],
-                ['BIG', 'Bahasa Inggris'],
-                ['IPA', 'IPA'],
-                ['IPS', 'IPS'],
+                // Wajib
+                ['MTK', 'Matematika', 'Wajib'],
+                ['BIN', 'Bahasa Indonesia', 'Wajib'],
+                ['BIG', 'Bahasa Inggris', 'Wajib'],
+                ['PPK', 'Pendidikan Pancasila', 'Wajib'],
+                ['PAI', 'Pendidikan Agama Islam', 'Wajib'],
+                // Peminatan
+                ['BIO', 'Biologi', 'Peminatan'],
+                ['FIS', 'Fisika', 'Peminatan'],
+                ['KIM', 'Kimia', 'Peminatan'],
+                ['EKO', 'Ekonomi', 'Peminatan'],
+                ['GEO', 'Geografi', 'Peminatan'],
+                ['SOS', 'Sosiologi', 'Peminatan'],
+                // Muatan Lokal
+                ['MUL1', 'Bahasa Daerah', 'Muatan Lokal'],
+                ['MUL2', 'TIK', 'Muatan Lokal'],
             ];
             $mapels = [];
             foreach ($mapelData as $md) {
-                $mapels[] = Mapel::create(['kode_mapel' => $md[0], 'nama_mapel' => $md[1], 'kelompok' => 'Wajib']);
+                $mapels[] = Mapel::create(['kode_mapel' => $md[0], 'nama_mapel' => $md[1], 'kelompok' => $md[2]]);
             }
 
-            // 5. DATA SISWA (Cukup untuk tes pagination)
-            $this->command->info('⏳ Menghasilkan 70 data siswa...');
-            $siswaList = Siswa::factory()->count(70)->create();
+            // 5. DATA SISWA (30 data)
+            $this->command->info('⏳ Menghasilkan 30 data siswa...');
+            $siswaList = Siswa::factory()->count(30)->create();
 
             // 6. PENEMPATAN KELAS & NILAI SAMPEL
             $this->command->info('⏳ Menempatkan siswa ke kelas...');
             
             foreach ($siswaList as $index => $siswa) {
-                // 40 siswa dimasukkan kelas, 30 siswa dibiarkan tanpa kelas untuk tes pagination
-                if ($index < 40) {
-                    $kelasRandom = $kelasPool[array_rand($kelasPool)];
-                    $riwayat = RiwayatKelasSiswa::create([
-                        'nis' => $siswa->nis,
-                        'kode_kelas' => $kelasRandom->kode_kelas,
-                        'semester_id' => $smtAktif->id,
-                        'status' => 'Aktif'
+                // Semua siswa dimasukkan kelas
+                $kelasRandom = $kelasPool[array_rand($kelasPool)];
+                $riwayat = RiwayatKelasSiswa::create([
+                    'nis' => $siswa->nis,
+                    'kode_kelas' => $kelasRandom->kode_kelas,
+                    'semester_id' => $smtAktif->id,
+                ]);
+
+                // Tambahkan nilai acak untuk beberapa mapel
+                foreach (array_rand($mapels, 3) as $mIndex) {
+                    $mapel = $mapels[$mIndex];
+                    $guru = $gurus[array_rand($gurus)];
+                    
+                    // Cek/buat pengampu
+                    $pengampu = Pengampu::firstOrCreate(
+                        [
+                            'guru_id' => $guru->nip,
+                            'mapel_id' => $mapel->kode_mapel,
+                            'kelas_id' => $kelasRandom->id,
+                            'semester_id' => $smtAktif->id,
+                        ],
+                        ['kkm' => 75, 'status' => 'Aktif']
+                    );
+
+                    $tugas = rand(70, 95);
+                    $ulangan = rand(65, 90);
+                    $uts = rand(60, 85);
+                    $uas = rand(65, 80);
+                    
+                    Nilai::create([
+                        'kelas_siswa_id' => $riwayat->id,
+                        'pengampu_id' => $pengampu->id,
+                        'tugas' => $tugas,
+                        'ulangan' => $ulangan,
+                        'uts' => $uts,
+                        'uas' => $uas,
+                        'nilai_akhir' => ($tugas + $ulangan + $uts + $uas) / 4
                     ]);
-
-                    // Tambahkan nilai acak untuk beberapa mapel
-                    foreach (array_rand($mapels, 3) as $mIndex) {
-                        $mapel = $mapels[$mIndex];
-                        $guru = $gurus[array_rand($gurus)];
-                        
-                        // Cek/buat pengampu
-                        $pengampu = Pengampu::firstOrCreate(
-                            [
-                                'guru_id' => $guru->nip,
-                                'mapel_id' => $mapel->kode_mapel,
-                                'kelas_id' => $kelasRandom->id,
-                                'semester_id' => $smtAktif->id,
-                            ],
-                            ['kkm' => 75, 'status' => 'Aktif']
-                        );
-
-                        $tugas = rand(70, 95);
-                        $ulangan = rand(65, 90);
-                        $uts = rand(60, 85);
-                        $uas = rand(65, 80);
-                        
-                        Nilai::create([
-                            'kelas_siswa_id' => $riwayat->id,
-                            'pengampu_id' => $pengampu->id,
-                            'tugas' => $tugas,
-                            'ulangan' => $ulangan,
-                            'uts' => $uts,
-                            'uas' => $uas,
-                            'nilai_akhir' => ($tugas + $ulangan + $uts + $uas) / 4
-                        ]);
-                    }
                 }
             }
 
