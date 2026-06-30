@@ -37,6 +37,7 @@ class SiswaController extends Controller
         return view('pages.data_siswa', compact('siswaData', 'angkatanList'));
     }
 
+<<<<<<< Updated upstream
     public function store(Request $request)
     {
         $request->validate([
@@ -48,9 +49,31 @@ class SiswaController extends Controller
         ]);
 
         Siswa::create($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
+=======
+public function store(Request $request)
+{
+    $request->validate([
+        'nis' => 'required|unique:siswa,nis',
+        'nama_siswa' => 'required|string|max:255',
+        'nama_orang_tua' => 'nullable|string|max:255',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'angkatan' => 'required|integer',
+        'status' => 'required|in:Aktif,Tidak Aktif',
+    ]);
 
-        return redirect()->back()->with('success', 'Data siswa berhasil ditambahkan.');
-    }
+    Siswa::create([
+        'nis' => $request->nis,
+        'nama_siswa' => $request->nama_siswa,
+        'nama_orang_tua' => $request->nama_orang_tua,
+        'jenis_kelamin' => $request->jenis_kelamin,
+        'angkatan' => $request->angkatan,
+        'status' => $request->status,
+    ]);
+>>>>>>> Stashed changes
+
+    return redirect()->route('data_siswa')
+        ->with('success', 'Data siswa berhasil ditambahkan.');
+}
 
     public function update(Request $request, $id)
     {
