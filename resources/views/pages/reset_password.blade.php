@@ -1,13 +1,10 @@
 @extends('layouts.guest')
 
-@section('title', 'Lupa Sandi - Smart Rapor')
+@section('title', 'Reset Sandi - Smart Rapor')
 
 @section('content')
     <div class="w-full max-w-md">
-        {{-- Ultra-Flat Card --}}
         <div class="bg-white p-10 text-center rounded">
-            
-            {{-- Preferred Logo Style --}}
             <div class="flex items-center gap-2 mb-10 justify-center">
                 <div class="w-8 h-8 bg-gray-900 rounded flex items-center justify-center text-white">
                     <i class="fa-solid fa-graduation-cap text-xs"></i>
@@ -19,16 +16,8 @@
             </div>
 
             <div class="mb-6">
-                <h2 class="text-sm font-black text-black tracking-tighter uppercase">Lupa Sandi</h2>
-                <p class="text-[11px] text-gray-500 mt-2">Masukkan email Anda untuk instruksi pemulihan.</p>
+                <h2 class="text-sm font-black text-black tracking-tighter uppercase">Reset Sandi</h2>
             </div>
-
-            {{-- Form --}}
-            @if (session('status'))
-                <div class="mb-4 text-xs text-green-600">
-                    {{ session('status') }}
-                </div>
-            @endif
 
             @if ($errors->any())
                 <div class="mb-4 text-xs text-red-600">
@@ -38,24 +27,34 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('password.email') }}" class="space-y-6 text-left">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-6 text-left">
                 @csrf
+
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <div class="space-y-1">
                     <label for="email" class="text-xs font-semibold text-black">Email</label>
                     <input type="email" id="email" name="email" required
                             class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50"
-                            placeholder="email@sekolah.sch.id" value="{{ old('email') }}">
+                            placeholder="email@sekolah.sch.id" value="{{ $email ?? old('email') }}">
+                </div>
+
+                <div class="space-y-1">
+                    <label for="password" class="text-xs font-semibold text-black">Kata Sandi Baru</label>
+                    <input type="password" id="password" name="password" required
+                            class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50">
+                </div>
+
+                <div class="space-y-1">
+                    <label for="password_confirmation" class="text-xs font-semibold text-black">Konfirmasi Kata Sandi</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required
+                            class="w-full px-4 py-2 text-sm border border-gray-300 rounded focus:border-black outline-none transition-none bg-gray-50">
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-black text-white text-xs font-semibold tracking-tight rounded hover:bg-gray-800 transition-none">
-                    Kirim Link Reset
+                    Reset Sandi
                 </button>
             </form>
-
-            <div class="mt-8 pt-6 border-t border-gray-100 text-xs">
-                <a href="{{ route('login') }}" class="font-semibold text-gray-400 hover:text-black">Kembali ke login</a>
-            </div>
         </div>
     </div>
 @endsection

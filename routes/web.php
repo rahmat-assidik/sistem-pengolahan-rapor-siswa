@@ -33,9 +33,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-    Route::get('/lupa_sandi', function () {
-        return view('pages.lupa_sandi');
-    })->name('lupa_sandi');
+    Route::get('/lupa_sandi', [App\Http\Controllers\LupasandiController::class, 'showLinkRequestForm'])->name('lupa_sandi');
+    Route::post('/lupa_sandi', [App\Http\Controllers\LupasandiController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/reset-password/{token}', [App\Http\Controllers\LupasandiController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [App\Http\Controllers\LupasandiController::class, 'reset'])->name('password.update');
 });
 
 // Authenticated Routes
